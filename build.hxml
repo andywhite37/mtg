@@ -1,0 +1,19 @@
+# client
+-cp src
+-lib doom
+-lib dots
+-lib thx.core
+-lib thx.promise
+-main mtg.client.Main
+-js bin/public/client.js
+
+--next
+
+# server
+-cp src
+-lib abe
+-lib express
+-lib thx.core
+-lib thx.promise
+-main mtg.server.Main
+-js bin/server.js
