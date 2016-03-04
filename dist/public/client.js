@@ -942,7 +942,7 @@ mtg_client_api_Client.prototype = {
 				resolve(converter(data1));
 			};
 			options.error = function(jqXHR1,textStatus1,errorThrown) {
-				reject(new thx_Error("API error " + jqXHR1.status,null,{ fileName : "Client.hx", lineNumber : 27, className : "mtg.client.api.Client", methodName : "http"}));
+				reject(new thx_Error("API error: " + jqXHR1.status,null,{ fileName : "Client.hx", lineNumber : 27, className : "mtg.client.api.Client", methodName : "http"}));
 			};
 			$.ajax(options);
 		});

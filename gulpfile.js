@@ -8,10 +8,10 @@ var stylus = require('gulp-stylus');
 var paths = {
   client: {
     hx: {
-      all: 'src/mtg/client/*.hx'
+      all: 'src/mtg/client/**/*.hx'
     },
     js: {
-      root: 'temp/client/**/*'
+      all: 'temp/client/**/*.js'
     },
     html: {
       index: 'src/mtg/client/html/index.html',
@@ -24,16 +24,15 @@ var paths = {
   },
   server: {
     hx: {
-      all: 'src/mtg/server/*.hx'
+      all: 'src/mtg/server/**/*.hx'
     },
     js: {
-      root: 'temp/server/**/*'
+      all: 'temp/server/**/*.js'
     }
   },
   dist: {
     client: {
-      root: 'dist/public',
-      index: 'dist/public/client.js'
+      root: 'dist/public'
     },
     server: {
       root: 'dist',
@@ -47,13 +46,13 @@ gulp.task('client-hx', function(cb) {
 });
 
 gulp.task('client-js', ['client-hx'], function() {
-  return gulp.src(paths.client.js.root)
+  return gulp.src(paths.client.js.all)
     .pipe(gulp.dest(paths.dist.client.root))
     .pipe(liveReload());
 });
 
 gulp.task('client-html', function() {
-  return gulp.src(paths.client.html.index)
+  return gulp.src(paths.client.html.all)
     .pipe(gulp.dest(paths.dist.client.root))
     .pipe(liveReload());
 });
@@ -70,7 +69,7 @@ gulp.task('server-hx', function(cb) {
 });
 
 gulp.task('server-js', ['server-hx'], function() {
-  return gulp.src(paths.server.js.root)
+  return gulp.src(paths.server.js.all)
     .pipe(gulp.dest(paths.dist.server.root));
 });
 

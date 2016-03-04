@@ -24,7 +24,7 @@ class Client {
         resolve(converter(data));
       };
       options.error = function(jqXHR, textStatus, errorThrown) {
-        reject(new Error('API error ${jqXHR.status}'));
+        reject(new Error('API error: ${jqXHR.status}'));
       };
       JQuery.ajax(options);
     });
