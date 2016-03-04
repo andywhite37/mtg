@@ -4,56 +4,63 @@
       "name": "abe",
       "type": "git",
       "dir": "",
-      "ref": "master",
+      "ref": "6fb71f6",
       "url": "git@github.com:abedev/abe"
     },
     {
       "name": "doom",
       "type": "git",
       "dir": "",
-      "ref": "master",
+      "ref": "0a633a6",
       "url": "git@github.com:fponticelli/doom"
     },
     {
       "name": "dots",
       "type": "git",
       "dir": "",
-      "ref": "master",
+      "ref": "e4f028e",
       "url": "git@github.com:fponticelli/dots"
     },
     {
       "name": "express",
       "type": "git",
       "dir": "",
-      "ref": "master",
+      "ref": "fbadb97",
       "url": "git@github.com:abedev/hxexpress"
+    },
+    {
+      "name": "hxnodejs",
+      "type": "git",
+      "dir": "",
+      "ref": "fa6628c",
+      "url": "git@github.com:HaxeFoundation/hxnodejs"
     },
     {
       "name": "jsrequire",
       "type": "git",
       "dir": "",
-      "ref": "master",
+      "ref": "3c3f6d5",
       "url": "git@github.com:abedev/jsrequire"
     },
     {
       "name": "npm",
       "type": "git",
       "dir": "",
-      "ref": "master",
+      "ref": "92830a8",
       "url": "git@github.com:abedev/npm"
     },
     {
       "name": "thx.core",
       "type": "git",
       "dir": "",
-      "ref": "master",
+      "ref": "2ed8085",
       "url": "git@github.com:fponticelli/thx.core"
     },
     {
       "name": "thx.promise",
       "type": "git",
       "dir": "",
-      "ref": "master",
+      "ref": "3b5639f",
       "url": "git@github.com:fponticelli/thx.promise"
     }
   ]

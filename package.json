@@ -1,0 +1,35 @@
+{
+  "name": "mtg",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andywhite37/mtg.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andywhite37/mtg/issues"
+  },
+  "homepage": "https://github.com/andywhite37/mtg#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-livereload": "^3.8.1",
+    "gulp-stylus": "^2.3.0",
+    "nib": "^1.1.0",
+    "nodemon": "^1.9.1"
+  },
+  "dependencies": {
+    "compression": "^1.6.1",
+    "cors": "^2.7.1",
+    "express": "^4.13.4",
+    "morgan": "^1.7.0"
+  }
+}

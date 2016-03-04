@@ -1,0 +1,7 @@
+-cp src
+-lib thx.core
+-lib thx.promise
+-lib doom
+-lib dots
+-main mtg.client.Main
+-js temp/client/client.js

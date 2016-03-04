@@ -1,8 +1,14 @@
-# Node
+# node/npm
 npm-debug.log*
 node_modules
 .npm
 .node_repl_history
 
-# Haxe
+# bower
+bower_components
+
+# haxe
 .haxelib
+
+# project files
+temp/

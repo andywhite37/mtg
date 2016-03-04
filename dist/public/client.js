@@ -2,7 +2,6 @@
 (function (console) { "use strict";
 var mtg_client_Main = function() { };
 mtg_client_Main.main = function() {
-	console.log("hello");
 };
 mtg_client_Main.main();
 })(typeof console != "undefined" ? console : {log:function(){}});

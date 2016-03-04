@@ -2,6 +2,6 @@ package mtg.client;
 
 class Main {
   public static function main() {
-    trace('hello');
+    //new js.jquery.JQuery("#root").text('hi');
   }
 }
