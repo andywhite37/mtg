@@ -21,13 +21,13 @@ class Main {
     app.router.register(new ApiRoute());
     app.router.serve('/', Path.join(Node.__dirname, 'public'));
     app.router.use(function(req : Request, res : Response, next : Next) {
-      next.error(HttpError.notFound('Not found: ${req.baseUrl}', None));
+      next.error(HttpError.notFound('Not found', None));
     });
     app.router.error(ErrorHandler.handle);
     var host = DEFAULT_HOST;
     var port = DEFAULT_PORT;
     if (Node.process.argv[2] != null) port = Std.parseInt(Node.process.argv[2]);
     app.http(port, host);
-    trace('server listening on $host:$port');
+    trace('server listening at $host:$port');
   }
 }

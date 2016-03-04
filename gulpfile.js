@@ -80,8 +80,8 @@ gulp.task('serve', ['build'], function() {
   nodemon({
     script: paths.dist.server.index,
     ext: 'js',
-    ignore: paths.dist.client.root,
-    watch: paths.dist.server.index
+    ignore: [paths.dist.client.root],
+    watch: [paths.dist.server.index]
   });
 });
 

@@ -6,12 +6,12 @@ import js.Error;
 class ErrorHandler {
   public static function handle(err : Error, req : Request, res : Response, next : Next) : Void {
     if (Std.is(err, HttpError)) handleHttpError(cast err, req, res, next);
-    if (Std.is(err, ValidationError)) handleValidationError(cast err, req, res, next);
+    else if (Std.is(err, ValidationError)) handleValidationError(cast err, req, res, next);
     else handleUnknownError(err, req, res, next);
   }
 
   public static function handleHttpError(err : HttpError, req : Request, res : Response, next : Next) : Void {
-    trace('HTTP error: ${err.statusCode} - ${req.baseUrl} - ${err.message}');
+    trace('HTTP error: ${err.statusCode} - ${req.originalUrl} - ${err.message}');
     //trace(err);
     var innerError = switch err.innerError {
       case Some(innerError) : innerError;

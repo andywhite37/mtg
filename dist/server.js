@@ -1419,10 +1419,14 @@ mtg_server_Main.main = function() {
 	app.router["use"](null,mw_Compression());
 	app.router["use"](null,mw_Morgan("common",{ immediate : false}));
 	app.router["use"](null,mw_Cors());
-	app.router.mount("/api").registerMethod("/","get",new mtg_server_route_ApiRoute_$ping_$RouteProcess({ },new mtg_server_route_ApiRoute(),new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[])),[],[]);
+	var instance = new mtg_server_route_ApiRoute();
+	var router = app.router.mount("/api");
+	router.registerMethod("/","get",new mtg_server_route_ApiRoute_$ping_$RouteProcess({ },instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[])),[],[]);
+	router.registerMethod("/cards/:id","get",new mtg_server_route_ApiRoute_$getCard_$RouteProcess({ id : null},instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[{ name : "id", optional : false, type : "String", sources : ["params"]}])),[],[]);
+	router.registerMethod("/cards","get",new mtg_server_route_ApiRoute_$getCards_$RouteProcess({ },instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[])),[],[]);
 	app.router.serve("/",js_node_Path.join(__dirname,"public"));
 	app.router["use"](null,function(req,res,next) {
-		next(mtg_server_error_HttpError.notFound("Not found: " + req.baseUrl,haxe_ds_Option.None));
+		next(mtg_server_error_HttpError.notFound("Not found",haxe_ds_Option.None));
 	});
 	app.router.error(mtg_server_error_ErrorHandler.handle);
 	var port = 9999;
@@ -1430,22 +1434,21 @@ mtg_server_Main.main = function() {
 		port = Std.parseInt(process.argv[2]);
 	}
 	app.http(port,"0.0.0.0");
-	console.log("server listening on " + "0.0.0.0" + ":" + port);
+	console.log("server listening at " + "0.0.0.0" + ":" + port);
 };
 var mtg_server_error_ErrorHandler = function() { };
 mtg_server_error_ErrorHandler.__name__ = ["mtg","server","error","ErrorHandler"];
 mtg_server_error_ErrorHandler.handle = function(err,req,res,next) {
 	if(js_Boot.__instanceof(err,mtg_server_error_HttpError)) {
 		mtg_server_error_ErrorHandler.handleHttpError(err,req,res,next);
-	}
-	if(js_Boot.__instanceof(err,mtg_server_error_ValidationError)) {
+	} else if(js_Boot.__instanceof(err,mtg_server_error_ValidationError)) {
 		mtg_server_error_ErrorHandler.handleValidationError(err,req,res,next);
 	} else {
 		mtg_server_error_ErrorHandler.handleUnknownError(err,req,res,next);
 	}
 };
 mtg_server_error_ErrorHandler.handleHttpError = function(err,req,res,next) {
-	console.log("HTTP error: " + err.statusCode + " - " + req.baseUrl + " - " + err.message);
+	console.log("HTTP error: " + err.statusCode + " - " + req.originalUrl + " - " + err.message);
 	var innerError;
 	var _g = err.innerError;
 	switch(_g[1]) {
@@ -1544,11 +1547,39 @@ mtg_server_route_ApiRoute.prototype = {
 	ping: function(request,response,next) {
 		response.send({ status : "OK"});
 	}
+	,getCard: function(id,request,response,next) {
+		response.redirect(307,"https://api.deckbrew.com/mtg" + "/cards/" + id);
+	}
+	,getCards: function(request,response,next) {
+		response.redirect(307,"https://api.deckbrew.com/mtg" + "/cards");
+	}
 	,toString: function() {
 		return "mtg.server.route.ApiRoute";
 	}
 	,__class__: mtg_server_route_ApiRoute
 };
+var mtg_server_route_ApiRoute_$getCard_$RouteProcess = function(args,instance,argumentProcessor) {
+	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
+};
+mtg_server_route_ApiRoute_$getCard_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_getCard_RouteProcess"];
+mtg_server_route_ApiRoute_$getCard_$RouteProcess.__super__ = abe_core_RouteProcess;
+mtg_server_route_ApiRoute_$getCard_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
+	execute: function(request,response,next) {
+		this.instance.getCard(this.args.id,request,response,next);
+	}
+	,__class__: mtg_server_route_ApiRoute_$getCard_$RouteProcess
+});
+var mtg_server_route_ApiRoute_$getCards_$RouteProcess = function(args,instance,argumentProcessor) {
+	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
+};
+mtg_server_route_ApiRoute_$getCards_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_getCards_RouteProcess"];
+mtg_server_route_ApiRoute_$getCards_$RouteProcess.__super__ = abe_core_RouteProcess;
+mtg_server_route_ApiRoute_$getCards_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
+	execute: function(request,response,next) {
+		this.instance.getCards(request,response,next);
+	}
+	,__class__: mtg_server_route_ApiRoute_$getCards_$RouteProcess
+});
 var mtg_server_route_ApiRoute_$ping_$RouteProcess = function(args,instance,argumentProcessor) {
 	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
 };
@@ -7810,6 +7841,7 @@ haxe_ds_ObjectMap.count = 0;
 js_Boot.__toStr = {}.toString;
 mtg_server_Main.DEFAULT_HOST = "0.0.0.0";
 mtg_server_Main.DEFAULT_PORT = 9999;
+mtg_server_route_ApiRoute.deckBrewBaseUrl = "https://api.deckbrew.com/mtg";
 thx_Floats.TOLERANCE = 10e-5;
 thx_Floats.EPSILON = 1e-9;
 thx_Floats.pattern_parse = new EReg("^(\\+|-)?\\d+(\\.\\d+)?(e-?\\d+)?$","");
