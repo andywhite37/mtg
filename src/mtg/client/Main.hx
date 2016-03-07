@@ -12,7 +12,8 @@ class Main {
       var root = new JQuery('#root');
       apiClient.getCards()
         .success(function(cards) {
-          var ul = root.append('<ul>');
+          var ul = new JQuery("<ul>");
+          root.append(ul);
           for (card in cards) {
             ul.append(new JQuery('<li>').text(card.name));
           }

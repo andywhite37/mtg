@@ -914,7 +914,8 @@ mtg_client_Main.main = function() {
 	$(function() {
 		var root = $("#root");
 		thx_promise__$Promise_Promise_$Impl_$.success(mtg_client_Main.apiClient.getCards(),function(cards) {
-			var ul = root.append("<ul>");
+			var ul = $("<ul>");
+			root.append(ul);
 			var _g = 0;
 			while(_g < cards.length) {
 				var card = cards[_g];
