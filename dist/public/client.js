@@ -3170,10 +3170,10 @@ lies_Store.prototype = {
 var mtg_client_Main = function() { };
 mtg_client_Main.__name__ = ["mtg","client","Main"];
 mtg_client_Main.main = function() {
-	new mtg_client_api_ApiClient();
+	var apiClient = new mtg_client_api_ApiClient();
 	var appState = new mtg_client_state_AppState();
 	var appApi = new mtg_client_api_AppApi();
-	var store = lies_Store.create(($_=new mtg_client_state_Reducer(),$bind($_,$_.reduce)),appState);
+	var store = lies_Store.create(($_=new mtg_client_state_Reducer(apiClient),$bind($_,$_.reduce)),appState);
 	var router = mtg_client_Main.setupRouter(store);
 	var appComponent = new mtg_client_view_AppView({ api : appApi, state : appState});
 	store.subscribe(function(newState,oldState,action) {
@@ -3298,11 +3298,13 @@ mtg_client_state_Page.Card = function(data) { var $x = ["Card",4,data]; $x.__enu
 mtg_client_state_Page.Decks = function(data) { var $x = ["Decks",5,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
 mtg_client_state_Page.Deck = function(data) { var $x = ["Deck",6,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
 mtg_client_state_Page.NotFound = function(data) { var $x = ["NotFound",7,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
-var mtg_client_state_Reducer = function() {
+var mtg_client_state_Reducer = function(apiClient) {
+	this.apiClient = apiClient;
 };
 mtg_client_state_Reducer.__name__ = ["mtg","client","state","Reducer"];
 mtg_client_state_Reducer.prototype = {
-	reduce: function(state,action) {
+	apiClient: null
+	,reduce: function(state,action) {
 		return this.showPage(state,action[2]);
 	}
 	,showPage: function(state,page) {
@@ -3387,12 +3389,16 @@ mtg_client_view_NavMenu.prototype = $extend(doom_html_Component.prototype,{
 	render: function() {
 		var homeLinkClass = "";
 		var cardsLinkClass = "";
+		var decksLinkClass = "";
 		switch(this.props.state.currentPage[1]) {
 		case 0:
 			homeLinkClass = "active";
 			break;
 		case 3:
 			cardsLinkClass = "active";
+			break;
+		case 5:
+			decksLinkClass = "active";
 			break;
 		default:
 		}
@@ -3417,41 +3423,49 @@ mtg_client_view_NavMenu.prototype = $extend(doom_html_Component.prototype,{
 		} else {
 			_g2.h["class"] = value2;
 		}
-		var value3 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("/#");
-		if(__map_reserved.href != null) {
-			_g2.setReserved("href",value3);
-		} else {
-			_g2.h["href"] = value3;
-		}
-		var tmp = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("a",_g2,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("MTG"))])));
+		var tmp = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g2,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("M.T.G."))])));
 		var _g3 = new haxe_ds_StringMap();
-		var value4 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("" + homeLinkClass + " item");
+		var value3 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("" + homeLinkClass + " item");
 		if(__map_reserved["class"] != null) {
-			_g3.setReserved("class",value4);
+			_g3.setReserved("class",value3);
 		} else {
-			_g3.h["class"] = value4;
+			_g3.h["class"] = value3;
 		}
-		var value5 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("/#");
+		var value4 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("/#");
 		if(__map_reserved.href != null) {
-			_g3.setReserved("href",value5);
+			_g3.setReserved("href",value4);
 		} else {
-			_g3.h["href"] = value5;
+			_g3.h["href"] = value4;
 		}
 		var tmp1 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("a",_g3,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Home"))])));
 		var _g4 = new haxe_ds_StringMap();
-		var value6 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("" + cardsLinkClass + " item");
+		var value5 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("" + cardsLinkClass + " item");
 		if(__map_reserved["class"] != null) {
-			_g4.setReserved("class",value6);
+			_g4.setReserved("class",value5);
 		} else {
-			_g4.h["class"] = value6;
+			_g4.h["class"] = value5;
 		}
-		var value7 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("/#/cards");
+		var value6 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("/#/cards");
 		if(__map_reserved.href != null) {
-			_g4.setReserved("href",value7);
+			_g4.setReserved("href",value6);
 		} else {
-			_g4.h["href"] = value7;
+			_g4.h["href"] = value6;
 		}
-		return doom_core__$VNode_VNode_$Impl_$.el("div",_g,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g1,doom_core__$VChildren_VChildren_$Impl_$.children([tmp,tmp1,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("a",_g4,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Cards"))])))])))]));
+		var tmp2 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("a",_g4,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Cards"))])));
+		var _g5 = new haxe_ds_StringMap();
+		var value7 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("" + decksLinkClass + " item");
+		if(__map_reserved["class"] != null) {
+			_g5.setReserved("class",value7);
+		} else {
+			_g5.h["class"] = value7;
+		}
+		var value8 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("/#/decks");
+		if(__map_reserved.href != null) {
+			_g5.setReserved("href",value8);
+		} else {
+			_g5.h["href"] = value8;
+		}
+		return doom_core__$VNode_VNode_$Impl_$.el("div",_g,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g1,doom_core__$VChildren_VChildren_$Impl_$.children([tmp,tmp1,tmp2,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("a",_g5,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Decks"))])))])))]));
 	}
 	,__class__: mtg_client_view_NavMenu
 });

@@ -1,13 +1,17 @@
 package mtg.client.state;
 
+import mtg.client.api.ApiClient;
 import mtg.client.state.AppAction;
 import mtg.client.state.Data;
 import lies.Reduced;
 
 typedef Result = Reduced<AppState, AppAction>;
 
-class Reducer<T> {
-  public function new() {
+class Reducer {
+  var apiClient : ApiClient;
+
+  public function new(apiClient : ApiClient) {
+    this.apiClient = apiClient;
   }
 
   public function reduce(state : AppState, action : AppAction) : Result {
