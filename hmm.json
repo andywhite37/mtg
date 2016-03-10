@@ -43,11 +43,25 @@
       "url": "git@github.com:abedev/jsrequire"
     },
     {
+      "name": "lies",
+      "type": "git",
+      "dir": "src",
+      "ref": "96d7508",
+      "url": "git@github.com:fponticelli/Lies"
+    },
+    {
       "name": "npm",
       "type": "git",
       "dir": "",
       "ref": "92830a8",
       "url": "git@github.com:abedev/npm"
+    },
+    {
+      "name": "routly",
+      "type": "git",
+      "dir": "src",
+      "ref": "7adb32a",
+      "url": "git@github.com:joelpellucid/routly"
     },
     {
       "name": "thx.core",

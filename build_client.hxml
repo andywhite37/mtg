@@ -1,7 +1,9 @@
 -cp src
--lib thx.core
--lib thx.promise
 -lib doom
 -lib dots
+-lib lies
+-lib routly
+-lib thx.core
+-lib thx.promise
 -main mtg.client.Main
 -js temp/client/client.js

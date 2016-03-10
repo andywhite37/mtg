@@ -1,6 +1,6 @@
-package mtg.common.model;
+package mtg.core.model;
 
-typedef Card = {
+class Card {
   public var name : String;
   public var id : String;
   public var url : String;
@@ -12,4 +12,7 @@ typedef Card = {
   public var text : String;
   public var formats : Dynamic<String>;
   public var editions : Array<Edition>;
+
+  public function new() {
+  }
 }

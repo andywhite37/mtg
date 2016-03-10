@@ -2,11 +2,11 @@ package mtg.client.api;
 
 import js.jquery.JQuery;
 import js.jquery.JqXHR;
-import mtg.common.model.*;
+import mtg.core.model.*;
 import thx.promise.Promise;
 import thx.Error;
 
-class Client {
+class ApiClient {
   public function new() {
   }
 
