@@ -1,11 +1,9 @@
 package mtg.client.state;
 
 import mtg.client.state.Data;
-import mtg.core.model.*;
-import thx.Error;
-import thx.Nil;
 
 enum Page {
+  // Main pages
   Home(data : HomeData);
   Collections(data : CollectionsData);
   Collection(data : CollectionData);
@@ -14,5 +12,6 @@ enum Page {
   Decks(data : DecksData);
   Deck(data : DeckData);
 
+  // Error page(s)
   NotFound(data : NotFoundData);
 }

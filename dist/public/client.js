@@ -3241,6 +3241,9 @@ mtg_client_api_ApiClient.prototype = {
 	getCards: function() {
 		return this.http({ type : "GET", url : "/api/cards"});
 	}
+	,getCard: function(cardId) {
+		return this.http({ type : "GET", url : "/api/cards/" + cardId});
+	}
 	,http: function(options,converter) {
 		if(converter == null) {
 			converter = function(data) {
@@ -3252,7 +3255,7 @@ mtg_client_api_ApiClient.prototype = {
 				resolve(converter(data1));
 			};
 			options.error = function(jqXHR1,textStatus1,errorThrown) {
-				reject(new thx_Error("API error: " + jqXHR1.status,null,{ fileName : "ApiClient.hx", lineNumber : 27, className : "mtg.client.api.ApiClient", methodName : "http"}));
+				reject(new thx_Error("API error: " + jqXHR1.status,null,{ fileName : "ApiClient.hx", lineNumber : 34, className : "mtg.client.api.ApiClient", methodName : "http"}));
 			};
 			$.ajax(options);
 		});
@@ -3283,12 +3286,10 @@ mtg_client_state_AppState.prototype = {
 	}
 	,__class__: mtg_client_state_AppState
 };
-var mtg_client_state_Loader = { __ename__ : ["mtg","client","state","Loader"], __constructs__ : ["Initial","Loading","Refreshing","Loaded","Failed"] };
-mtg_client_state_Loader.Initial = function(state) { var $x = ["Initial",0,state]; $x.__enum__ = mtg_client_state_Loader; return $x; };
-mtg_client_state_Loader.Loading = function(state) { var $x = ["Loading",1,state]; $x.__enum__ = mtg_client_state_Loader; return $x; };
-mtg_client_state_Loader.Refreshing = function(state) { var $x = ["Refreshing",2,state]; $x.__enum__ = mtg_client_state_Loader; return $x; };
-mtg_client_state_Loader.Loaded = function(state) { var $x = ["Loaded",3,state]; $x.__enum__ = mtg_client_state_Loader; return $x; };
-mtg_client_state_Loader.Failed = function(error) { var $x = ["Failed",4,error]; $x.__enum__ = mtg_client_state_Loader; return $x; };
+var mtg_client_state_Loader = { __ename__ : ["mtg","client","state","Loader"], __constructs__ : ["Loading","Loaded","Failed"] };
+mtg_client_state_Loader.Loading = function(data) { var $x = ["Loading",0,data]; $x.__enum__ = mtg_client_state_Loader; return $x; };
+mtg_client_state_Loader.Loaded = function(data) { var $x = ["Loaded",1,data]; $x.__enum__ = mtg_client_state_Loader; return $x; };
+mtg_client_state_Loader.Failed = function(data) { var $x = ["Failed",2,data]; $x.__enum__ = mtg_client_state_Loader; return $x; };
 var mtg_client_state_Page = { __ename__ : ["mtg","client","state","Page"], __constructs__ : ["Home","Collections","Collection","Cards","Card","Decks","Deck","NotFound"] };
 mtg_client_state_Page.Home = function(data) { var $x = ["Home",0,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
 mtg_client_state_Page.Collections = function(data) { var $x = ["Collections",1,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
@@ -3319,7 +3320,17 @@ mtg_client_state_Reducer.prototype = {
 		}
 	}
 	,showHomePage: function(state,data) {
-		return { _0 : state, _1 : []};
+		switch(data[1]) {
+		case 0:
+			return lies__$Reduced_Reduced_$Impl_$.withFuture({ _0 : state, _1 : []},this.loadHomeData());
+		case 1:
+			return { _0 : state, _1 : []};
+		case 2:
+			return { _0 : state, _1 : []};
+		}
+	}
+	,loadHomeData: function() {
+		return thx_promise_Future.value(mtg_client_state_AppAction.ShowPage(mtg_client_state_Page.Home(mtg_client_state_Loader.Loaded({ decks : [], collections : []}))));
 	}
 	,showCardsPage: function(state,data) {
 		return { _0 : state, _1 : []};

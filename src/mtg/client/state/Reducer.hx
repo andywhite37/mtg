@@ -4,6 +4,7 @@ import mtg.client.api.ApiClient;
 import mtg.client.state.AppAction;
 import mtg.client.state.Data;
 import lies.Reduced;
+import thx.promise.Future;
 
 typedef Result = Reduced<AppState, AppAction>;
 
@@ -17,7 +18,6 @@ class Reducer {
   public function reduce(state : AppState, action : AppAction) : Result {
     return switch action {
       case ShowPage(page) : showPage(state, page);
-      case _ : state;
     };
   }
 
@@ -31,7 +31,15 @@ class Reducer {
   }
 
   function showHomePage(state : AppState, data : HomeData) : Result {
-    return state;
+    return switch data {
+      case Loading(loadingData) : Reduced.fromState(state).withFuture(loadHomeData());
+      case Loaded(loadedData) : state;
+      case Failed(failedData) : state;
+    };
+  }
+
+  function loadHomeData() : Future<AppAction> {
+    return Future.value(ShowPage(Home(Loaded({ decks: [], collections: [] }))));
   }
 
   function showCardsPage(state : AppState, data : CardsData) : Result {

@@ -1,9 +1,7 @@
 package mtg.client.state;
 
 enum Loader<TLoading, TLoaded, TFailed> {
-  Initial(state : TLoaded);
-  Loading(state : TLoading);
-  Refreshing(state : TLoading);
-  Loaded(state : TLoaded);
-  Failed(error : TFailed);
+  Loading(data : TLoading);
+  Loaded(data : TLoaded);
+  Failed(data : TFailed);
 }

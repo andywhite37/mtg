@@ -17,6 +17,13 @@ class ApiClient {
     });
   }
 
+  public function getCard(cardId : String) : Promise<Card> {
+    return http({
+      type: 'GET',
+      url: '/api/cards/$cardId'
+    });
+  }
+
   function http<T>(options : JQueryAjaxOptions, ?converter : Dynamic -> T) : Promise<T> {
     if (converter == null) converter = function(data : Dynamic) : T { return cast data; };
     return Promise.create(function(resolve, reject) {
