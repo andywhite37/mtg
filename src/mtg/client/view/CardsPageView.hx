@@ -1,5 +1,6 @@
 package mtg.client.view;
 
+import doom.core.*;
 import doom.html.Html.*;
 import mtg.client.api.AppApi;
 import mtg.client.state.Data;
@@ -19,12 +20,13 @@ class CardsPageView extends doom.html.Component<{ api: AppApi, state: CardsPageD
   }
 
   function renderLoaded(data : { cards: Array<Card> }) {
-    var cardViews : doom.core.VChildren = data.cards.map(function(card) : doom.core.VChild {
-      return li(new CardView({ state: card, api: props.api }));
-    });
     return div([
-      h1('cards page'),
-      ul(cardViews)
+      h1('Cards'),
+      div(["class" => 'ui link cards'],
+        data.cards.map(function(card) : VChild {
+          return new CardView({ state: card, api: props.api });
+        })
+      ),
     ]);
   }
 

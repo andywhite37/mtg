@@ -20,3 +20,13 @@
 -lib hxnodejs
 -main mtg.server.Main
 -js temp/server/server.js
+
+--next
+
+# tests
+-cp test
+-lib hxnodejs
+-lib utest
+-main mtg.TestAll
+-js temp/runner.js
+-cmd node temp/runner.js

@@ -76,6 +76,13 @@
       "dir": "",
       "ref": "3b5639f",
       "url": "git@github.com:fponticelli/thx.promise"
+    },
+    {
+      "name": "utest",
+      "type": "git",
+      "dir": "",
+      "ref": "master",
+      "url": "git@github.com:fponticelli/utest"
     }
   ]
 }

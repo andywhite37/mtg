@@ -5,6 +5,7 @@ import js.jquery.JqXHR;
 import mtg.core.model.*;
 import thx.promise.Promise;
 import thx.Error;
+import mtg.core.util.Arrays;
 
 class ApiClient {
   public function new() {
@@ -14,14 +15,14 @@ class ApiClient {
     return http({
       type: 'GET',
       url: '/api/cards',
-    });
+    }, fromArray(Card.fromDynamic));
   }
 
   public function getCard(cardId : String) : Promise<Card> {
     return http({
       type: 'GET',
       url: '/api/cards/$cardId'
-    });
+    }, Card.fromDynamic);
   }
 
   function http<T>(options : JQueryAjaxOptions, ?converter : Dynamic -> T) : Promise<T> {
@@ -35,5 +36,11 @@ class ApiClient {
       };
       JQuery.ajax(options);
     });
+  }
+
+  public function fromArray<T>(converter : Dynamic -> T) {
+    return function(input : Dynamic) : Array<T> {
+      return Arrays.map(input, converter);
+    };
   }
 }

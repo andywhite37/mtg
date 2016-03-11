@@ -20,6 +20,9 @@ var paths = {
     styl: {
       index: 'src/mtg/client/styl/index.styl',
       all: 'src/mtg/client/styl/**/*.styl',
+    },
+    assets: {
+      all: 'src/mtg/client/assets/**/*'
     }
   },
   server: {
@@ -32,7 +35,8 @@ var paths = {
   },
   dist: {
     client: {
-      root: 'dist/public'
+      root: 'dist/public',
+      assets: 'dist/public/assets'
     },
     server: {
       root: 'dist',
@@ -64,6 +68,12 @@ gulp.task('client-styl', function() {
     .pipe(liveReload());
 });
 
+gulp.task('client-assets', function() {
+  return gulp.src(paths.client.assets.all)
+    .pipe(gulp.dest(paths.dist.client.assets))
+    .pipe(liveReload());
+});
+
 gulp.task('server-hx', function(cb) {
   exec('haxe build_server.hxml', cb);
 });
@@ -73,7 +83,7 @@ gulp.task('server-js', ['server-hx'], function() {
     .pipe(gulp.dest(paths.dist.server.root));
 });
 
-gulp.task('build', ['client-js', 'client-html', 'client-styl', 'server-js']);
+gulp.task('build', ['client-js', 'client-html', 'client-styl', 'client-assets', 'server-js']);
 
 gulp.task('serve', ['build'], function() {
   nodemon({
@@ -89,6 +99,7 @@ gulp.task('watch', ['serve'], function() {
   gulp.watch(paths.client.hx.all, ['client-js']);
   gulp.watch(paths.client.html.all, ['client-html']);
   gulp.watch(paths.client.styl.all, ['client-styl']);
+  gulp.watch(paths.client.assets.all, ['client-assets']);
   gulp.watch(paths.server.hx.all, ['server-js']);
 });
 
