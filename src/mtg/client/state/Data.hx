@@ -4,11 +4,11 @@ import mtg.core.model.*;
 import thx.Error;
 import thx.Nil;
 
-typedef HomeData = Loader<Nil, { collections: Array<Collection>, decks: Array<Deck> }, Error>;
-typedef CollectionsData = Loader<Nil, Array<Collection>, Error>
-typedef CollectionData = Loader<String, Collection, Error>
-typedef CardsData = Loader<Nil, Array<Card>, Error>
-typedef CardData = Loader<String, Card, Error>
-typedef DecksData = Loader<Nil, Array<Deck>, Error>
-typedef DeckData = Loader<String, Deck, Error>
-typedef NotFoundData = { message : String };
+typedef HomePageData = Loader<Nil, { collections: Array<Collection>, decks: Array<Deck> }, Error>;
+typedef CollectionsPageData = Loader<Nil, { collections: Array<Collection> }, Error>
+typedef CollectionPageData = Loader<String, { collection: Collection }, Error>
+typedef CardsPageData = Loader<Nil, { cards: Array<Card> }, Error>
+typedef CardPageData = Loader<String, { card: Card }, Error>
+typedef DecksPageData = Loader<Nil, { decks: Array<Deck> }, Error>
+typedef DeckPageData = Loader<String, { deck: Deck }, Error>
+typedef ErrorPageData = { message : String };

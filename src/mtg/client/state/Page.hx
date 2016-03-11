@@ -4,14 +4,14 @@ import mtg.client.state.Data;
 
 enum Page {
   // Main pages
-  Home(data : HomeData);
-  Collections(data : CollectionsData);
-  Collection(data : CollectionData);
-  Cards(data : CardsData);
-  Card(data : CardData);
-  Decks(data : DecksData);
-  Deck(data : DeckData);
+  HomePage(data : HomePageData);
+  CollectionsPage(data : CollectionsPageData);
+  CollectionPage(data : CollectionPageData);
+  CardsPage(data : CardsPageData);
+  CardPage(data : CardPageData);
+  DecksPage(data : DecksPageData);
+  DeckPage(data : DeckPageData);
 
   // Error page(s)
-  NotFound(data : NotFoundData);
+  ErrorPage(data : ErrorPageData);
 }

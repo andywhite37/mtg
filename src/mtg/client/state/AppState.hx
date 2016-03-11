@@ -5,16 +5,17 @@ import mtg.client.state.Page;
 import thx.Nil;
 
 class AppState {
-  public var currentPage : Page;
+  public var previousPage(default, null) : Option<Page>;
+  public var currentPage(default, null) : Page;
 
   public function new() {
-    currentPage = Home(Loading(nil));
+    this.previousPage = None;
+    this.currentPage = HomePage(Loading(nil));
   }
 
-  public function isHomePage() : Bool {
-    return switch currentPage {
-      case Home(_) : true;
-      case _ : false;
-    };
+  public function setCurrentPage(currentPage : Page) : AppState {
+    this.previousPage = Some(this.currentPage);
+    this.currentPage = currentPage;
+    return this;
   }
 }

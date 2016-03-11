@@ -33,19 +33,19 @@ class Main {
     var router = new Routly();
     router.routes([
       "/" => function(descriptor : RouteDescriptor) {
-        store.dispatch(ShowPage(Home(Loading(nil))));
+        store.dispatch(ShowPage(HomePage(Loading(nil))));
       },
       "/cards" => function(descriptor : RouteDescriptor) {
-        store.dispatch(ShowPage(Cards(Loading(nil))));
+        store.dispatch(ShowPage(CardsPage(Loading(nil))));
       },
       "/card/:id" => function(descriptor : RouteDescriptor) {
         var cardId = descriptor.arguments["id"];
-        store.dispatch(ShowPage(Card(Loading(cardId))));
+        store.dispatch(ShowPage(CardPage(Loading(cardId))));
       },
     ]);
     router.unknown(function(descriptor : RouteDescriptor) {
       var raw = descriptor.raw;
-      store.dispatch(ShowPage(NotFound({ message: '$raw was not found' })));
+      store.dispatch(ShowPage(ErrorPage({ message: '$raw was not found' })));
     });
     return router;
   }

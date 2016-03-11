@@ -5,7 +5,7 @@ import doom.html.Html.*;
 import mtg.client.api.AppApi;
 import mtg.client.state.AppState;
 import mtg.client.state.Data;
-import mtg.client.view.HomeView;
+import mtg.client.view.*;
 
 class AppView extends doom.html.Component<{ api: AppApi, state: AppState }> {
   override function render() {
@@ -18,19 +18,19 @@ class AppView extends doom.html.Component<{ api: AppApi, state: AppState }> {
   }
 
   function navMenu() : VNode {
-    return new NavMenu({ state: props.state }).render();
+    return new AppNavView({ state: props.state }).render();
   }
 
   function contentView() : VNode {
     return switch props.state.currentPage {
-      case Home(data) : new HomeView({ state: data, api: props.api }).render();
-      case Cards(_) : h1("cards");
-      case Card(_) : h1("card");
-      case Decks(_) : h1("decks");
-      case Deck(_) : h1("deck");
-      case Collections(_) : h1("collections");
-      case Collection(_) : h1("collection");
-      case NotFound(data) : h1('${data.message}');
+      case HomePage(data) : new HomePageView({ state: data, api: props.api }).render();
+      case CardsPage(data) : new CardsPageView({ state: data, api: props.api }).render();
+      case CardPage(data) : new CardPageView({ state: data, api: props.api }).render();
+      case DecksPage(data) : new DecksPageView({ state: data, api: props.api }).render();
+      case DeckPage(data) : new DeckPageView({ state: data, api: props.api }).render();
+      case CollectionsPage(data) : new CollectionsPageView({ state: data, api: props.api }).render();
+      case CollectionPage(data) : new CollectionPageView({ state: data, api: props.api }).render();
+      case ErrorPage(data) : new ErrorPageView({ state: data, api: props.api }).render();
     };
   }
 }
