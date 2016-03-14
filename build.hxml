@@ -1,4 +1,5 @@
 -cp src
+-cp test
 -lib thx.core
 -lib thx.promise
 
@@ -24,7 +25,6 @@
 --next
 
 # tests
--cp test
 -lib hxnodejs
 -lib utest
 -main mtg.TestAll

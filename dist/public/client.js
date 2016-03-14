@@ -3496,6 +3496,40 @@ mtg_client_view_CardPageView.prototype = $extend(doom_html_Component.prototype,{
 	}
 	,__class__: mtg_client_view_CardPageView
 });
+var mtg_client_view_CardTextView = function(props,children) {
+	doom_html_Component.call(this,props,children);
+};
+mtg_client_view_CardTextView.__name__ = ["mtg","client","view","CardTextView"];
+mtg_client_view_CardTextView.__super__ = doom_html_Component;
+mtg_client_view_CardTextView.prototype = $extend(doom_html_Component.prototype,{
+	render: function() {
+		var tokens = mtg_core_util_CardTextParser.parse(this.props.text);
+		var _g = new haxe_ds_StringMap();
+		var value = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("card-text-container");
+		if(__map_reserved["class"] != null) {
+			_g.setReserved("class",value);
+		} else {
+			_g.h["class"] = value;
+		}
+		return doom_core__$VNode_VNode_$Impl_$.el("span",_g,doom_core__$VChildren_VChildren_$Impl_$.children(tokens.map(function(token) {
+			switch(token[1]) {
+			case 0:
+				var text = token[2];
+				var _g1 = new haxe_ds_StringMap();
+				var value1 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("card-text");
+				if(__map_reserved["class"] != null) {
+					_g1.setReserved("class",value1);
+				} else {
+					_g1.h["class"] = value1;
+				}
+				return doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("span",_g1,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(text))])));
+			case 1:
+				return doom_core_VChildImpl.Comp(new mtg_client_view_ManaSymbolView({ manaSymbol : token[2]}));
+			}
+		})));
+	}
+	,__class__: mtg_client_view_CardTextView
+});
 var mtg_client_view_CardView = function(props,children) {
 	doom_html_Component.call(this,props,children);
 };
@@ -3526,7 +3560,7 @@ mtg_client_view_CardView.prototype = $extend(doom_html_Component.prototype,{
 		} else {
 			_g2.h["class"] = value2;
 		}
-		var tmp = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g2,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("span",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(card.cost))])))])));
+		var tmp = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g2,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("span",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Comp(new mtg_client_view_CardTextView({ text : card.cost}))])))])));
 		var _g3 = new haxe_ds_StringMap();
 		var value3 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("header");
 		if(__map_reserved["class"] != null) {
@@ -3570,7 +3604,7 @@ mtg_client_view_CardView.prototype = $extend(doom_html_Component.prototype,{
 		} else {
 			_g7.h["class"] = value8;
 		}
-		return doom_core__$VNode_VNode_$Impl_$.el("div",_g,doom_core__$VChildren_VChildren_$Impl_$.children([tmp1,tmp2,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g6,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g7,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(card.text))])))])))]));
+		return doom_core__$VNode_VNode_$Impl_$.el("div",_g,doom_core__$VChildren_VChildren_$Impl_$.children([tmp1,tmp2,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g6,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g7,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Comp(new mtg_client_view_CardTextView({ text : card.text}))])))])))]));
 	}
 	,__class__: mtg_client_view_CardView
 });
@@ -3679,6 +3713,40 @@ mtg_client_view_HomePageView.prototype = $extend(doom_html_Component.prototype,{
 	}
 	,__class__: mtg_client_view_HomePageView
 });
+var mtg_client_view_ManaSymbolView = function(props,children) {
+	doom_html_Component.call(this,props,children);
+};
+mtg_client_view_ManaSymbolView.__name__ = ["mtg","client","view","ManaSymbolView"];
+mtg_client_view_ManaSymbolView.__super__ = doom_html_Component;
+mtg_client_view_ManaSymbolView.prototype = $extend(doom_html_Component.prototype,{
+	render: function() {
+		var fileName;
+		switch(this.props.manaSymbol) {
+		case "{W}":
+			fileName = "white.jpeg";
+			break;
+		default:
+			fileName = "colorless-diamond.jpeg";
+		}
+		var src = "/assets/mana/" + fileName;
+		var alt = this.props.manaSymbol;
+		var _g = new haxe_ds_StringMap();
+		var value = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString(src);
+		if(__map_reserved.src != null) {
+			_g.setReserved("src",value);
+		} else {
+			_g.h["src"] = value;
+		}
+		var value1 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString(alt);
+		if(__map_reserved.alt != null) {
+			_g.setReserved("alt",value1);
+		} else {
+			_g.h["alt"] = value1;
+		}
+		return doom_core__$VNode_VNode_$Impl_$.el("img",_g,null);
+	}
+	,__class__: mtg_client_view_ManaSymbolView
+});
 var mtg_core_model_Card = function(data) {
 	this.setFromDynamic(data);
 };
@@ -3779,6 +3847,60 @@ mtg_core_util_Arrays.map = function(arr,mapper) {
 		result.push(mapper(val));
 	}
 	return result;
+};
+var mtg_core_util_CardTextToken = { __ename__ : ["mtg","core","util","CardTextToken"], __constructs__ : ["CText","CManaSymbol"] };
+mtg_core_util_CardTextToken.CText = function(text) { var $x = ["CText",0,text]; $x.__enum__ = mtg_core_util_CardTextToken; return $x; };
+mtg_core_util_CardTextToken.CManaSymbol = function(manaSymbol) { var $x = ["CManaSymbol",1,manaSymbol]; $x.__enum__ = mtg_core_util_CardTextToken; return $x; };
+var mtg_core_util_CardTextParser = function(input) {
+	this.input = input;
+	this.index = 0;
+};
+mtg_core_util_CardTextParser.__name__ = ["mtg","core","util","CardTextParser"];
+mtg_core_util_CardTextParser.parse = function(input) {
+	return new mtg_core_util_CardTextParser(input).internalParse();
+};
+mtg_core_util_CardTextParser.prototype = {
+	input: null
+	,index: null
+	,internalParse: function() {
+		if(this.input == "") {
+			return [mtg_core_util_CardTextToken.CText("")];
+		}
+		var tokens = [];
+		while(this.index < this.input.length) tokens.push(this.readToken());
+		return tokens;
+	}
+	,readToken: function() {
+		if(this["char"]() == "{") {
+			return this.readManaSymbolToken();
+		} else {
+			return this.readTextToken();
+		}
+	}
+	,readTextToken: function() {
+		return mtg_core_util_CardTextToken.CText(this.readUpTo("{"));
+	}
+	,readManaSymbolToken: function() {
+		var result = this.readChar("{");
+		result += this.readUpTo("}");
+		result += this.readChar("}");
+		return mtg_core_util_CardTextToken.CManaSymbol(result);
+	}
+	,readChar: function(c) {
+		if(this["char"]() == c) {
+			this.index++;
+		}
+		return c;
+	}
+	,readUpTo: function(c) {
+		var startIndex = this.index;
+		while(this["char"]() != c && this.index < this.input.length) this.index++;
+		return this.input.substring(startIndex,this.index);
+	}
+	,'char': function() {
+		return this.input.charAt(this.index);
+	}
+	,__class__: mtg_core_util_CardTextParser
 };
 var routly_IRouteEmitter = function() { };
 routly_IRouteEmitter.__name__ = ["routly","IRouteEmitter"];

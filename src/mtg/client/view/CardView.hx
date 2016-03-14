@@ -11,7 +11,7 @@ class CardView extends doom.html.Component<{ api : AppApi, state: Card }> {
     return div(["class" => "ui card"], [
       div(["class" => "content"], [
         div(["class" => "right floated meta"], [
-          span(card.cost),
+          span(new CardTextView({ text: card.cost })),
         ]),
         div(["class" => "header"], card.name),
       ]),
@@ -19,7 +19,7 @@ class CardView extends doom.html.Component<{ api : AppApi, state: Card }> {
         img(["src" => imageInfo.src, "alt" => imageInfo.alt])
       ]),
       div(["class" => "content"], [
-        div(["class" => "description"], card.text)
+        div(["class" => "description"], new CardTextView({ text: card.text }))
       ])
     ]);
   }

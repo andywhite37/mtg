@@ -21,6 +21,9 @@ class CardTextParser {
   }
 
   function internalParse() : Array<CardTextToken> {
+    if (input == '') {
+      return [CText('')];
+    }
     var tokens = [];
     while (index < input.length) {
       tokens.push(readToken());
@@ -56,11 +59,10 @@ class CardTextParser {
 
   function readUpTo(c : String) : String {
     var startIndex = index;
-    while (char() != c) {
+    while (char() != c && index < input.length) {
       index++;
     }
     var result = input.substring(startIndex, index);
-    trace(result);
     return result;
   }
 
