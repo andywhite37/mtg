@@ -22,11 +22,7 @@ class CardsPageView extends doom.html.Component<{ api: AppApi, state: CardsPageD
   function renderLoaded(data : { cards: Array<Card> }) {
     return div([
       h1('Cards'),
-      div(["class" => 'ui link cards'],
-        data.cards.map(function(card) : VChild {
-          return new CardView({ state: card, api: props.api });
-        })
-      ),
+      new CardsTable({ cards: data.cards }).render(),
     ]);
   }
 

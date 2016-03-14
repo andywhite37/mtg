@@ -38,8 +38,14 @@ class Card {
     this.editions = Arrays.map(data.editions, Edition.fromDynamic);
   }
 
-  public function getDefaultImage() : { src: String, alt: String } {
-    var edition = editions.first();
+  public function getLatestEdition() : Edition {
+    return editions.order(function(a, b) {
+      return thx.Ints.compare(b.multiverseId, a.multiverseId);
+    }).first();
+  }
+
+  public function getLatestImage() : { src: String, alt: String } {
+    var edition = getLatestEdition();
     if (edition == null) {
       return {
         src: "/images/missing-card-image.png",

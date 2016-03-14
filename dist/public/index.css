@@ -1,7 +1,13 @@
 body {
-  padding-top: 7em;
+  padding-top: 6em;
 }
 img.symbol {
   height: 15px;
   width: 15px;
+}
+table.cards-table .cost {
+  min-width: 120px;
+}
+table.cards-table img {
+  max-width: 60px;
 }

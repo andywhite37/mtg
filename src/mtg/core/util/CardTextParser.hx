@@ -22,7 +22,8 @@ class CardTextParser {
   }
 
   function internalParse() : Array<CardTextToken> {
-    if (input == '') {
+    //trace(input);
+    if (input == '' || input == null) {
       return [TText('')];
     }
     var tokens = [];
