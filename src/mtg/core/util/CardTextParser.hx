@@ -1,10 +1,11 @@
 package mtg.core.util;
 
-import mtg.core.model.ManaSymbol;
+import haxe.ds.Option;
+import mtg.core.model.Symbol;
 
 enum CardTextToken {
-  CText(text : String);
-  CManaSymbol(manaSymbol : ManaSymbol);
+  TText(text : String);
+  TSymbol(symbol : Symbol);
 }
 
 class CardTextParser {
@@ -22,7 +23,7 @@ class CardTextParser {
 
   function internalParse() : Array<CardTextToken> {
     if (input == '') {
-      return [CText('')];
+      return [TText('')];
     }
     var tokens = [];
     while (index < input.length) {
@@ -33,21 +34,24 @@ class CardTextParser {
 
   function readToken() : CardTextToken {
     return if (char() == '{') {
-      readManaSymbolToken();
+      readSymbolToken();
     } else {
       readTextToken();
     }
   }
 
   function readTextToken() : CardTextToken {
-    return CText(readUpTo('{'));
+    return TText(readUpTo('{'));
   }
 
-  function readManaSymbolToken() : CardTextToken {
-    var result = readChar('{');
-    result += readUpTo('}');
-    result += readChar('}');
-    return CManaSymbol(result);
+  function readSymbolToken() : CardTextToken {
+    var token = readChar('{');
+    token += readUpTo('}');
+    token += readChar('}');
+    return switch Symbol.safeParse(token) {
+      case Some(symbol) : TSymbol(symbol);
+      case None : TText(token);
+    };
   }
 
   function readChar(c : String) : String {

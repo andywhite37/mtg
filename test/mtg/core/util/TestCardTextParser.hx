@@ -1,6 +1,6 @@
 package mtg.core.util;
 
-import mtg.core.model.ManaSymbol;
+import mtg.core.model.Symbol;
 import mtg.core.util.CardTextParser;
 import mtg.core.util.CardTextParser.CardTextToken;
 import utest.Assert;
@@ -10,45 +10,47 @@ class TestCardTextParser {
   public function new() {}
 
   public function testParse() {
-    assertTokens([CText('')], '');
+    assertTokens([TText('')], '');
 
-    assertTokens([CText(' ')], ' ');
+    assertTokens([TText(' ')], ' ');
+
+    assertTokens([TText('{ZZZ}')], '{ZZZ}');
 
     assertTokens([
-      CText('hi '),
-      CManaSymbol('{W}'),
-      CText(' bye')
+      TText('hi '),
+      TSymbol('{W}'),
+      TText(' bye')
     ], 'hi {W} bye');
 
     assertTokens([
-      CManaSymbol('{1}'),
-      CManaSymbol('{B}'),
-      CManaSymbol('{R}'),
-      CManaSymbol('{R/B}')
-    ], '{1}{B}{R}{R/B}');
+      TSymbol('{1}'),
+      TSymbol('{B}'),
+      TSymbol('{R}'),
+      TSymbol('{R/G}')
+    ], '{1}{B}{R}{R/G}');
 
     assertTokens([
-      CText(' '),
-      CManaSymbol('{1}'),
-      CText(' '),
-      CManaSymbol('{B}'),
-      CText(' '),
-      CManaSymbol('{R}'),
-      CText(' '),
-      CManaSymbol('{R/B}'),
-      CText(' '),
-    ], ' {1} {B} {R} {R/B} ');
+      TText(' '),
+      TSymbol('{1}'),
+      TText(' '),
+      TSymbol('{B}'),
+      TText(' '),
+      TSymbol('{R}'),
+      TText(' '),
+      TSymbol('{R/G}'),
+      TText(' '),
+    ], ' {1} {B} {R} {R/G} ');
 
     assertTokens([
-      CText('some text '),
-      CManaSymbol('{1}'),
-      CManaSymbol('{W}'),
-      CText(' some more text '),
-      CManaSymbol('{X}'),
-      CText(', '),
-      CManaSymbol('{1}'),
-      CManaSymbol('{B}'),
-      CText(' end.'),
+      TText('some text '),
+      TSymbol('{1}'),
+      TSymbol('{W}'),
+      TText(' some more text '),
+      TSymbol('{X}'),
+      TText(', '),
+      TSymbol('{1}'),
+      TSymbol('{B}'),
+      TText(' end.'),
     ], 'some text {1}{W} some more text {X}, {1}{B} end.');
   }
 
@@ -62,8 +64,8 @@ class TestCardTextParser {
       var exp = expected[i];
       var act = actual[i];
       var isEqual = switch [exp, act] {
-        case [CText(l), CText(r)] : l == r;
-        case [CManaSymbol(l), CManaSymbol(r)] : l == r;
+        case [TText(l), TText(r)] : l == r;
+        case [TSymbol(l), TSymbol(r)] : l == r;
         case _ : false;
       };
       Assert.isTrue(isEqual);

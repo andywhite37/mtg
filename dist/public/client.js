@@ -3524,7 +3524,7 @@ mtg_client_view_CardTextView.prototype = $extend(doom_html_Component.prototype,{
 				}
 				return doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("span",_g1,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(text))])));
 			case 1:
-				return doom_core_VChildImpl.Comp(new mtg_client_view_ManaSymbolView({ manaSymbol : token[2]}));
+				return doom_core_VChildImpl.Comp(new mtg_client_view_SymbolView({ symbol : token[2]}));
 			}
 		})));
 	}
@@ -3713,39 +3713,229 @@ mtg_client_view_HomePageView.prototype = $extend(doom_html_Component.prototype,{
 	}
 	,__class__: mtg_client_view_HomePageView
 });
-var mtg_client_view_ManaSymbolView = function(props,children) {
+var mtg_client_view_SymbolView = function(props,children) {
 	doom_html_Component.call(this,props,children);
 };
-mtg_client_view_ManaSymbolView.__name__ = ["mtg","client","view","ManaSymbolView"];
-mtg_client_view_ManaSymbolView.__super__ = doom_html_Component;
-mtg_client_view_ManaSymbolView.prototype = $extend(doom_html_Component.prototype,{
+mtg_client_view_SymbolView.__name__ = ["mtg","client","view","SymbolView"];
+mtg_client_view_SymbolView.__super__ = doom_html_Component;
+mtg_client_view_SymbolView.prototype = $extend(doom_html_Component.prototype,{
 	render: function() {
 		var fileName;
-		switch(this.props.manaSymbol) {
-		case "{W}":
-			fileName = "white.jpeg";
+		switch(this.props.symbol) {
+		case "{C}":
+			fileName = "C.svg";
 			break;
-		default:
-			fileName = "colorless-diamond.jpeg";
+		case "{0}":
+			fileName = "0.svg";
+			break;
+		case "{1}":
+			fileName = "1.svg";
+			break;
+		case "{2}":
+			fileName = "2.svg";
+			break;
+		case "{3}":
+			fileName = "3.svg";
+			break;
+		case "{4}":
+			fileName = "4.svg";
+			break;
+		case "{5}":
+			fileName = "5.svg";
+			break;
+		case "{6}":
+			fileName = "6.svg";
+			break;
+		case "{7}":
+			fileName = "7.svg";
+			break;
+		case "{8}":
+			fileName = "8.svg";
+			break;
+		case "{9}":
+			fileName = "9.svg";
+			break;
+		case "{10}":
+			fileName = "10.svg";
+			break;
+		case "{11}":
+			fileName = "11.svg";
+			break;
+		case "{12}":
+			fileName = "12.svg";
+			break;
+		case "{13}":
+			fileName = "13.svg";
+			break;
+		case "{14}":
+			fileName = "14.svg";
+			break;
+		case "{15}":
+			fileName = "15.svg";
+			break;
+		case "{16}":
+			fileName = "16.svg";
+			break;
+		case "{17}":
+			fileName = "17.svg";
+			break;
+		case "{18}":
+			fileName = "18.svg";
+			break;
+		case "{19}":
+			fileName = "19.svg";
+			break;
+		case "{20}":
+			fileName = "20.svg";
+			break;
+		case "{100}":
+			fileName = "100.svg";
+			break;
+		case "{1000000}":
+			fileName = "1000000.svg";
+			break;
+		case "{1/2}":
+			fileName = "half.svg";
+			break;
+		case "{Infinity}":
+			fileName = "infinity.svg";
+			break;
+		case "{W}":
+			fileName = "W.svg";
+			break;
+		case "{U}":
+			fileName = "U.svg";
+			break;
+		case "{B}":
+			fileName = "B.svg";
+			break;
+		case "{R}":
+			fileName = "R.svg";
+			break;
+		case "{G}":
+			fileName = "G.svg";
+			break;
+		case "{W 1/2}":
+			fileName = "Whalf.svg";
+			break;
+		case "{U 1/2}":
+			fileName = "Uhalf.svg";
+			break;
+		case "{B 1/2}":
+			fileName = "Bhalf.svg";
+			break;
+		case "{R 1/2}":
+			fileName = "Rhalf.svg";
+			break;
+		case "{G 1/2}":
+			fileName = "Ghalf.svg";
+			break;
+		case "{P}":
+			fileName = "P.svg";
+			break;
+		case "{W/P}":
+			fileName = "WP.svg";
+			break;
+		case "{U/P}":
+			fileName = "UP.svg";
+			break;
+		case "{B/P}":
+			fileName = "BP.svg";
+			break;
+		case "{R/P}":
+			fileName = "RP.svg";
+			break;
+		case "{G/P}":
+			fileName = "GP.svg";
+			break;
+		case "{W/U}":
+			fileName = "WU.svg";
+			break;
+		case "{W/B}":
+			fileName = "WB.svg";
+			break;
+		case "{U/B}":
+			fileName = "UB.svg";
+			break;
+		case "{U/R}":
+			fileName = "UR.svg";
+			break;
+		case "{B/R}":
+			fileName = "BR.svg";
+			break;
+		case "{B/G}":
+			fileName = "BG.svg";
+			break;
+		case "{R/G}":
+			fileName = "RG.svg";
+			break;
+		case "{R/W}":
+			fileName = "RW.svg";
+			break;
+		case "{G/W}":
+			fileName = "GW.svg";
+			break;
+		case "{G/U}":
+			fileName = "GU.svg";
+			break;
+		case "{2/W}":
+			fileName = "2W.svg";
+			break;
+		case "{2/U}":
+			fileName = "2U.svg";
+			break;
+		case "{2/B}":
+			fileName = "2B.svg";
+			break;
+		case "{2/R}":
+			fileName = "2R.svg";
+			break;
+		case "{2/G}":
+			fileName = "2G.svg";
+			break;
+		case "{S}":
+			fileName = "S.svg";
+			break;
+		case "{X}":
+			fileName = "X.svg";
+			break;
+		case "{Y}":
+			fileName = "Y.svg";
+			break;
+		case "{Z}":
+			fileName = "Z.svg";
+			break;
+		case "{T}":
+			fileName = "T.svg";
+			break;
+		case "{Q}":
+			fileName = "Q.svg";
+			break;
 		}
-		var src = "/assets/mana/" + fileName;
-		var alt = this.props.manaSymbol;
+		var src = "/assets/symbols/" + fileName;
+		var alt = this.props.symbol;
 		var _g = new haxe_ds_StringMap();
-		var value = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString(src);
-		if(__map_reserved.src != null) {
-			_g.setReserved("src",value);
+		var value = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("symbol");
+		if(__map_reserved["class"] != null) {
+			_g.setReserved("class",value);
 		} else {
-			_g.h["src"] = value;
+			_g.h["class"] = value;
 		}
-		var value1 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString(alt);
-		if(__map_reserved.alt != null) {
-			_g.setReserved("alt",value1);
+		var value1 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString(src);
+		if(__map_reserved.src != null) {
+			_g.setReserved("src",value1);
 		} else {
-			_g.h["alt"] = value1;
+			_g.h["src"] = value1;
+		}
+		var value2 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString(alt);
+		if(__map_reserved.alt != null) {
+			_g.setReserved("alt",value2);
+		} else {
+			_g.h["alt"] = value2;
 		}
 		return doom_core__$VNode_VNode_$Impl_$.el("img",_g,null);
 	}
-	,__class__: mtg_client_view_ManaSymbolView
+	,__class__: mtg_client_view_SymbolView
 });
 var mtg_core_model_Card = function(data) {
 	this.setFromDynamic(data);
@@ -3836,6 +4026,149 @@ mtg_core_model_Edition.prototype = {
 	}
 	,__class__: mtg_core_model_Edition
 };
+var mtg_core_model__$Symbol_Symbol_$Impl_$ = {};
+mtg_core_model__$Symbol_Symbol_$Impl_$.__name__ = ["mtg","core","model","_Symbol","Symbol_Impl_"];
+mtg_core_model__$Symbol_Symbol_$Impl_$.safeParse = function(input) {
+	try {
+		return haxe_ds_Option.Some(mtg_core_model__$Symbol_Symbol_$Impl_$.parse(input));
+	} catch( e ) {
+		haxe_CallStack.lastException = e;
+		return haxe_ds_Option.None;
+	}
+};
+mtg_core_model__$Symbol_Symbol_$Impl_$.parse = function(input) {
+	switch(input) {
+	case "{C}":
+		return "{C}";
+	case "{0}":
+		return "{0}";
+	case "{1}":
+		return "{1}";
+	case "{2}":
+		return "{2}";
+	case "{3}":
+		return "{3}";
+	case "{4}":
+		return "{4}";
+	case "{5}":
+		return "{5}";
+	case "{6}":
+		return "{6}";
+	case "{7}":
+		return "{7}";
+	case "{8}":
+		return "{8}";
+	case "{9}":
+		return "{9}";
+	case "{10}":
+		return "{10}";
+	case "{11}":
+		return "{11}";
+	case "{12}":
+		return "{12}";
+	case "{13}":
+		return "{13}";
+	case "{14}":
+		return "{14}";
+	case "{15}":
+		return "{15}";
+	case "{16}":
+		return "{16}";
+	case "{17}":
+		return "{17}";
+	case "{18}":
+		return "{18}";
+	case "{19}":
+		return "{19}";
+	case "{20}":
+		return "{20}";
+	case "{100}":
+		return "{100}";
+	case "{1000000}":
+		return "{1000000}";
+	case "{1/2}":
+		return "{1/2}";
+	case "{Infinity}":
+		return "{Infinity}";
+	case "{W}":
+		return "{W}";
+	case "{U}":
+		return "{U}";
+	case "{B}":
+		return "{B}";
+	case "{R}":
+		return "{R}";
+	case "{G}":
+		return "{G}";
+	case "{W 1/2}":
+		return "{W 1/2}";
+	case "{U 1/2}":
+		return "{U 1/2}";
+	case "{B 1/2}":
+		return "{B 1/2}";
+	case "{R 1/2}":
+		return "{R 1/2}";
+	case "{G 1/2}":
+		return "{G 1/2}";
+	case "{P}":
+		return "{P}";
+	case "{W/P}":
+		return "{W/P}";
+	case "{U/P}":
+		return "{U/P}";
+	case "{B/P}":
+		return "{B/P}";
+	case "{R/P}":
+		return "{R/P}";
+	case "{G/P}":
+		return "{G/P}";
+	case "{W/U}":
+		return "{W/U}";
+	case "{W/B}":
+		return "{W/B}";
+	case "{U/B}":
+		return "{U/B}";
+	case "{U/R}":
+		return "{U/R}";
+	case "{B/R}":
+		return "{B/R}";
+	case "{B/G}":
+		return "{B/G}";
+	case "{R/G}":
+		return "{R/G}";
+	case "{R/W}":
+		return "{R/W}";
+	case "{G/W}":
+		return "{G/W}";
+	case "{G/U}":
+		return "{G/U}";
+	case "{2/W}":
+		return "{2/W}";
+	case "{2/U}":
+		return "{2/U}";
+	case "{2/B}":
+		return "{2/B}";
+	case "{2/R}":
+		return "{2/R}";
+	case "{2/G}":
+		return "{2/G}";
+	case "{S}":
+		return "{S}";
+	case "{X}":
+		return "{X}";
+	case "{Y}":
+		return "{Y}";
+	case "{Z}":
+		return "{Z}";
+	case "{T}":
+		return "{T}";
+	case "{Q}":
+		return "{Q}";
+	default:
+		console.log("Unsupported symbol: " + input);
+		throw new thx_Error("Symbol " + input + " is not supported",null,{ fileName : "Symbol.hx", lineNumber : 182, className : "mtg.core.model._Symbol.Symbol_Impl_", methodName : "parse"});
+	}
+};
 var mtg_core_util_Arrays = function() { };
 mtg_core_util_Arrays.__name__ = ["mtg","core","util","Arrays"];
 mtg_core_util_Arrays.map = function(arr,mapper) {
@@ -3848,9 +4181,9 @@ mtg_core_util_Arrays.map = function(arr,mapper) {
 	}
 	return result;
 };
-var mtg_core_util_CardTextToken = { __ename__ : ["mtg","core","util","CardTextToken"], __constructs__ : ["CText","CManaSymbol"] };
-mtg_core_util_CardTextToken.CText = function(text) { var $x = ["CText",0,text]; $x.__enum__ = mtg_core_util_CardTextToken; return $x; };
-mtg_core_util_CardTextToken.CManaSymbol = function(manaSymbol) { var $x = ["CManaSymbol",1,manaSymbol]; $x.__enum__ = mtg_core_util_CardTextToken; return $x; };
+var mtg_core_util_CardTextToken = { __ename__ : ["mtg","core","util","CardTextToken"], __constructs__ : ["TText","TSymbol"] };
+mtg_core_util_CardTextToken.TText = function(text) { var $x = ["TText",0,text]; $x.__enum__ = mtg_core_util_CardTextToken; return $x; };
+mtg_core_util_CardTextToken.TSymbol = function(symbol) { var $x = ["TSymbol",1,symbol]; $x.__enum__ = mtg_core_util_CardTextToken; return $x; };
 var mtg_core_util_CardTextParser = function(input) {
 	this.input = input;
 	this.index = 0;
@@ -3864,7 +4197,7 @@ mtg_core_util_CardTextParser.prototype = {
 	,index: null
 	,internalParse: function() {
 		if(this.input == "") {
-			return [mtg_core_util_CardTextToken.CText("")];
+			return [mtg_core_util_CardTextToken.TText("")];
 		}
 		var tokens = [];
 		while(this.index < this.input.length) tokens.push(this.readToken());
@@ -3872,19 +4205,25 @@ mtg_core_util_CardTextParser.prototype = {
 	}
 	,readToken: function() {
 		if(this["char"]() == "{") {
-			return this.readManaSymbolToken();
+			return this.readSymbolToken();
 		} else {
 			return this.readTextToken();
 		}
 	}
 	,readTextToken: function() {
-		return mtg_core_util_CardTextToken.CText(this.readUpTo("{"));
+		return mtg_core_util_CardTextToken.TText(this.readUpTo("{"));
 	}
-	,readManaSymbolToken: function() {
-		var result = this.readChar("{");
-		result += this.readUpTo("}");
-		result += this.readChar("}");
-		return mtg_core_util_CardTextToken.CManaSymbol(result);
+	,readSymbolToken: function() {
+		var token = this.readChar("{");
+		token += this.readUpTo("}");
+		token += this.readChar("}");
+		var _g = mtg_core_model__$Symbol_Symbol_$Impl_$.safeParse(token);
+		switch(_g[1]) {
+		case 0:
+			return mtg_core_util_CardTextToken.TSymbol(_g[2]);
+		case 1:
+			return mtg_core_util_CardTextToken.TText(token);
+		}
 	}
 	,readChar: function(c) {
 		if(this["char"]() == c) {
@@ -10574,6 +10913,69 @@ dots_Query.doc = document;
 haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 haxe_ds_ObjectMap.count = 0;
 js_Boot.__toStr = {}.toString;
+mtg_core_model__$Symbol_Symbol_$Impl_$.C = "{C}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C0 = "{0}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C1 = "{1}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C2 = "{2}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C3 = "{3}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C4 = "{4}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C5 = "{5}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C6 = "{6}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C7 = "{7}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C8 = "{8}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C9 = "{9}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C10 = "{10}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C11 = "{11}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C12 = "{12}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C13 = "{13}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C14 = "{14}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C15 = "{15}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C16 = "{16}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C17 = "{17}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C18 = "{18}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C19 = "{19}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C20 = "{20}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C100 = "{100}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C1000000 = "{1000000}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.CHalf = "{1/2}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.CInfinity = "{Infinity}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.W = "{W}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.U = "{U}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.B = "{B}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.R = "{R}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.G = "{G}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.WHalf = "{W 1/2}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.UHalf = "{U 1/2}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.BHalf = "{B 1/2}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.RHalf = "{R 1/2}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.GHalf = "{G 1/2}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.P = "{P}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.WP = "{W/P}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.UP = "{U/P}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.BP = "{B/P}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.RP = "{R/P}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.GP = "{G/P}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.WU = "{W/U}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.WB = "{W/B}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.UB = "{U/B}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.UR = "{U/R}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.BR = "{B/R}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.BG = "{B/G}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.RG = "{R/G}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.RW = "{R/W}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.GW = "{G/W}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.GU = "{G/U}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C2W = "{2/W}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C2U = "{2/U}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C2B = "{2/B}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C2R = "{2/R}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.C2G = "{2/G}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.S = "{S}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.X = "{X}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.Y = "{Y}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.Z = "{Z}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.Tap = "{T}";
+mtg_core_model__$Symbol_Symbol_$Impl_$.Untap = "{Q}";
 thx_Floats.TOLERANCE = 10e-5;
 thx_Floats.EPSILON = 1e-9;
 thx_Floats.pattern_parse = new EReg("^(\\+|-)?\\d+(\\.\\d+)?(e-?\\d+)?$","");
