@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+script_dir=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+echo "$script_dir"
+cd "$script_dir"
+
+if [[ -f version.json ]]; then
+  if [[ $(cat version.json) == $(curl http://mtgjson.com/json/version.json) ]]; then
+    echo "Version has not changed, aborting"
+    exit 0
+  fi
+fi
+
+rm -f AllSets-x.json.zip
+rm -f AllCards-x.json.zip
+rm -f AllSets-x.json
+rm -f AllCards-x.json
+rm -f SetCodes.json
+rm -f SetList.json
+rm -f version.json
+
+wget http://mtgjson.com/json/AllSets-x.json.zip
+wget http://mtgjson.com/json/AllCards-x.json.zip
+wget http://mtgjson.com/json/SetCodes.json
+wget http://mtgjson.com/json/SetList.json
+wget http://mtgjson.com/json/version.json
+
+unzip AllSets-x.json.zip
+rm -f AllSets-x.json.zip
+
+unzip AllCards-x.json.zip
+rm -f AllCards-x.json.zip

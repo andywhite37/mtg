@@ -28,8 +28,6 @@ class AppView extends doom.html.Component<{ api: AppApi, state: AppState }> {
       case CardPage(data) : new CardPageView({ state: data, api: props.api }).render();
       case DecksPage(data) : new DecksPageView({ state: data, api: props.api }).render();
       case DeckPage(data) : new DeckPageView({ state: data, api: props.api }).render();
-      case CollectionsPage(data) : new CollectionsPageView({ state: data, api: props.api }).render();
-      case CollectionPage(data) : new CollectionPageView({ state: data, api: props.api }).render();
       case ErrorPage(data) : new ErrorPageView({ state: data, api: props.api }).render();
     };
   }

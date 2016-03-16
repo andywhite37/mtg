@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+var _ = require('lodash');
+var Promise = require('bluebird');
+var fs = require('fs');
+var path = require('path');
+var pgb = require('pg-bluebird');
+
+var connectionString = process.env.MTG_DATABASE_URL || 'postgres://mtguser:mtgpassword@localhost:5432/mtg';
+
+var sets = JSON.parse(fs.readFileSync(path.join(__dirname, 'AllSets-x.json'), 'utf-8'));
+var setCodes = _.keys(sets);
+
+var accSetKeys = {};
+
+_.each(setCodes, function(setCode) {
+  var set = sets[setCode];
+  var setKeys = _.keys(set);
+  _.each(setKeys, function(setKey) {
+    if (!accSetKeys[setKey]) {
+      accSetKeys[setKey] = 0;
+    }
+    accSetKeys[setKey]++;
+  });
+
+  var setCards = set.cards;
+});
+
+console.log(accSetKeys);
+
+
+process.exit(0);
+
+
+var conn;
+pgb.connect(connectionString)
+  .then(function(connection) {
+    conn = connection;
+  })
+  .then(function() {
+    conn.done();
+  })
+  .catch(function(e) {
+    console.error(chalk.red('An error occurred'));
+    console.error(e);
+  });

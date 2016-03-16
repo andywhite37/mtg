@@ -9,3 +9,5 @@ node_modules
 
 # project files
 temp/
+tools/mtgjson/AllCards-x.json
+tools/mtgjson/AllSets-x.json

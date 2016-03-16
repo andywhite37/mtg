@@ -1,0 +1,109 @@
+#! /usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+color_black='\033[0;30m'
+color_red='\033[0;31m'
+color_green='\033[0;32m'
+color_yellow='\033[0;33m'
+color_blue='\033[0;34m'
+color_purple='\033[0;35m'
+color_cyan='\033[0;36m'
+color_gray='\033[0;37m'
+color_none='\033[0m'
+
+echo_red() {
+  echo -e "${color_red}${1:-}${color_none}"
+}
+
+echo_green() {
+  echo -e "${color_green}${1:-}${color_none}"
+}
+
+echo_yellow() {
+  echo -e "${color_yellow}${1:-}${color_none}"
+}
+
+echo_blue() {
+  echo -e "${color_blue}${1:-}${color_none}"
+}
+
+echo_purple() {
+  echo -e "${color_purple}${1:-}${color_none}"
+}
+
+echo_cyan() {
+  echo -e "${color_cyan}${1:-}${color_none}"
+}
+
+# If the argument is a help flag, show the usage (and exit if usage doesn't exit)
+# usage function is expected to be defined before this is invoked
+show_help() {
+  local arg="${1:-}"
+
+  case $arg in
+    help|h|--help|-h)
+      usage
+      exit 1
+      ;;
+    *) ;;
+  esac
+}
+
+exit_error() {
+  local msg="$1"
+  echo_red "${msg}"
+  exit 1
+}
+
+banner() {
+  local msg="$1"
+  echo_blue "--------------------------------------------------------------------------------"
+  echo_cyan "${msg}"
+  echo_blue "--------------------------------------------------------------------------------"
+}
+
+check_git_status() {
+  run_command "git fetch origin"
+
+  local git_local_commit=$(git rev-parse @)
+  local git_remote_commit=$(git rev-parse @{u})
+  local git_merge_base_commit=$(git merge-base @ @{u})
+
+  if [[ $git_local_commit = $git_remote_commit ]]; then
+    echo_green "You are up-to-date with the origin remote, continuing..."
+  elif [[ $git_local_commit = $git_merge_base_commit ]]; then
+    exit_error "Error: you are behind the origin remote, and need to pull (aborting)"
+  elif [[ $git_remote_commit = $git_merge_base_commit ]]; then
+    echo_green "You are ahead of the origin remote, continuing..."
+  else
+    exit_error "You have diverged from the origin remote, and need to pull (aborting)"
+  fi
+}
+
+run_command() {
+  local cmd="$1"
+  echo_yellow "$cmd"
+  eval "$cmd"
+}
+
+confirm_ok() {
+  local msg="${1:-}"
+
+  if [[ "$msg" != "" ]]; then
+    echo
+    echo "$msg"
+  fi
+
+  echo
+  read -p "Is this ok? (y|n) " -n 1 -r choice
+  case "$choice" in
+    y|Y)
+      echo
+      ;;
+    *)
+      echo
+      exit_error "Aborting"
+      ;;
+  esac
+}

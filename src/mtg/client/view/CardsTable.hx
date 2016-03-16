@@ -18,22 +18,18 @@ class CardsTable extends doom.html.Component<{ cards : Array<Card> }> {
           th(["class" => "rarity"], "Rarity"),
           th(["class" => "text"], "Card text"),
           th(["class" => "flavor"], "Flavor text"),
-          th(["class" => "store-link"], "Store"),
         ])
       ]),
       tbody(
         props.cards.map(function(card) : VChild {
-          var edition = card.getLatestEdition();
-          var imageInfo = card.getLatestImage();
           return tr([
-            td(img(["src" => imageInfo.src, "alt" => imageInfo.alt])),
+            td(img(["src" => "", "alt" => ""])),
             td(card.name),
-            td(new CardTextView({ text: card.cost })),
-            td(card.types.map.fn(_.capitalizeWords()).join(', ')),
-            td(edition.rarity.capitalizeWords()),
+            td(new CardTextView({ text: card.manaCost })),
+            td(card.type.capitalizeWords()),
+            td(card.rarity.capitalizeWords()),
             td(new CardTextView({ text: card.text })),
-            td(new CardTextView({ text: edition.flavor })),
-            td(a(["href" => card.storeUrl, "target" => "_blank"], "TCGPlayer")),
+            td(new CardTextView({ text: card.flavor })),
           ]);
         })
       ),

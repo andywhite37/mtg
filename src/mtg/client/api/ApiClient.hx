@@ -15,14 +15,14 @@ class ApiClient {
     return http({
       type: 'GET',
       url: '/api/cards',
-    }, fromArray(Card.fromDynamic));
+    });
   }
 
   public function getCard(cardId : String) : Promise<Card> {
     return http({
       type: 'GET',
       url: '/api/cards/$cardId'
-    }, Card.fromDynamic);
+    });
   }
 
   function http<T>(options : JQueryAjaxOptions, ?converter : Dynamic -> T) : Promise<T> {

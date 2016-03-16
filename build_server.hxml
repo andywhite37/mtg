@@ -1,8 +1,9 @@
 -cp src
--lib thx.core
--lib thx.promise
 -lib abe
+-lib dataclass
 -lib express
 -lib hxnodejs
+-lib thx.core
+-lib thx.promise
 -main mtg.server.Main
 -js temp/server/server.js

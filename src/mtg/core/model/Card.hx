@@ -3,58 +3,48 @@ package mtg.core.model;
 using thx.Arrays;
 using mtg.core.util.Arrays;
 
-class Card {
-  public var name : String;
+@immutable
+class Card implements dataclass.DataClass {
+  // mtgjson fields
   public var id : String;
-  public var url : String;
-  public var storeUrl : String;
-  public var types : Array<String>;
-  public var colors : Array<String>;
-  public var cmc : Int;
-  public var cost : String;
-  public var text : String;
-  public var formats : Dynamic<String>;
-  public var editions : Array<Edition>;
+  public var layout : String;
+  public var name : String;
+  public var names : Null<Array<String>>;
+  public var manaCost : Null<String>;
+  public var cmc : Int = 0;
+  public var colors : Array<String> = [];
+  public var colorIdentity : Array<String> = [];
+  public var type : String;
+  public var supertypes : Array<String> = [];
+  public var subtypes : Array<String> = [];
+  public var rarity : String;
+  public var text : Null<String>;
+  public var flavor : Null<String>;
+  public var artist : Null<String>;
+  public var number : String;
+  public var power : Null<String>;
+  public var toughness : Null<String>;
+  public var loyalty : Null<Int>;
+  public var multiverseid : Int;
+  public var variations : Array<Int> = [];
+  public var imageName : String;
+  public var watermark : Null<String>;
+  public var border : Null<String>;
+  public var timeshifted : Bool = false;
+  public var hand : Null<Int>;
+  public var life : Null<Int>;
+  public var reserved : Bool = false;
+  public var releaseDate : String;
 
-  public static function fromDynamic(data : Dynamic) : Card {
-    return new Card(data);
-  }
+  // mtgjson extended
+  public var rulings : Array<{ date: String, text : String }> = [];
+  public var foreignNames : Array<{ language: String, name : String, multiverseid: Int }> = [];
+  public var printings : Array<String> = [];
+  public var originalText : Null<String>;
+  public var originalType : Null<String>;
+  public var legalities : Array<{ format : String, legality: String }> = [];
+  public var source : Null<String>;
 
-  public function new(data : Dynamic) {
-    setFromDynamic(data);
-  }
-
-  public function setFromDynamic(data : Dynamic) : Void {
-    this.name = data.name;
-    this.id = data.id;
-    this.url = data.url;
-    this.storeUrl = data.store_url;
-    this.types = data.types;
-    this.colors = data.colors;
-    this.cmc = data.cmc;
-    this.cost = data.cost;
-    this.text = data.text;
-    this.formats = data.formats;
-    this.editions = Arrays.map(data.editions, Edition.fromDynamic);
-  }
-
-  public function getLatestEdition() : Edition {
-    return editions.order(function(a, b) {
-      return thx.Ints.compare(b.multiverseId, a.multiverseId);
-    }).first();
-  }
-
-  public function getLatestImage() : { src: String, alt: String } {
-    var edition = getLatestEdition();
-    if (edition == null) {
-      return {
-        src: "/images/missing-card-image.png",
-        alt: name
-      };
-    }
-    return {
-      src: edition.imageUrl,
-      alt: '$name (${edition.set})'
-    };
-  }
+  // other fields
+  public var isLatestPrinting : Bool = false;
 }

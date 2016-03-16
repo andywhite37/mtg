@@ -1,0 +1,76 @@
+#! /usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+script_dir=$(cd $( dirname "${BASH_SOURCE[0]}" ) && pwd)
+cd "$script_dir"
+. ./tools/bash-common
+
+usage() {
+  echo "Usage: $0 [env]"
+  echo
+  echo "This script runs the database migrations for a local or remote database."
+  echo
+  echo "Arguments:"
+  echo "    env          Use local to migrate your local database."
+  echo "                 On dev and release branches, this is defaulted, and the argument is ignored."
+  echo "                 On master branch, you must specify an env (vaas)"
+  echo
+
+  exit 1
+}
+show_help "${1:-}"
+
+banner "MTG database migration"
+
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+current_commit=$(git rev-parse HEAD)
+current_date=$(date)
+env="${1:-}"
+
+if [[ "$env" = "local" ]]; then
+  env="local"
+  eb_env=""
+  database_url='postgres://mtguser:mtgpassword@localhost:5432/mtg'
+  cmd_vars="DATABASE_URL=$database_url"
+else
+  check_git_status
+  env="andywhite37-mtg"
+  eb_env="andywhite37-mtg"
+  database_url="$( eb printenv $eb_env | grep MTG_DATABASE_URL | sed 's/.* = //' )"
+  cmd_vars="DATABASE_URL=$database_url PGSSLMODE=require"
+fi
+
+url_regex="postgres://(.+):(.+)@(.+):(.+)/(.+)"
+
+if [[ "$database_url" =~ $url_regex ]]; then
+  database_username="${BASH_REMATCH[1]}"
+  database_password="${BASH_REMATCH[2]}"
+  database_host="${BASH_REMATCH[3]}"
+  database_port="${BASH_REMATCH[4]}"
+  database_name="${BASH_REMATCH[5]}"
+
+  # dump everything into the env variables that will be used for the cmd
+  cmd_vars="$cmd_vars DATABASE_USERNAME=$database_username DATABASE_PASSWORD=$database_password DATABASE_HOST=$database_host DATABASE_PORT=$database_port DATABASE_NAME=$database_name"
+else
+  exit_error "Error: $database_url does not match regex $url_regex"
+fi
+
+# We need to check if the database is empty before running migrations, because
+# we dont' want to run migrations on a non-initialized database.
+# psql doesn't let you pass the password on the command line, so we have to add a line to the
+# user's .pgpass file
+if [[ ! -f ~/.pgpass ]]; then
+  touch ~/.pgpass
+fi
+
+pgpass_line="${database_host}:${database_port}:${database_name}:${database_username}:${database_password}"
+
+if [[ "$( cat ~/.pgpass | grep "$pgpass_line" || true)" = "" ]]; then
+  echo "Adding db credentials to ~/.pgpass file..."
+  echo "$pgpass_line" >> ~/.pgpass
+fi
+
+# run it good
+cmd="$cmd_vars ./tools/run-postgrator-migrations"
+confirm_ok "This will migrate the $env database with command: $cmd"
+run_command "$cmd"
