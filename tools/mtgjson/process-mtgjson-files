@@ -1,45 +1,35 @@
 #!/usr/bin/env node
 var _ = require('lodash');
 var Promise = require('bluebird');
+var chalk = require('chalk');
 var fs = require('fs');
 var path = require('path');
 var pgb = require('pg-bluebird');
-
-var connectionString = process.env.MTG_DATABASE_URL || 'postgres://mtguser:mtgpassword@localhost:5432/mtg';
+var request = require('request');
+Promise.promisifyAll(request);
 
 var sets = JSON.parse(fs.readFileSync(path.join(__dirname, 'AllSets-x.json'), 'utf-8'));
 var setCodes = _.keys(sets);
+var firstSetCode = setCodes[0];
+var firstSet = sets[firstSetCode];
+var cards = firstSet.cards;
+var card = cards[0];
 
-var accSetKeys = {};
+card.types = card.types || [];
+card.releaseDate = card.releaseDate || firstSet.releaseDate;
+card.names = card.names || [card.name];
 
-_.each(setCodes, function(setCode) {
-  var set = sets[setCode];
-  var setKeys = _.keys(set);
-  _.each(setKeys, function(setKey) {
-    if (!accSetKeys[setKey]) {
-      accSetKeys[setKey] = 0;
-    }
-    accSetKeys[setKey]++;
-  });
+console.log(card);
 
-  var setCards = set.cards;
+request.postAsync({
+  url: 'http://localhost:9999/api/cards',
+  body: card,
+  json: true
+})
+.spread(function(response, body) {
+  console.log(body);
+})
+.catch(function(err) {
+  console.error(chalk.red('error'));
+  console.error(err);
 });
-
-console.log(accSetKeys);
-
-
-process.exit(0);
-
-
-var conn;
-pgb.connect(connectionString)
-  .then(function(connection) {
-    conn = connection;
-  })
-  .then(function() {
-    conn.done();
-  })
-  .catch(function(e) {
-    console.error(chalk.red('An error occurred'));
-    console.error(e);
-  });

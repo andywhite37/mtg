@@ -972,6 +972,8 @@ Type["typeof"] = function(v) {
 		return ValueType.TUnknown;
 	}
 };
+var dataclass_DataClass = function() { };
+dataclass_DataClass.__name__ = ["dataclass","DataClass"];
 var doom_core__$AttributeValue_AttributeValue_$Impl_$ = {};
 doom_core__$AttributeValue_AttributeValue_$Impl_$.__name__ = ["doom","core","_AttributeValue","AttributeValue_Impl_"];
 doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString = function(s) {
@@ -3239,10 +3241,10 @@ var mtg_client_api_ApiClient = function() {
 mtg_client_api_ApiClient.__name__ = ["mtg","client","api","ApiClient"];
 mtg_client_api_ApiClient.prototype = {
 	getCards: function() {
-		return this.http({ type : "GET", url : "/api/cards"},this.fromArray(mtg_core_model_Card.fromDynamic));
+		return this.http({ type : "GET", url : "/api/cards"});
 	}
 	,getCard: function(cardId) {
-		return this.http({ type : "GET", url : "/api/cards/" + cardId},mtg_core_model_Card.fromDynamic);
+		return this.http({ type : "GET", url : "/api/cards/" + cardId});
 	}
 	,http: function(options,converter) {
 		if(converter == null) {
@@ -3294,15 +3296,13 @@ var mtg_client_state_Loader = { __ename__ : ["mtg","client","state","Loader"], _
 mtg_client_state_Loader.Loading = function(data) { var $x = ["Loading",0,data]; $x.__enum__ = mtg_client_state_Loader; return $x; };
 mtg_client_state_Loader.Loaded = function(data) { var $x = ["Loaded",1,data]; $x.__enum__ = mtg_client_state_Loader; return $x; };
 mtg_client_state_Loader.Failed = function(data) { var $x = ["Failed",2,data]; $x.__enum__ = mtg_client_state_Loader; return $x; };
-var mtg_client_state_Page = { __ename__ : ["mtg","client","state","Page"], __constructs__ : ["HomePage","CollectionsPage","CollectionPage","CardsPage","CardPage","DecksPage","DeckPage","ErrorPage"] };
+var mtg_client_state_Page = { __ename__ : ["mtg","client","state","Page"], __constructs__ : ["HomePage","CardsPage","CardPage","DecksPage","DeckPage","ErrorPage"] };
 mtg_client_state_Page.HomePage = function(data) { var $x = ["HomePage",0,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
-mtg_client_state_Page.CollectionsPage = function(data) { var $x = ["CollectionsPage",1,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
-mtg_client_state_Page.CollectionPage = function(data) { var $x = ["CollectionPage",2,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
-mtg_client_state_Page.CardsPage = function(data) { var $x = ["CardsPage",3,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
-mtg_client_state_Page.CardPage = function(data) { var $x = ["CardPage",4,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
-mtg_client_state_Page.DecksPage = function(data) { var $x = ["DecksPage",5,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
-mtg_client_state_Page.DeckPage = function(data) { var $x = ["DeckPage",6,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
-mtg_client_state_Page.ErrorPage = function(data) { var $x = ["ErrorPage",7,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
+mtg_client_state_Page.CardsPage = function(data) { var $x = ["CardsPage",1,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
+mtg_client_state_Page.CardPage = function(data) { var $x = ["CardPage",2,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
+mtg_client_state_Page.DecksPage = function(data) { var $x = ["DecksPage",3,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
+mtg_client_state_Page.DeckPage = function(data) { var $x = ["DeckPage",4,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
+mtg_client_state_Page.ErrorPage = function(data) { var $x = ["ErrorPage",5,data]; $x.__enum__ = mtg_client_state_Page; return $x; };
 var mtg_client_state_Reducer = function(apiClient) {
 	this.apiClient = apiClient;
 };
@@ -3317,7 +3317,7 @@ mtg_client_state_Reducer.prototype = {
 		switch(page[1]) {
 		case 0:
 			return this.showHomePage(state,page[2]);
-		case 3:
+		case 1:
 			return this.showCardsPage(state,page[2]);
 		default:
 			return { _0 : state, _1 : []};
@@ -3367,10 +3367,10 @@ mtg_client_view_AppNavView.prototype = $extend(doom_html_Component.prototype,{
 		case 0:
 			homeLinkClass = "active";
 			break;
-		case 3:
+		case 1:
 			cardsLinkClass = "active";
 			break;
-		case 5:
+		case 3:
 			decksLinkClass = "active";
 			break;
 		default:
@@ -3467,19 +3467,15 @@ mtg_client_view_AppView.prototype = $extend(doom_html_Component.prototype,{
 		switch(_g[1]) {
 		case 0:
 			return new mtg_client_view_HomePageView({ state : _g[2], api : this.props.api}).render();
-		case 3:
-			return new mtg_client_view_CardsPageView({ state : _g[2], api : this.props.api}).render();
-		case 4:
-			return new mtg_client_view_CardPageView({ state : _g[2], api : this.props.api}).render();
-		case 5:
-			return new mtg_client_view_DecksPageView({ state : _g[2], api : this.props.api}).render();
-		case 6:
-			return new mtg_client_view_DeckPageView({ state : _g[2], api : this.props.api}).render();
 		case 1:
-			return new mtg_client_view_CollectionsPageView({ state : _g[2], api : this.props.api}).render();
+			return new mtg_client_view_CardsPageView({ state : _g[2], api : this.props.api}).render();
 		case 2:
-			return new mtg_client_view_CollectionPageView({ state : _g[2], api : this.props.api}).render();
-		case 7:
+			return new mtg_client_view_CardPageView({ state : _g[2], api : this.props.api}).render();
+		case 3:
+			return new mtg_client_view_DecksPageView({ state : _g[2], api : this.props.api}).render();
+		case 4:
+			return new mtg_client_view_DeckPageView({ state : _g[2], api : this.props.api}).render();
+		case 5:
 			return new mtg_client_view_ErrorPageView({ state : _g[2], api : this.props.api}).render();
 		}
 	}
@@ -3572,133 +3568,79 @@ mtg_client_view_CardsTable.prototype = $extend(doom_html_Component.prototype,{
 		} else {
 			_g.h["class"] = value;
 		}
-		var _g25 = new haxe_ds_StringMap();
+		var _g22 = new haxe_ds_StringMap();
 		var value1 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("image");
 		if(__map_reserved["class"] != null) {
-			_g25.setReserved("class",value1);
+			_g22.setReserved("class",value1);
 		} else {
-			_g25.h["class"] = value1;
+			_g22.h["class"] = value1;
 		}
-		var tmp = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g25,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Image"))])));
-		var _g26 = new haxe_ds_StringMap();
+		var tmp = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g22,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Image"))])));
+		var _g23 = new haxe_ds_StringMap();
 		var value2 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("name");
 		if(__map_reserved["class"] != null) {
-			_g26.setReserved("class",value2);
+			_g23.setReserved("class",value2);
 		} else {
-			_g26.h["class"] = value2;
+			_g23.h["class"] = value2;
 		}
-		var tmp1 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g26,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Name"))])));
-		var _g27 = new haxe_ds_StringMap();
+		var tmp1 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g23,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Name"))])));
+		var _g24 = new haxe_ds_StringMap();
 		var value3 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("cost");
 		if(__map_reserved["class"] != null) {
-			_g27.setReserved("class",value3);
+			_g24.setReserved("class",value3);
 		} else {
-			_g27.h["class"] = value3;
+			_g24.h["class"] = value3;
 		}
-		var tmp2 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g27,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Cost"))])));
-		var _g28 = new haxe_ds_StringMap();
+		var tmp2 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g24,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Cost"))])));
+		var _g25 = new haxe_ds_StringMap();
 		var value4 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("types");
 		if(__map_reserved["class"] != null) {
-			_g28.setReserved("class",value4);
+			_g25.setReserved("class",value4);
 		} else {
-			_g28.h["class"] = value4;
+			_g25.h["class"] = value4;
 		}
-		var tmp3 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g28,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Types"))])));
-		var _g29 = new haxe_ds_StringMap();
+		var tmp3 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g25,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Types"))])));
+		var _g26 = new haxe_ds_StringMap();
 		var value5 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("rarity");
 		if(__map_reserved["class"] != null) {
-			_g29.setReserved("class",value5);
+			_g26.setReserved("class",value5);
 		} else {
-			_g29.h["class"] = value5;
+			_g26.h["class"] = value5;
 		}
-		var tmp4 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g29,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Rarity"))])));
-		var _g30 = new haxe_ds_StringMap();
+		var tmp4 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g26,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Rarity"))])));
+		var _g27 = new haxe_ds_StringMap();
 		var value6 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("text");
 		if(__map_reserved["class"] != null) {
-			_g30.setReserved("class",value6);
+			_g27.setReserved("class",value6);
 		} else {
-			_g30.h["class"] = value6;
+			_g27.h["class"] = value6;
 		}
-		var tmp5 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g30,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Card text"))])));
-		var _g31 = new haxe_ds_StringMap();
+		var tmp5 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g27,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Card text"))])));
+		var _g28 = new haxe_ds_StringMap();
 		var value7 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("flavor");
 		if(__map_reserved["class"] != null) {
-			_g31.setReserved("class",value7);
+			_g28.setReserved("class",value7);
 		} else {
-			_g31.h["class"] = value7;
+			_g28.h["class"] = value7;
 		}
-		var tmp6 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g31,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Flavor text"))])));
-		var _g32 = new haxe_ds_StringMap();
-		var value8 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("store-link");
-		if(__map_reserved["class"] != null) {
-			_g32.setReserved("class",value8);
-		} else {
-			_g32.h["class"] = value8;
-		}
-		return doom_core__$VNode_VNode_$Impl_$.el("table",_g,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("thead",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("tr",null,doom_core__$VChildren_VChildren_$Impl_$.children([tmp,tmp1,tmp2,tmp3,tmp4,tmp5,tmp6,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g32,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Store"))])))])))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("tbody",null,doom_core__$VChildren_VChildren_$Impl_$.children(this.props.cards.map(function(card) {
-			var edition = card.getLatestEdition();
-			var imageInfo = card.getLatestImage();
-			var _g38 = new haxe_ds_StringMap();
-			var value9 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString(imageInfo.src);
+		return doom_core__$VNode_VNode_$Impl_$.el("table",_g,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("thead",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("tr",null,doom_core__$VChildren_VChildren_$Impl_$.children([tmp,tmp1,tmp2,tmp3,tmp4,tmp5,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g28,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Flavor text"))])))])))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("tbody",null,doom_core__$VChildren_VChildren_$Impl_$.children(this.props.cards.map(function(card) {
+			var _g32 = new haxe_ds_StringMap();
+			var value8 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("");
 			if(__map_reserved.src != null) {
-				_g38.setReserved("src",value9);
+				_g32.setReserved("src",value8);
 			} else {
-				_g38.h["src"] = value9;
+				_g32.h["src"] = value8;
 			}
-			var value10 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString(imageInfo.alt);
+			var value9 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("");
 			if(__map_reserved.alt != null) {
-				_g38.setReserved("alt",value10);
+				_g32.setReserved("alt",value9);
 			} else {
-				_g38.h["alt"] = value10;
+				_g32.h["alt"] = value9;
 			}
-			var tmp7 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("img",_g38,null))])));
-			var tmp8 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(card.name))])));
-			var tmp9 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Comp(new mtg_client_view_CardTextView({ text : card.cost}))])));
-			var tmp10 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(card.types.map(function(_) {
-				return thx_Strings.capitalizeWords(_);
-			}).join(", ")))])));
-			var tmp11 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(thx_Strings.capitalizeWords(edition.rarity)))])));
-			var tmp12 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Comp(new mtg_client_view_CardTextView({ text : card.text}))])));
-			var tmp13 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Comp(new mtg_client_view_CardTextView({ text : edition.flavor}))])));
-			var _g40 = new haxe_ds_StringMap();
-			var value11 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString(card.storeUrl);
-			if(__map_reserved.href != null) {
-				_g40.setReserved("href",value11);
-			} else {
-				_g40.h["href"] = value11;
-			}
-			var value12 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("_blank");
-			if(__map_reserved.target != null) {
-				_g40.setReserved("target",value12);
-			} else {
-				_g40.h["target"] = value12;
-			}
-			return doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("tr",null,doom_core__$VChildren_VChildren_$Impl_$.children([tmp7,tmp8,tmp9,tmp10,tmp11,tmp12,tmp13,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("a",_g40,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("TCGPlayer"))])))])))])));
+			return doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("tr",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("img",_g32,null))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(card.name))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Comp(new mtg_client_view_CardTextView({ text : card.manaCost}))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(thx_Strings.capitalizeWords(card.type)))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(thx_Strings.capitalizeWords(card.rarity)))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Comp(new mtg_client_view_CardTextView({ text : card.text}))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Comp(new mtg_client_view_CardTextView({ text : card.flavor}))])))])));
 		})))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("tfoot",null,doom_core__$VChildren_VChildren_$Impl_$.children([])))]));
 	}
 	,__class__: mtg_client_view_CardsTable
-});
-var mtg_client_view_CollectionPageView = function(props,children) {
-	doom_html_Component.call(this,props,children);
-};
-mtg_client_view_CollectionPageView.__name__ = ["mtg","client","view","CollectionPageView"];
-mtg_client_view_CollectionPageView.__super__ = doom_html_Component;
-mtg_client_view_CollectionPageView.prototype = $extend(doom_html_Component.prototype,{
-	render: function() {
-		return doom_core__$VNode_VNode_$Impl_$.el("h1",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("collection page"))]));
-	}
-	,__class__: mtg_client_view_CollectionPageView
-});
-var mtg_client_view_CollectionsPageView = function(props,children) {
-	doom_html_Component.call(this,props,children);
-};
-mtg_client_view_CollectionsPageView.__name__ = ["mtg","client","view","CollectionsPageView"];
-mtg_client_view_CollectionsPageView.__super__ = doom_html_Component;
-mtg_client_view_CollectionsPageView.prototype = $extend(doom_html_Component.prototype,{
-	render: function() {
-		return doom_core__$VNode_VNode_$Impl_$.el("h1",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("collections page"))]));
-	}
-	,__class__: mtg_client_view_CollectionsPageView
 });
 var mtg_client_view_DeckPageView = function(props,children) {
 	doom_html_Component.call(this,props,children);
@@ -3969,98 +3911,137 @@ mtg_client_view_SymbolView.prototype = $extend(doom_html_Component.prototype,{
 	,__class__: mtg_client_view_SymbolView
 });
 var mtg_core_model_Card = function(data) {
-	this.setFromDynamic(data);
+	this.latest = false;
+	this.legalities = [];
+	this.printings = [];
+	this.foreignNames = [];
+	this.rulings = [];
+	this.starter = false;
+	this.reserved = false;
+	this.timeshifted = false;
+	this.variations = [];
+	this.subtypes = [];
+	this.types = [];
+	this.supertypes = [];
+	this.colorIdentity = [];
+	this.colors = [];
+	this.cmc = 0;
+	this.names = [];
+	this.id = data.id;
+	if(this.id == null) {
+		throw new js__$Boot_HaxeError("Field " + "Card" + "." + "id" + " was null.");
+	}
+	this.layout = data.layout;
+	if(this.layout == null) {
+		throw new js__$Boot_HaxeError("Field " + "Card" + "." + "layout" + " was null.");
+	}
+	this.name = data.name;
+	if(this.name == null) {
+		throw new js__$Boot_HaxeError("Field " + "Card" + "." + "name" + " was null.");
+	}
+	this.names = data.names != null?data.names:[];
+	this.manaCost = data.manaCost != null?data.manaCost:null;
+	this.cmc = data.cmc != null?data.cmc:0;
+	this.colors = data.colors != null?data.colors:[];
+	this.colorIdentity = data.colorIdentity != null?data.colorIdentity:[];
+	this.type = data.type;
+	if(this.type == null) {
+		throw new js__$Boot_HaxeError("Field " + "Card" + "." + "type" + " was null.");
+	}
+	this.supertypes = data.supertypes != null?data.supertypes:[];
+	this.types = data.types != null?data.types:[];
+	this.subtypes = data.subtypes != null?data.subtypes:[];
+	this.rarity = data.rarity;
+	if(this.rarity == null) {
+		throw new js__$Boot_HaxeError("Field " + "Card" + "." + "rarity" + " was null.");
+	}
+	this.text = data.text != null?data.text:null;
+	this.flavor = data.flavor != null?data.flavor:null;
+	this.artist = data.artist != null?data.artist:null;
+	this.number = data.number != null?data.number:null;
+	this.mciNumber = data.mciNumber != null?data.mciNumber:null;
+	this.power = data.power != null?data.power:null;
+	this.toughness = data.toughness != null?data.toughness:null;
+	this.loyalty = data.loyalty != null?data.loyalty:null;
+	this.multiverseid = data.multiverseid;
+	if(this.multiverseid == null) {
+		throw new js__$Boot_HaxeError("Field " + "Card" + "." + "multiverseid" + " was null.");
+	}
+	this.variations = data.variations != null?data.variations:[];
+	this.imageName = data.imageName;
+	if(this.imageName == null) {
+		throw new js__$Boot_HaxeError("Field " + "Card" + "." + "imageName" + " was null.");
+	}
+	this.watermark = data.watermark != null?data.watermark:null;
+	this.border = data.border != null?data.border:null;
+	this.timeshifted = data.timeshifted != null && data.timeshifted;
+	this.hand = data.hand != null?data.hand:null;
+	this.life = data.life != null?data.life:null;
+	this.reserved = data.reserved != null && data.reserved;
+	this.releaseDate = data.releaseDate;
+	if(this.releaseDate == null) {
+		throw new js__$Boot_HaxeError("Field " + "Card" + "." + "releaseDate" + " was null.");
+	}
+	this.starter = data.starter != null && data.starter;
+	this.rulings = data.rulings != null?data.rulings:[];
+	this.foreignNames = data.foreignNames != null?data.foreignNames:[];
+	this.printings = data.printings != null?data.printings:[];
+	this.originalText = data.originalText != null?data.originalText:null;
+	this.originalType = data.originalType != null?data.originalType:null;
+	this.legalities = data.legalities != null?data.legalities:[];
+	this.source = data.source != null?data.source:null;
+	this.latest = data.latest != null && data.latest;
 };
 mtg_core_model_Card.__name__ = ["mtg","core","model","Card"];
-mtg_core_model_Card.fromDynamic = function(data) {
-	return new mtg_core_model_Card(data);
-};
+mtg_core_model_Card.__interfaces__ = [dataclass_DataClass];
 mtg_core_model_Card.prototype = {
-	name: null
-	,id: null
-	,url: null
-	,storeUrl: null
-	,types: null
-	,colors: null
+	id: null
+	,layout: null
+	,name: null
+	,names: null
+	,manaCost: null
 	,cmc: null
-	,cost: null
+	,colors: null
+	,colorIdentity: null
+	,type: null
+	,supertypes: null
+	,types: null
+	,subtypes: null
+	,rarity: null
 	,text: null
-	,formats: null
-	,editions: null
-	,setFromDynamic: function(data) {
-		this.name = data.name;
-		this.id = data.id;
-		this.url = data.url;
-		this.storeUrl = data.store_url;
-		this.types = data.types;
-		this.colors = data.colors;
-		this.cmc = data.cmc;
-		this.cost = data.cost;
-		this.text = data.text;
-		this.formats = data.formats;
-		this.editions = mtg_core_util_Arrays.map(data.editions,mtg_core_model_Edition.fromDynamic);
-	}
-	,getLatestEdition: function() {
-		return thx_Arrays.order(this.editions,function(a,b) {
-			return b.multiverseId - a.multiverseId;
-		})[0];
-	}
-	,getLatestImage: function() {
-		var edition = this.getLatestEdition();
-		if(edition == null) {
-			return { src : "/images/missing-card-image.png", alt : this.name};
-		}
-		return { src : edition.imageUrl, alt : "" + this.name + " (" + edition.set + ")"};
-	}
+	,flavor: null
+	,artist: null
+	,number: null
+	,mciNumber: null
+	,power: null
+	,toughness: null
+	,loyalty: null
+	,multiverseid: null
+	,variations: null
+	,imageName: null
+	,watermark: null
+	,border: null
+	,timeshifted: null
+	,hand: null
+	,life: null
+	,reserved: null
+	,releaseDate: null
+	,starter: null
+	,rulings: null
+	,foreignNames: null
+	,printings: null
+	,originalText: null
+	,originalType: null
+	,legalities: null
+	,source: null
+	,latest: null
 	,__class__: mtg_core_model_Card
-};
-var mtg_core_model_Collection = function() {
-};
-mtg_core_model_Collection.__name__ = ["mtg","core","model","Collection"];
-mtg_core_model_Collection.prototype = {
-	__class__: mtg_core_model_Collection
 };
 var mtg_core_model_Deck = function() {
 };
 mtg_core_model_Deck.__name__ = ["mtg","core","model","Deck"];
 mtg_core_model_Deck.prototype = {
 	__class__: mtg_core_model_Deck
-};
-var mtg_core_model_Edition = function(data) {
-	this.setFromDynamic(data);
-};
-mtg_core_model_Edition.__name__ = ["mtg","core","model","Edition"];
-mtg_core_model_Edition.fromDynamic = function(data) {
-	return new mtg_core_model_Edition(data);
-};
-mtg_core_model_Edition.prototype = {
-	set: null
-	,rarity: null
-	,artist: null
-	,multiverseId: null
-	,flavor: null
-	,number: null
-	,layout: null
-	,price: null
-	,url: null
-	,imageUrl: null
-	,setUrl: null
-	,storeUrl: null
-	,setFromDynamic: function(data) {
-		this.set = data.set;
-		this.rarity = data.rarity;
-		this.artist = data.artist;
-		this.multiverseId = data.multiverse_id;
-		this.flavor = data.flavor;
-		this.number = data.number;
-		this.layout = data.layout;
-		this.price = data.price;
-		this.url = data.url;
-		this.imageUrl = data.image_url;
-		this.setUrl = data.set_url;
-		this.storeUrl = data.store_url;
-	}
-	,__class__: mtg_core_model_Edition
 };
 var mtg_core_model__$Symbol_Symbol_$Impl_$ = {};
 mtg_core_model__$Symbol_Symbol_$Impl_$.__name__ = ["mtg","core","model","_Symbol","Symbol_Impl_"];
@@ -10949,6 +10930,7 @@ dots_Query.doc = document;
 haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 haxe_ds_ObjectMap.count = 0;
 js_Boot.__toStr = {}.toString;
+mtg_core_model_Card.__meta__ = { obj : { immutable : null}, fields : { id : { convertTo : ["String"]}, layout : { convertTo : ["String"]}, name : { convertTo : ["String"]}, manaCost : { convertTo : ["String"]}, cmc : { convertTo : ["Int"]}, type : { convertTo : ["String"]}, rarity : { convertTo : ["String"]}, text : { convertTo : ["String"]}, flavor : { convertTo : ["String"]}, artist : { convertTo : ["String"]}, number : { convertTo : ["String"]}, mciNumber : { convertTo : ["String"]}, power : { convertTo : ["String"]}, toughness : { convertTo : ["String"]}, loyalty : { convertTo : ["Int"]}, multiverseid : { convertTo : ["Int"]}, imageName : { convertTo : ["String"]}, watermark : { convertTo : ["String"]}, border : { convertTo : ["String"]}, timeshifted : { convertTo : ["Bool"]}, hand : { convertTo : ["Int"]}, life : { convertTo : ["Int"]}, reserved : { convertTo : ["Bool"]}, releaseDate : { convertTo : ["String"]}, starter : { convertTo : ["Bool"]}, originalText : { convertTo : ["String"]}, originalType : { convertTo : ["String"]}, source : { convertTo : ["String"]}, latest : { convertTo : ["Bool"]}}};
 mtg_core_model__$Symbol_Symbol_$Impl_$.C = "{C}";
 mtg_core_model__$Symbol_Symbol_$Impl_$.C0 = "{0}";
 mtg_core_model__$Symbol_Symbol_$Impl_$.C1 = "{1}";

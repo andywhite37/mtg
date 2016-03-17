@@ -9,6 +9,90 @@ function $extend(from, fields) {
 }
 var DateTools = function() { };
 DateTools.__name__ = ["DateTools"];
+DateTools.__format_get = function(d,e) {
+	switch(e) {
+	case "%":
+		return "%";
+	case "C":
+		return StringTools.lpad(Std.string(d.getFullYear() / 100 | 0),"0",2);
+	case "d":
+		return StringTools.lpad(Std.string(d.getDate()),"0",2);
+	case "D":
+		return DateTools.__format(d,"%m/%d/%y");
+	case "e":
+		return Std.string(d.getDate());
+	case "F":
+		return DateTools.__format(d,"%Y-%m-%d");
+	case "H":case "k":
+		return StringTools.lpad(Std.string(d.getHours()),e == "H"?"0":" ",2);
+	case "I":case "l":
+		var hour = d.getHours() % 12;
+		return StringTools.lpad(Std.string(hour == 0?12:hour),e == "I"?"0":" ",2);
+	case "m":
+		return StringTools.lpad(Std.string(d.getMonth() + 1),"0",2);
+	case "M":
+		return StringTools.lpad(Std.string(d.getMinutes()),"0",2);
+	case "n":
+		return "\n";
+	case "p":
+		if(d.getHours() > 11) {
+			return "PM";
+		} else {
+			return "AM";
+		}
+		break;
+	case "r":
+		return DateTools.__format(d,"%I:%M:%S %p");
+	case "R":
+		return DateTools.__format(d,"%H:%M");
+	case "s":
+		return Std.string(d.getTime() / 1000 | 0);
+	case "S":
+		return StringTools.lpad(Std.string(d.getSeconds()),"0",2);
+	case "t":
+		return "\t";
+	case "T":
+		return DateTools.__format(d,"%H:%M:%S");
+	case "u":
+		var t = d.getDay();
+		if(t == 0) {
+			return "7";
+		} else if(t == null) {
+			return "null";
+		} else {
+			return "" + t;
+		}
+		break;
+	case "w":
+		return Std.string(d.getDay());
+	case "y":
+		return StringTools.lpad(Std.string(d.getFullYear() % 100),"0",2);
+	case "Y":
+		return Std.string(d.getFullYear());
+	default:
+		throw new js__$Boot_HaxeError("Date.format %" + e + "- not implemented yet.");
+	}
+};
+DateTools.__format = function(d,f) {
+	var r_b = "";
+	var p = 0;
+	while(true) {
+		var np = f.indexOf("%",p);
+		if(np < 0) {
+			break;
+		}
+		var len = np - p;
+		r_b += len == null?HxOverrides.substr(f,p,null):HxOverrides.substr(f,p,len);
+		r_b += Std.string(DateTools.__format_get(d,HxOverrides.substr(f,np + 1,1)));
+		p = np + 2;
+	}
+	var len1 = f.length - p;
+	r_b += len1 == null?HxOverrides.substr(f,p,null):HxOverrides.substr(f,p,len1);
+	return r_b;
+};
+DateTools.format = function(d,f) {
+	return DateTools.__format(d,f);
+};
 DateTools.getMonthDays = function(d) {
 	var month = d.getMonth();
 	var year = d.getFullYear();
@@ -198,6 +282,12 @@ HxOverrides.iter = function(a) {
 };
 var Lambda = function() { };
 Lambda.__name__ = ["Lambda"];
+Lambda.array = function(it) {
+	var a = [];
+	var tmp = $iterator(it)();
+	while(tmp.hasNext()) a.push(tmp.next());
+	return a;
+};
 Lambda.has = function(it,elt) {
 	var tmp = $iterator(it)();
 	while(tmp.hasNext()) if(tmp.next() == elt) {
@@ -404,6 +494,31 @@ Type.getClassName = function(c) {
 Type.getEnumName = function(e) {
 	var a = e.__ename__;
 	return a.join(".");
+};
+Type.createInstance = function(cl,args) {
+	var _g = args.length;
+	switch(_g) {
+	case 0:
+		return new cl();
+	case 1:
+		return new cl(args[0]);
+	case 2:
+		return new cl(args[0],args[1]);
+	case 3:
+		return new cl(args[0],args[1],args[2]);
+	case 4:
+		return new cl(args[0],args[1],args[2],args[3]);
+	case 5:
+		return new cl(args[0],args[1],args[2],args[3],args[4]);
+	case 6:
+		return new cl(args[0],args[1],args[2],args[3],args[4],args[5]);
+	case 7:
+		return new cl(args[0],args[1],args[2],args[3],args[4],args[5],args[6]);
+	case 8:
+		return new cl(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7]);
+	default:
+		throw new js__$Boot_HaxeError("Too many arguments");
+	}
 };
 Type.createEmptyInstance = function(cl) {
 	function empty() {}; empty.prototype = cl.prototype;
@@ -896,6 +1011,280 @@ abe_core_RouteProcess.prototype = {
 	}
 	,__class__: abe_core_RouteProcess
 };
+var dataclass_Converter = function() { };
+dataclass_Converter.__name__ = ["dataclass","Converter"];
+var dataclass_DynamicObjectConverter = function() { };
+dataclass_DynamicObjectConverter.__name__ = ["dataclass","DynamicObjectConverter"];
+dataclass_DynamicObjectConverter.convertTo = function(fieldName,columns) {
+	var field = Reflect.field(columns,fieldName);
+	if(Object.prototype.hasOwnProperty.call(field,"convertTo")) {
+		return Reflect.field(field,"convertTo")[0];
+	} else {
+		return null;
+	}
+};
+dataclass_DynamicObjectConverter.toDynamic = function(o,opts) {
+	var options = opts == null?{ delimiter : dataclass_Converter.delimiter, boolValues : dataclass_Converter.boolValues, dateFormat : dataclass_Converter.dateFormat}:{ delimiter : opts.delimiter != null?opts.delimiter:dataclass_Converter.delimiter, boolValues : opts.boolValues != null?opts.boolValues:dataclass_Converter.boolValues, dateFormat : opts.dateFormat != null?opts.dateFormat:dataclass_Converter.dateFormat};
+	var columns = haxe_rtti_Meta.getFields(o == null?null:js_Boot.getClass(o));
+	var output = { };
+	var _g = 0;
+	var _g1 = Reflect.fields(columns);
+	while(_g < _g1.length) {
+		var fieldName = _g1[_g];
+		++_g;
+		var convert = dataclass_DynamicObjectConverter.convertTo(fieldName,columns);
+		if(convert == null) {
+			continue;
+		}
+		var tmp;
+		var tmp1;
+		if(o == null) {
+			tmp = null;
+		} else {
+			var tmp2;
+			if(o.__properties__) {
+				tmp1 = o.__properties__["get_" + fieldName];
+				tmp2 = tmp1;
+			} else {
+				tmp2 = false;
+			}
+			if(tmp2) {
+				tmp = o[tmp1]();
+			} else {
+				tmp = o[fieldName];
+			}
+		}
+		var data = tmp;
+		var converted;
+		if(data == null) {
+			converted = null;
+		} else {
+			switch(convert) {
+			case "Bool":
+				if(typeof(data) == "boolean") {
+					converted = dataclass_BoolConverter.toString(data,options.boolValues);
+				} else {
+					throw new js__$Boot_HaxeError("DynamicObjectConverter.toDynamicObject: Invalid type '" + Std.string(Type["typeof"](data)) + ("' (" + convert + ") for field " + fieldName));
+				}
+				break;
+			case "Date":
+				if(js_Boot.__instanceof(data,Date)) {
+					converted = dataclass_DateConverter.toStringFormat(data,options.dateFormat);
+				} else {
+					throw new js__$Boot_HaxeError("DynamicObjectConverter.toDynamicObject: Invalid type '" + Std.string(Type["typeof"](data)) + ("' (" + convert + ") for field " + fieldName));
+				}
+				break;
+			case "Int":
+				if(((data | 0) === data)) {
+					converted = dataclass_IntConverter.toString(data);
+				} else {
+					throw new js__$Boot_HaxeError("DynamicObjectConverter.toDynamicObject: Invalid type '" + Std.string(Type["typeof"](data)) + ("' (" + convert + ") for field " + fieldName));
+				}
+				break;
+			case "Float":
+				if(typeof(data) == "number") {
+					converted = dataclass_FloatConverter.toString(data,options.delimiter);
+				} else {
+					throw new js__$Boot_HaxeError("DynamicObjectConverter.toDynamicObject: Invalid type '" + Std.string(Type["typeof"](data)) + ("' (" + convert + ") for field " + fieldName));
+				}
+				break;
+			case "String":
+				if(typeof(data) == "string") {
+					converted = data;
+				} else {
+					throw new js__$Boot_HaxeError("DynamicObjectConverter.toDynamicObject: Invalid type '" + Std.string(Type["typeof"](data)) + ("' (" + convert + ") for field " + fieldName));
+				}
+				break;
+			default:
+				throw new js__$Boot_HaxeError("DynamicObjectConverter.toDynamicObject: Invalid type '" + Std.string(Type["typeof"](data)) + ("' (" + convert + ") for field " + fieldName));
+			}
+		}
+		output[fieldName] = converted;
+	}
+	return output;
+};
+dataclass_DynamicObjectConverter.fromDynamic = function(cls,data,delimiter) {
+	if(delimiter == null) {
+		delimiter = dataclass_Converter.delimiter;
+	}
+	var columns = haxe_rtti_Meta.getFields(cls);
+	var output = { };
+	var _g = 0;
+	var _g1 = Reflect.fields(columns);
+	while(_g < _g1.length) {
+		var fieldName = _g1[_g];
+		++_g;
+		if(Object.prototype.hasOwnProperty.call(data,fieldName)) {
+			var convert = dataclass_DynamicObjectConverter.convertTo(fieldName,columns);
+			if(convert == null) {
+				continue;
+			}
+			var data1 = Reflect.field(data,fieldName);
+			var converted;
+			if(data1 == null) {
+				converted = null;
+			} else {
+				switch(convert) {
+				case "String":
+					if(typeof(data1) == "string") {
+						converted = data1;
+					} else {
+						throw new js__$Boot_HaxeError("DynamicObjectConverter.fromDynamicObject: Invalid type '" + Std.string(Type["typeof"](data1)) + ("' (" + convert + ") for field " + fieldName));
+					}
+					break;
+				case "Bool":
+					if(typeof(data1) == "string") {
+						converted = dataclass_StringConverter.toBool(data1);
+					} else if(typeof(data1) == "boolean") {
+						converted = data1;
+					} else {
+						throw new js__$Boot_HaxeError("DynamicObjectConverter.fromDynamicObject: Invalid type '" + Std.string(Type["typeof"](data1)) + ("' (" + convert + ") for field " + fieldName));
+					}
+					break;
+				case "Int":
+					if(typeof(data1) == "string") {
+						converted = dataclass_StringConverter.toInt(data1,delimiter);
+					} else if(((data1 | 0) === data1)) {
+						converted = data1;
+					} else {
+						throw new js__$Boot_HaxeError("DynamicObjectConverter.fromDynamicObject: Invalid type '" + Std.string(Type["typeof"](data1)) + ("' (" + convert + ") for field " + fieldName));
+					}
+					break;
+				case "Date":
+					if(typeof(data1) == "string") {
+						converted = dataclass_StringConverter.toDate(data1);
+					} else if(js_Boot.__instanceof(data1,Date)) {
+						converted = data1;
+					} else {
+						throw new js__$Boot_HaxeError("DynamicObjectConverter.fromDynamicObject: Invalid type '" + Std.string(Type["typeof"](data1)) + ("' (" + convert + ") for field " + fieldName));
+					}
+					break;
+				case "Float":
+					if(typeof(data1) == "string") {
+						converted = dataclass_StringConverter.toFloat(data1,delimiter);
+					} else if(typeof(data1) == "number") {
+						converted = data1;
+					} else {
+						throw new js__$Boot_HaxeError("DynamicObjectConverter.fromDynamicObject: Invalid type '" + Std.string(Type["typeof"](data1)) + ("' (" + convert + ") for field " + fieldName));
+					}
+					break;
+				default:
+					throw new js__$Boot_HaxeError("DynamicObjectConverter.fromDynamicObject: Invalid type '" + Std.string(Type["typeof"](data1)) + ("' (" + convert + ") for field " + fieldName));
+				}
+			}
+			output[fieldName] = converted;
+		}
+	}
+	return Type.createInstance(cls,[output]);
+};
+var dataclass_ColumnConverter = function() { };
+dataclass_ColumnConverter.__name__ = ["dataclass","ColumnConverter"];
+dataclass_ColumnConverter.fromClassData = function(cls,data,delimiter) {
+	var columns = haxe_rtti_Meta.getFields(cls);
+	var input = Lambda.array(data);
+	var output = { };
+	var _g = 0;
+	var _g1 = Reflect.fields(columns);
+	while(_g < _g1.length) {
+		var fieldName = _g1[_g];
+		++_g;
+		var col = Reflect.field(Reflect.field(columns,fieldName),"col");
+		if(col != null) {
+			output[fieldName] = input[col[0] - 1];
+		}
+	}
+	return dataclass_DynamicObjectConverter.fromDynamic(cls,output,delimiter);
+};
+dataclass_ColumnConverter.fromColumnData = function(cls,columns,data,delimiter) {
+	var input = Lambda.array(data);
+	var output = { };
+	var i = 0;
+	var tmp = $iterator(columns)();
+	while(tmp.hasNext()) output[tmp.next()] = input[i++];
+	return dataclass_DynamicObjectConverter.fromDynamic(cls,output,delimiter);
+};
+var dataclass_StringConverter = function() { };
+dataclass_StringConverter.__name__ = ["dataclass","StringConverter"];
+dataclass_StringConverter.toBool = function(s) {
+	return !new EReg("^(?:false|no|0|)$","i").match(StringTools.trim(s));
+};
+dataclass_StringConverter.toDate = function(s) {
+	return HxOverrides.strDate(StringTools.trim(s));
+};
+dataclass_StringConverter.toInt = function(s,delimiter) {
+	if(delimiter == null) {
+		delimiter = dataclass_Converter.delimiter;
+	}
+	if(delimiter == "") {
+		if(s.lastIndexOf(",") > s.lastIndexOf(".")) {
+			delimiter = ",";
+		} else {
+			delimiter = ".";
+		}
+	} else {
+		delimiter = delimiter;
+	}
+	return Std.parseInt(StringTools.replace(s,delimiter,"."));
+};
+dataclass_StringConverter.toFloat = function(s,delimiter) {
+	if(delimiter == null) {
+		delimiter = dataclass_Converter.delimiter;
+	}
+	if(delimiter == "") {
+		if(s.lastIndexOf(",") > s.lastIndexOf(".")) {
+			delimiter = ",";
+		} else {
+			delimiter = ".";
+		}
+	} else {
+		delimiter = delimiter;
+	}
+	var delimPos = s.lastIndexOf(delimiter);
+	var clean = function(s1) {
+		return new EReg("[^\\deE+-]","g").replace(s1,"");
+	};
+	var x = delimPos == -1?clean(s):clean(HxOverrides.substr(s,0,delimPos)) + "." + clean(HxOverrides.substr(s,delimPos,null));
+	return parseFloat(x);
+};
+var dataclass_BoolConverter = function() { };
+dataclass_BoolConverter.__name__ = ["dataclass","BoolConverter"];
+dataclass_BoolConverter.toString = function(b,boolValues) {
+	if(boolValues == null) {
+		boolValues = dataclass_Converter.boolValues;
+	}
+	if(b) {
+		return boolValues.tru;
+	} else {
+		return boolValues.fals;
+	}
+};
+var dataclass_IntConverter = function() { };
+dataclass_IntConverter.__name__ = ["dataclass","IntConverter"];
+dataclass_IntConverter.toString = function(i) {
+	if(i == null) {
+		return "null";
+	} else {
+		return "" + i;
+	}
+};
+var dataclass_DateConverter = function() { };
+dataclass_DateConverter.__name__ = ["dataclass","DateConverter"];
+dataclass_DateConverter.toStringFormat = function(d,format) {
+	if(format == null) {
+		format = dataclass_Converter.dateFormat;
+	}
+	return DateTools.format(d,format);
+};
+var dataclass_FloatConverter = function() { };
+dataclass_FloatConverter.__name__ = ["dataclass","FloatConverter"];
+dataclass_FloatConverter.toString = function(f,delimiter) {
+	if(delimiter == null) {
+		delimiter = dataclass_Converter.delimiter;
+	}
+	return StringTools.replace(f == null?"null":"" + f,".",delimiter);
+};
+var dataclass_DataClass = function() { };
+dataclass_DataClass.__name__ = ["dataclass","DataClass"];
 var express_Express = require("express");
 var express__$Next_Next_$Impl_$ = {};
 express__$Next_Next_$Impl_$.__name__ = ["express","_Next","Next_Impl_"];
@@ -1210,6 +1599,19 @@ haxe_ds_StringMap.prototype = {
 	}
 	,__class__: haxe_ds_StringMap
 };
+var haxe_rtti_Meta = function() { };
+haxe_rtti_Meta.__name__ = ["haxe","rtti","Meta"];
+haxe_rtti_Meta.getMeta = function(t) {
+	return t.__meta__;
+};
+haxe_rtti_Meta.getFields = function(t) {
+	var meta = haxe_rtti_Meta.getMeta(t);
+	if(meta == null || meta.fields == null) {
+		return { };
+	} else {
+		return meta.fields;
+	}
+};
 var js__$Boot_HaxeError = function(val) {
 	Error.call(this);
 	this.val = val;
@@ -1412,6 +1814,147 @@ var js_node_Https = require("https");
 var js_node_Path = require("path");
 var js_node_tls_SecureContext = function() { };
 js_node_tls_SecureContext.__name__ = ["js","node","tls","SecureContext"];
+var mtg_core_model_Card = function(data) {
+	this.latest = false;
+	this.legalities = [];
+	this.printings = [];
+	this.foreignNames = [];
+	this.rulings = [];
+	this.starter = false;
+	this.reserved = false;
+	this.timeshifted = false;
+	this.variations = [];
+	this.subtypes = [];
+	this.types = [];
+	this.supertypes = [];
+	this.colorIdentity = [];
+	this.colors = [];
+	this.cmc = 0;
+	this.names = [];
+	this.id = data.id;
+	if(this.id == null) {
+		throw new js__$Boot_HaxeError("Field " + "Card" + "." + "id" + " was null.");
+	}
+	this.layout = data.layout;
+	if(this.layout == null) {
+		throw new js__$Boot_HaxeError("Field " + "Card" + "." + "layout" + " was null.");
+	}
+	this.name = data.name;
+	if(this.name == null) {
+		throw new js__$Boot_HaxeError("Field " + "Card" + "." + "name" + " was null.");
+	}
+	this.names = data.names != null?data.names:[];
+	this.manaCost = data.manaCost != null?data.manaCost:null;
+	this.cmc = data.cmc != null?data.cmc:0;
+	this.colors = data.colors != null?data.colors:[];
+	this.colorIdentity = data.colorIdentity != null?data.colorIdentity:[];
+	this.type = data.type;
+	if(this.type == null) {
+		throw new js__$Boot_HaxeError("Field " + "Card" + "." + "type" + " was null.");
+	}
+	this.supertypes = data.supertypes != null?data.supertypes:[];
+	this.types = data.types != null?data.types:[];
+	this.subtypes = data.subtypes != null?data.subtypes:[];
+	this.rarity = data.rarity;
+	if(this.rarity == null) {
+		throw new js__$Boot_HaxeError("Field " + "Card" + "." + "rarity" + " was null.");
+	}
+	this.text = data.text != null?data.text:null;
+	this.flavor = data.flavor != null?data.flavor:null;
+	this.artist = data.artist != null?data.artist:null;
+	this.number = data.number != null?data.number:null;
+	this.mciNumber = data.mciNumber != null?data.mciNumber:null;
+	this.power = data.power != null?data.power:null;
+	this.toughness = data.toughness != null?data.toughness:null;
+	this.loyalty = data.loyalty != null?data.loyalty:null;
+	this.multiverseid = data.multiverseid;
+	if(this.multiverseid == null) {
+		throw new js__$Boot_HaxeError("Field " + "Card" + "." + "multiverseid" + " was null.");
+	}
+	this.variations = data.variations != null?data.variations:[];
+	this.imageName = data.imageName;
+	if(this.imageName == null) {
+		throw new js__$Boot_HaxeError("Field " + "Card" + "." + "imageName" + " was null.");
+	}
+	this.watermark = data.watermark != null?data.watermark:null;
+	this.border = data.border != null?data.border:null;
+	this.timeshifted = data.timeshifted != null && data.timeshifted;
+	this.hand = data.hand != null?data.hand:null;
+	this.life = data.life != null?data.life:null;
+	this.reserved = data.reserved != null && data.reserved;
+	this.releaseDate = data.releaseDate;
+	if(this.releaseDate == null) {
+		throw new js__$Boot_HaxeError("Field " + "Card" + "." + "releaseDate" + " was null.");
+	}
+	this.starter = data.starter != null && data.starter;
+	this.rulings = data.rulings != null?data.rulings:[];
+	this.foreignNames = data.foreignNames != null?data.foreignNames:[];
+	this.printings = data.printings != null?data.printings:[];
+	this.originalText = data.originalText != null?data.originalText:null;
+	this.originalType = data.originalType != null?data.originalType:null;
+	this.legalities = data.legalities != null?data.legalities:[];
+	this.source = data.source != null?data.source:null;
+	this.latest = data.latest != null && data.latest;
+};
+mtg_core_model_Card.__name__ = ["mtg","core","model","Card"];
+mtg_core_model_Card.__interfaces__ = [dataclass_DataClass];
+mtg_core_model_Card.prototype = {
+	id: null
+	,layout: null
+	,name: null
+	,names: null
+	,manaCost: null
+	,cmc: null
+	,colors: null
+	,colorIdentity: null
+	,type: null
+	,supertypes: null
+	,types: null
+	,subtypes: null
+	,rarity: null
+	,text: null
+	,flavor: null
+	,artist: null
+	,number: null
+	,mciNumber: null
+	,power: null
+	,toughness: null
+	,loyalty: null
+	,multiverseid: null
+	,variations: null
+	,imageName: null
+	,watermark: null
+	,border: null
+	,timeshifted: null
+	,hand: null
+	,life: null
+	,reserved: null
+	,releaseDate: null
+	,starter: null
+	,rulings: null
+	,foreignNames: null
+	,printings: null
+	,originalText: null
+	,originalType: null
+	,legalities: null
+	,source: null
+	,latest: null
+	,__class__: mtg_core_model_Card
+};
+var mtg_core_util_Arrays = function() { };
+mtg_core_util_Arrays.__name__ = ["mtg","core","util","Arrays"];
+mtg_core_util_Arrays.map = function(arr,mapper) {
+	var result = [];
+	var _g = 0;
+	while(_g < arr.length) {
+		var val = arr[_g];
+		++_g;
+		result.push(mapper(val));
+	}
+	return result;
+};
+var mtg_server_Config = function() { };
+mtg_server_Config.__name__ = ["mtg","server","Config"];
 var mtg_server_Main = function() { };
 mtg_server_Main.__name__ = ["mtg","server","Main"];
 mtg_server_Main.main = function() {
@@ -1422,8 +1965,17 @@ mtg_server_Main.main = function() {
 	var instance = new mtg_server_route_ApiRoute();
 	var router = app.router.mount("/api");
 	router.registerMethod("/","get",new mtg_server_route_ApiRoute_$ping_$RouteProcess({ },instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[])),[],[]);
-	router.registerMethod("/cards/:id","get",new mtg_server_route_ApiRoute_$getCard_$RouteProcess({ id : null},instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[{ name : "id", optional : false, type : "String", sources : ["params"]}])),[],[]);
 	router.registerMethod("/cards","get",new mtg_server_route_ApiRoute_$getCards_$RouteProcess({ },instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[])),[],[]);
+	router.registerMethod("/cards/:id","get",new mtg_server_route_ApiRoute_$getCard_$RouteProcess({ id : null},instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[{ name : "id", optional : false, type : "String", sources : ["params"]}])),[],[]);
+	var __abe_process = new mtg_server_route_ApiRoute_$createCard_$RouteProcess({ },instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[]));
+	var __abe_uses = [];
+	__abe_uses = __abe_uses.concat([mw_BodyParser.json()]);
+	router.registerMethod("/cards","post",__abe_process,__abe_uses,[]);
+	router.registerMethod("/cards/:id","put",new mtg_server_route_ApiRoute_$updateCard_$RouteProcess({ },instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[])),[],[]);
+	router.registerMethod("/editions","get",new mtg_server_route_ApiRoute_$getEditions_$RouteProcess({ },instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[])),[],[]);
+	router.registerMethod("/editions/:code","get",new mtg_server_route_ApiRoute_$getEdition_$RouteProcess({ code : null},instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[{ name : "code", optional : false, type : "String", sources : ["params"]}])),[],[]);
+	router.registerMethod("/editions","post",new mtg_server_route_ApiRoute_$createEdition_$RouteProcess({ },instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[])),[],[]);
+	router.registerMethod("/editions","put",new mtg_server_route_ApiRoute_$updateEdition_$RouteProcess({ },instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[])),[],[]);
 	app.router.serve("/",js_node_Path.join(__dirname,"public"));
 	app.router["use"](null,function(req,res,next) {
 		next(mtg_server_error_HttpError.notFound("Not found",haxe_ds_Option.None));
@@ -1435,6 +1987,83 @@ mtg_server_Main.main = function() {
 	}
 	app.http(port,"0.0.0.0");
 	console.log("server listening at " + "0.0.0.0" + ":" + port);
+};
+var mtg_server_data_Database = function(connectionString) {
+	this.connectionString = connectionString;
+};
+mtg_server_data_Database.__name__ = ["mtg","server","data","Database"];
+mtg_server_data_Database.single = function(promise) {
+	return thx_promise__$Promise_Promise_$Impl_$.mapSuccessPromise(promise,function(items) {
+		if(items == null || items.length == 0) {
+			return thx_promise__$Promise_Promise_$Impl_$.error(new thx_Error("Not found",null,{ fileName : "Database.hx", lineNumber : 124, className : "mtg.server.data.Database", methodName : "single"}));
+		} else {
+			return thx_promise__$Promise_Promise_$Impl_$.value(items[0]);
+		}
+	});
+};
+mtg_server_data_Database.prototype = {
+	connectionString: null
+	,getCards: function() {
+		var f = function(data,delimiter) {
+			return dataclass_DynamicObjectConverter.fromDynamic(mtg_core_model_Card,data,delimiter);
+		};
+		return this.query("select * from cards",null,function(a1) {
+			return f(a1,null);
+		});
+	}
+	,getCardById: function(id) {
+		var f = function(data,delimiter) {
+			return dataclass_DynamicObjectConverter.fromDynamic(mtg_core_model_Card,data,delimiter);
+		};
+		return mtg_server_data_Database.single(this.query("select * from card where id = $1",[id],function(a1) {
+			return f(a1,null);
+		}));
+	}
+	,createCard: function(card) {
+		var _g = this;
+		return thx_promise__$Promise_Promise_$Impl_$.mapSuccessPromise(this.query("insert into card (\n        id, layout, name, names, mana_cost,\n        cmc, colors, color_identity, type, supertypes,\n        types, subtypes, rarity, rules_text, flavor_text,\n        artist, number, power, toughness, loyalty,\n        multiverse_id, variations, image_name, watermark, border,\n        timeshifted, hand_modifier, life_modifier, reserved, release_date,\n        starter, rulings, foreign_names, printings, original_rules_text,\n        original_type, legalities, source, is_latest_printing\n      ) values ($1, $2, $3, $4, $5,\n        $6, $7, $8, $9, $10,\n        $11, $12, $13, $14, $15,\n        $16, $17, $18, $19, $20,\n        $21, $22, $23, $24, $25,\n        $26, $27, $28, $29, $30,\n        $31, $32, $33, $34, $35,\n        $36, $37, $38, $39)",[card.id,card.layout,card.name,card.names,card.manaCost,card.cmc,card.colors,card.colorIdentity,card.type,card.supertypes,card.types,card.subtypes,card.rarity,card.text,card.flavor,card.artist,card.number,card.power,card.toughness,card.loyalty,card.multiverseid,card.variations,card.imageName,card.watermark,card.border,card.timeshifted,card.hand,card.life,card.reserved,card.releaseDate,card.starter,card.rulings,card.foreignNames,card.printings,card.originalText,card.originalType,card.legalities,card.source,card.latest],$bind(this,this.castConverter)),function(_) {
+			return _g.getCardById(card.id);
+		});
+	}
+	,updateCard: function(card) {
+		var _g = this;
+		return thx_promise__$Promise_Promise_$Impl_$.mapSuccessPromise(this.query("update card set\n        id = $1, layout = $2, name = $3, names = $4, mana_cost = $5,\n        cmc = $6, colors = $7, color_identity = $8, type = $9, supertypes = $10,\n        types = $11, subtypes = $12, rarity = $13, rules_text = $14, flavor_text = $15,\n        artist = $16, number = $17, power = $18, toughness = $19, loyalty = $20,\n        multiverse_id = $21, variations = $22, image_name = $23, watermark = $24, border = $25,\n        timeshifted = $26, hand_modifier = $27, life_modifier = $28, reserved = $29, release_date = $30,\n        starter = $31, rulings = $32, foreign_names = $33, printings = $34, original_rules_text = $35,\n        original_type = $36, legalities = $37, source = $38, is_latest_printing = $39\n      where id = $1;",[card.id,card.layout,card.name,card.names,card.manaCost,card.cmc,card.colors,card.colorIdentity,card.type,card.supertypes,card.types,card.subtypes,card.rarity,card.text,card.flavor,card.artist,card.number,card.power,card.toughness,card.loyalty,card.multiverseid,card.variations,card.imageName,card.watermark,card.border,card.timeshifted,card.hand,card.life,card.reserved,card.releaseDate,card.starter,card.rulings,card.foreignNames,card.printings,card.originalText,card.originalType,card.legalities,card.source,card.latest],$bind(this,this.castConverter)),function(_) {
+			return _g.getCardById(card.id);
+		});
+	}
+	,query: function(sql,params,converter) {
+		var _g = this;
+		return thx_promise__$Promise_Promise_$Impl_$.create(function(resolve,reject) {
+			npm_PG.connect(_g.connectionString,function(err,client,done) {
+				if(err != null) {
+					done();
+					reject(thx_Error.fromDynamic(err,{ fileName : "Database.hx", lineNumber : 93, className : "mtg.server.data.Database", methodName : "query"}));
+					return;
+				}
+				console.log(sql);
+				if(params != null) {
+					console.log(params);
+				}
+				client.query(sql,params,function(err1,queryResult) {
+					if(err1 != null) {
+						done();
+						reject(thx_Error.fromDynamic(err1,{ fileName : "Database.hx", lineNumber : 103, className : "mtg.server.data.Database", methodName : "query"}));
+						return;
+					}
+					var results = queryResult.rows.map(function(row) {
+						var data = row;
+						return converter(data);
+					});
+					done();
+					resolve(results);
+				});
+			});
+		});
+	}
+	,castConverter: function(row) {
+		return row;
+	}
+	,__class__: mtg_server_data_Database
 };
 var mtg_server_error_ErrorHandler = function() { };
 mtg_server_error_ErrorHandler.__name__ = ["mtg","server","error","ErrorHandler"];
@@ -1540,24 +2169,71 @@ mtg_server_error_ValidationError.prototype = $extend(thx_Error.prototype,{
 	__class__: mtg_server_error_ValidationError
 });
 var mtg_server_route_ApiRoute = function() {
+	this.database = new mtg_server_data_Database("postgres://mtguser:mtgpassword@localhost:5432/mtg");
 };
 mtg_server_route_ApiRoute.__name__ = ["mtg","server","route","ApiRoute"];
 mtg_server_route_ApiRoute.__interfaces__ = [abe_IRoute];
+mtg_server_route_ApiRoute.sendData = function(promise,statusCode,response,next) {
+	thx_promise__$Promise_Promise_$Impl_$.failure(thx_promise__$Promise_Promise_$Impl_$.success(promise,function(data) {
+		if(statusCode == null) {
+			statusCode = 200;
+		}
+		response.status(statusCode).send(data);
+	}),function(err) {
+		next(err);
+	});
+};
 mtg_server_route_ApiRoute.prototype = {
-	ping: function(request,response,next) {
+	database: null
+	,ping: function(request,response,next) {
 		response.send({ status : "OK"});
 	}
-	,getCard: function(id,request,response,next) {
-		response.redirect(307,"https://api.deckbrew.com/mtg" + "/cards/" + id);
-	}
 	,getCards: function(request,response,next) {
-		response.redirect(307,"https://api.deckbrew.com/mtg" + "/cards");
+		mtg_server_route_ApiRoute.sendData(this.database.getCards(),null,response,next);
+	}
+	,getCard: function(id,request,response,next) {
+	}
+	,createCard: function(request,response,next) {
+		console.log(request.body);
+		mtg_server_route_ApiRoute.sendData(this.database.createCard(dataclass_DynamicObjectConverter.fromDynamic(mtg_core_model_Card,request.body)),201,response,next);
+	}
+	,updateCard: function(request,response,next) {
+	}
+	,getEditions: function(request,response,next) {
+	}
+	,getEdition: function(code,request,response,next) {
+	}
+	,createEdition: function(request,response,next) {
+	}
+	,updateEdition: function(request,response,next) {
 	}
 	,toString: function() {
 		return "mtg.server.route.ApiRoute";
 	}
 	,__class__: mtg_server_route_ApiRoute
 };
+var mtg_server_route_ApiRoute_$createCard_$RouteProcess = function(args,instance,argumentProcessor) {
+	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
+};
+mtg_server_route_ApiRoute_$createCard_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_createCard_RouteProcess"];
+mtg_server_route_ApiRoute_$createCard_$RouteProcess.__super__ = abe_core_RouteProcess;
+mtg_server_route_ApiRoute_$createCard_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
+	execute: function(request,response,next) {
+		this.instance.createCard(request,response,next);
+	}
+	,__class__: mtg_server_route_ApiRoute_$createCard_$RouteProcess
+});
+var mtg_server_route_ApiRoute_$createEdition_$RouteProcess = function(args,instance,argumentProcessor) {
+	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
+};
+mtg_server_route_ApiRoute_$createEdition_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_createEdition_RouteProcess"];
+mtg_server_route_ApiRoute_$createEdition_$RouteProcess.__super__ = abe_core_RouteProcess;
+mtg_server_route_ApiRoute_$createEdition_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
+	execute: function(request,response,next) {
+		this.instance.createEdition(request,response,next);
+	}
+	,__class__: mtg_server_route_ApiRoute_$createEdition_$RouteProcess
+});
 var mtg_server_route_ApiRoute_$getCard_$RouteProcess = function(args,instance,argumentProcessor) {
 	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
 };
@@ -1580,6 +2256,28 @@ mtg_server_route_ApiRoute_$getCards_$RouteProcess.prototype = $extend(abe_core_R
 	}
 	,__class__: mtg_server_route_ApiRoute_$getCards_$RouteProcess
 });
+var mtg_server_route_ApiRoute_$getEdition_$RouteProcess = function(args,instance,argumentProcessor) {
+	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
+};
+mtg_server_route_ApiRoute_$getEdition_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_getEdition_RouteProcess"];
+mtg_server_route_ApiRoute_$getEdition_$RouteProcess.__super__ = abe_core_RouteProcess;
+mtg_server_route_ApiRoute_$getEdition_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
+	execute: function(request,response,next) {
+		this.instance.getEdition(this.args.code,request,response,next);
+	}
+	,__class__: mtg_server_route_ApiRoute_$getEdition_$RouteProcess
+});
+var mtg_server_route_ApiRoute_$getEditions_$RouteProcess = function(args,instance,argumentProcessor) {
+	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
+};
+mtg_server_route_ApiRoute_$getEditions_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_getEditions_RouteProcess"];
+mtg_server_route_ApiRoute_$getEditions_$RouteProcess.__super__ = abe_core_RouteProcess;
+mtg_server_route_ApiRoute_$getEditions_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
+	execute: function(request,response,next) {
+		this.instance.getEditions(request,response,next);
+	}
+	,__class__: mtg_server_route_ApiRoute_$getEditions_$RouteProcess
+});
 var mtg_server_route_ApiRoute_$ping_$RouteProcess = function(args,instance,argumentProcessor) {
 	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
 };
@@ -1591,9 +2289,33 @@ mtg_server_route_ApiRoute_$ping_$RouteProcess.prototype = $extend(abe_core_Route
 	}
 	,__class__: mtg_server_route_ApiRoute_$ping_$RouteProcess
 });
+var mtg_server_route_ApiRoute_$updateCard_$RouteProcess = function(args,instance,argumentProcessor) {
+	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
+};
+mtg_server_route_ApiRoute_$updateCard_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_updateCard_RouteProcess"];
+mtg_server_route_ApiRoute_$updateCard_$RouteProcess.__super__ = abe_core_RouteProcess;
+mtg_server_route_ApiRoute_$updateCard_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
+	execute: function(request,response,next) {
+		this.instance.updateCard(request,response,next);
+	}
+	,__class__: mtg_server_route_ApiRoute_$updateCard_$RouteProcess
+});
+var mtg_server_route_ApiRoute_$updateEdition_$RouteProcess = function(args,instance,argumentProcessor) {
+	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
+};
+mtg_server_route_ApiRoute_$updateEdition_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_updateEdition_RouteProcess"];
+mtg_server_route_ApiRoute_$updateEdition_$RouteProcess.__super__ = abe_core_RouteProcess;
+mtg_server_route_ApiRoute_$updateEdition_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
+	execute: function(request,response,next) {
+		this.instance.updateEdition(request,response,next);
+	}
+	,__class__: mtg_server_route_ApiRoute_$updateEdition_$RouteProcess
+});
+var mw_BodyParser = require("body-parser");
 var mw_Compression = require("compression");
 var mw_Cors = require("cors");
 var mw_Morgan = require("morgan");
+var npm_PG = require("pg");
 var thx_Arrays = function() { };
 thx_Arrays.__name__ = ["thx","Arrays"];
 thx_Arrays.append = function(array,element) {
@@ -4495,6 +5217,7 @@ thx_Maps.merge = function(dest,sources) {
 };
 var thx__$Monoid_Monoid_$Impl_$ = {};
 thx__$Monoid_Monoid_$Impl_$.__name__ = ["thx","_Monoid","Monoid_Impl_"];
+thx__$Monoid_Monoid_$Impl_$.__properties__ = {get_zero:"get_zero",get_semigroup:"get_semigroup"}
 thx__$Monoid_Monoid_$Impl_$.get_semigroup = function(this1) {
 	return this1.append;
 };
@@ -5515,6 +6238,7 @@ thx__$ReadonlyArray_ReadonlyArray_$Impl_$.append = function(this1,el) {
 };
 var thx__$Result_Result_$Impl_$ = {};
 thx__$Result_Result_$Impl_$.__name__ = ["thx","_Result","Result_Impl_"];
+thx__$Result_Result_$Impl_$.__properties__ = {get_isFailure:"get_isFailure",get_isSuccess:"get_isSuccess"}
 thx__$Result_Result_$Impl_$.optionValue = function(this1) {
 	switch(this1[1]) {
 	case 1:
@@ -5565,6 +6289,7 @@ thx__$Result_Result_$Impl_$.get_isFailure = function(this1) {
 };
 var thx__$Semigroup_Semigroup_$Impl_$ = {};
 thx__$Semigroup_Semigroup_$Impl_$.__name__ = ["thx","_Semigroup","Semigroup_Impl_"];
+thx__$Semigroup_Semigroup_$Impl_$.__properties__ = {get_append:"get_append"}
 thx__$Semigroup_Semigroup_$Impl_$.get_append = function(this1) {
 	return this1;
 };
@@ -6249,6 +6974,7 @@ thx__$Tuple_Tuple0_$Impl_$.nilToTuple = function(v) {
 };
 var thx__$Tuple_Tuple1_$Impl_$ = {};
 thx__$Tuple_Tuple1_$Impl_$.__name__ = ["thx","_Tuple","Tuple1_Impl_"];
+thx__$Tuple_Tuple1_$Impl_$.__properties__ = {get__0:"get__0"}
 thx__$Tuple_Tuple1_$Impl_$._new = function(_0) {
 	return _0;
 };
@@ -6266,6 +6992,7 @@ thx__$Tuple_Tuple1_$Impl_$.arrayToTuple = function(v) {
 };
 var thx__$Tuple_Tuple2_$Impl_$ = {};
 thx__$Tuple_Tuple2_$Impl_$.__name__ = ["thx","_Tuple","Tuple2_Impl_"];
+thx__$Tuple_Tuple2_$Impl_$.__properties__ = {get_right:"get_right",get_left:"get_left"}
 thx__$Tuple_Tuple2_$Impl_$.of = function(_0,_1) {
 	return { _0 : _0, _1 : _1};
 };
@@ -6511,6 +7238,7 @@ thx_Types.anyValueToString = function(value) {
 };
 var thx__$Validation_Validation_$Impl_$ = {};
 thx__$Validation_Validation_$Impl_$.__name__ = ["thx","_Validation","Validation_Impl_"];
+thx__$Validation_Validation_$Impl_$.__properties__ = {get_either:"get_either"}
 thx__$Validation_Validation_$Impl_$.validation = function(e) {
 	return e;
 };
@@ -7836,12 +8564,17 @@ abe_core_ArgumentsFilter.globalFilters = (function($this) {
 	$r = filters;
 	return $r;
 }(this));
+dataclass_Converter.delimiter = ".";
+dataclass_Converter.boolValues = { tru : "1", fals : "0"};
+dataclass_Converter.dateFormat = "%Y-%m-%d %H:%M:%S";
+dataclass_DynamicObjectConverter.supportedTypes = ["Bool","Date","Int","Float","String"];
 haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 haxe_ds_ObjectMap.count = 0;
 js_Boot.__toStr = {}.toString;
+mtg_core_model_Card.__meta__ = { obj : { immutable : null}, fields : { id : { convertTo : ["String"]}, layout : { convertTo : ["String"]}, name : { convertTo : ["String"]}, manaCost : { convertTo : ["String"]}, cmc : { convertTo : ["Int"]}, type : { convertTo : ["String"]}, rarity : { convertTo : ["String"]}, text : { convertTo : ["String"]}, flavor : { convertTo : ["String"]}, artist : { convertTo : ["String"]}, number : { convertTo : ["String"]}, mciNumber : { convertTo : ["String"]}, power : { convertTo : ["String"]}, toughness : { convertTo : ["String"]}, loyalty : { convertTo : ["Int"]}, multiverseid : { convertTo : ["Int"]}, imageName : { convertTo : ["String"]}, watermark : { convertTo : ["String"]}, border : { convertTo : ["String"]}, timeshifted : { convertTo : ["Bool"]}, hand : { convertTo : ["Int"]}, life : { convertTo : ["Int"]}, reserved : { convertTo : ["Bool"]}, releaseDate : { convertTo : ["String"]}, starter : { convertTo : ["Bool"]}, originalText : { convertTo : ["String"]}, originalType : { convertTo : ["String"]}, source : { convertTo : ["String"]}, latest : { convertTo : ["Bool"]}}};
+mtg_server_Config.MTG_DATABASE_URL = "postgres://mtguser:mtgpassword@localhost:5432/mtg";
 mtg_server_Main.DEFAULT_HOST = "0.0.0.0";
 mtg_server_Main.DEFAULT_PORT = 9999;
-mtg_server_route_ApiRoute.deckBrewBaseUrl = "https://api.deckbrew.com/mtg";
 thx_Floats.TOLERANCE = 10e-5;
 thx_Floats.EPSILON = 1e-9;
 thx_Floats.pattern_parse = new EReg("^(\\+|-)?\\d+(\\.\\d+)?(e-?\\d+)?$","");

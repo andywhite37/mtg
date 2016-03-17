@@ -28,9 +28,11 @@
     "nib": "^1.1.0",
     "nodemon": "^1.9.1",
     "pg-bluebird": "^1.0.8",
-    "postgrator": "^2.7.0"
+    "postgrator": "^2.7.0",
+    "request": "^2.69.0"
   },
   "dependencies": {
+    "body-parser": "^1.15.0",
     "compression": "^1.6.1",
     "cors": "^2.7.1",
     "express": "^4.13.4",

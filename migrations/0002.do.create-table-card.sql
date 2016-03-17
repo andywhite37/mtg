@@ -1,4 +1,4 @@
-create table cards (
+create table card (
   id varchar(50) primary key,
   layout varchar(20) not null,
   name varchar(250) not null,
@@ -33,9 +33,10 @@ create table cards (
   rulings json not null,
   foreign_names json not null,
   printings varchar(10)[] not null,
-  is_latest_printing boolean not null,
   original_rules_text text not null,
   original_type varchar(250) not null,
   legalities json not null,
-  source text null
+  source text null,
+
+  is_latest_printing boolean not null
 );

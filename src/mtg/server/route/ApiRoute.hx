@@ -3,10 +3,13 @@ package mtg.server.route;
 import abe.IRoute;
 import express.Next;
 import express.Response;
+import mtg.core.model.*;
 import mtg.server.data.Database;
 import thx.promise.Promise;
 using mtg.server.Config;
 using mtg.server.route.ApiRoute;
+using dataclass.Converter;
+using dataclass.DataClass;
 
 @:path('/api')
 class ApiRoute implements IRoute {
@@ -32,7 +35,12 @@ class ApiRoute implements IRoute {
   }
 
   @:post('/cards')
+  @:use(mw.BodyParser.json())
   function createCard() {
+    trace(request.body);
+    var card = Card.fromDynamic(request.body);
+    database.createCard(card)
+      .sendData(201, response, next);
   }
 
   @:put('/cards/:id')

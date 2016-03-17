@@ -1,4 +1,4 @@
-create table editions (
+create table set (
   code varchar(20) not null primary key,
   name varchar(250) not null,
   gatherer_code varchar(20) null,
