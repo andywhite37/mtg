@@ -3241,10 +3241,10 @@ var mtg_client_api_ApiClient = function() {
 mtg_client_api_ApiClient.__name__ = ["mtg","client","api","ApiClient"];
 mtg_client_api_ApiClient.prototype = {
 	getCards: function() {
-		return this.http({ type : "GET", url : "/api/cards"});
+		return this.http({ type : "GET", url : "/api/cards"},this.arrayConverter(mtg_core_model_Card.fromObject));
 	}
 	,getCard: function(cardId) {
-		return this.http({ type : "GET", url : "/api/cards/" + cardId});
+		return this.http({ type : "GET", url : "/api/cards/" + cardId},mtg_core_model_Card.fromObject);
 	}
 	,http: function(options,converter) {
 		if(converter == null) {
@@ -3262,7 +3262,7 @@ mtg_client_api_ApiClient.prototype = {
 			$.ajax(options);
 		});
 	}
-	,fromArray: function(converter) {
+	,arrayConverter: function(converter) {
 		return function(input) {
 			return mtg_core_util_Arrays.map(input,converter);
 		};
@@ -3994,6 +3994,9 @@ var mtg_core_model_Card = function(data) {
 };
 mtg_core_model_Card.__name__ = ["mtg","core","model","Card"];
 mtg_core_model_Card.__interfaces__ = [dataclass_DataClass];
+mtg_core_model_Card.fromObject = function(data) {
+	return new mtg_core_model_Card(data);
+};
 mtg_core_model_Card.prototype = {
 	id: null
 	,layout: null

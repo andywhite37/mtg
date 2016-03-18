@@ -67,7 +67,7 @@ abstract Symbol(String) to String {
   var GW = "{G/W}";
   var GU = "{G/U}";
 
-  // Split colorless and single
+  // Split 2 x colorless and single color
   var C2W = "{2/W}";
   var C2U = "{2/U}";
   var C2B = "{2/B}";

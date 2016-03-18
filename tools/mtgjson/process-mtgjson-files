@@ -8,26 +8,75 @@ var pgb = require('pg-bluebird');
 var request = require('request');
 Promise.promisifyAll(request);
 
+var baseUrl = 'http://localhost:9999/api';
 var sets = JSON.parse(fs.readFileSync(path.join(__dirname, 'AllSets-x.json'), 'utf-8'));
 var setCodes = _.keys(sets);
-var firstSetCode = setCodes[0];
-var firstSet = sets[firstSetCode];
-var cards = firstSet.cards;
-var card = cards[0];
 
-card.types = card.types || [];
-card.releaseDate = card.releaseDate || firstSet.releaseDate;
-card.names = card.names || [card.name];
+function publishSet(set) {
+  console.log('publishing set %s...', set.code);
+  //set.block = set.block || '';
+  return request.postAsync({
+    url: baseUrl + '/sets',
+    body: set,
+    json: true
+  })
+  .spread(function(response, body) {
+    //console.log(body);
+    checkResponse(response);
+    return body;
+  });
+}
 
-console.log(card);
+function publishCard(set, card) {
+  card.border = card.border || set.border;
+  card.releaseDate = card.releaseDate || set.releaseDate;
+  card.number = card.number || card.mciNumber;
+  card.multiverseid = card.multiverseid || -1;
 
-request.postAsync({
-  url: 'http://localhost:9999/api/cards',
-  body: card,
-  json: true
-})
-.spread(function(response, body) {
-  console.log(body);
+  console.log('publishing card %s (%s)...', card.name, set.code);
+  return request.postAsync({
+    url: baseUrl + '/cards',
+    body: card,
+    json: true
+  })
+  .spread(function(response, body) {
+    checkResponse(response);
+    return body;
+  });
+}
+
+function publishSetCard(set, card) {
+  console.log('publishing set_card %s <-> %s', set.code, card.name);
+  return request.postAsync({
+    url: 'http://localhost:9999/api/sets/' + set.code + '/cards/' + card.id
+  })
+  .spread(function(response, body) {
+    checkResponse(response);
+    return null;
+  });
+}
+
+function checkResponse(response) {
+  if (response.statusCode < 200 || response.statusCode >= 300) {
+    throw new Error('API error ' + response.statusCode);
+  }
+}
+
+Promise.each(setCodes, function(setCode) {
+  var set = sets[setCode];
+  var cards = set.cards;
+  delete set.cards;
+  return publishSet(set)
+    .then(function(set) {
+      console.log(set);
+      //process.exit(1);
+      return Promise.each(cards, function(card) {
+        return publishCard(set, card)
+          .then(function(card) {
+            return publishSetCard(set, card);
+          });
+      });
+    });
 })
 .catch(function(err) {
   console.error(chalk.red('error'));

@@ -51,4 +51,8 @@ class Card implements DataClass {
 
   // other fields
   public var latest : Bool = false;
+
+  public static function fromObject(data : {}) : Card {
+    return new Card(cast data);
+  }
 }

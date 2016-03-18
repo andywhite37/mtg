@@ -1108,6 +1108,10 @@ dataclass_DynamicObjectConverter.fromDynamic = function(cls,data,delimiter) {
 		delimiter = dataclass_Converter.delimiter;
 	}
 	var columns = haxe_rtti_Meta.getFields(cls);
+	console.log("class fields");
+	console.log(columns);
+	console.log("data fields");
+	console.log(Reflect.fields(data));
 	var output = { };
 	var _g = 0;
 	var _g1 = Reflect.fields(columns);
@@ -1898,6 +1902,9 @@ var mtg_core_model_Card = function(data) {
 };
 mtg_core_model_Card.__name__ = ["mtg","core","model","Card"];
 mtg_core_model_Card.__interfaces__ = [dataclass_DataClass];
+mtg_core_model_Card.fromObject = function(data) {
+	return new mtg_core_model_Card(data);
+};
 mtg_core_model_Card.prototype = {
 	id: null
 	,layout: null
@@ -1941,6 +1948,55 @@ mtg_core_model_Card.prototype = {
 	,latest: null
 	,__class__: mtg_core_model_Card
 };
+var mtg_core_model_Set = function(data) {
+	this.booster = [];
+	this.onlineOnly = false;
+	this.name = data.name;
+	if(this.name == null) {
+		throw new js__$Boot_HaxeError("Field " + "Set" + "." + "name" + " was null.");
+	}
+	this.code = data.code;
+	if(this.code == null) {
+		throw new js__$Boot_HaxeError("Field " + "Set" + "." + "code" + " was null.");
+	}
+	this.gathererCode = data.gathererCode != null?data.gathererCode:null;
+	this.oldCode = data.oldCode != null?data.oldCode:null;
+	this.magicCardsInfoCode = data.magicCardsInfoCode != null?data.magicCardsInfoCode:null;
+	this.releaseDate = data.releaseDate;
+	if(this.releaseDate == null) {
+		throw new js__$Boot_HaxeError("Field " + "Set" + "." + "releaseDate" + " was null.");
+	}
+	this.border = data.border;
+	if(this.border == null) {
+		throw new js__$Boot_HaxeError("Field " + "Set" + "." + "border" + " was null.");
+	}
+	this.type = data.type;
+	if(this.type == null) {
+		throw new js__$Boot_HaxeError("Field " + "Set" + "." + "type" + " was null.");
+	}
+	this.block = data.block != null?data.block:null;
+	this.onlineOnly = data.onlineOnly != null && data.onlineOnly;
+	this.booster = data.booster != null?data.booster:[];
+};
+mtg_core_model_Set.__name__ = ["mtg","core","model","Set"];
+mtg_core_model_Set.__interfaces__ = [dataclass_DataClass];
+mtg_core_model_Set.fromObject = function(data) {
+	return new mtg_core_model_Set(data);
+};
+mtg_core_model_Set.prototype = {
+	name: null
+	,code: null
+	,gathererCode: null
+	,oldCode: null
+	,magicCardsInfoCode: null
+	,releaseDate: null
+	,border: null
+	,type: null
+	,block: null
+	,onlineOnly: null
+	,booster: null
+	,__class__: mtg_core_model_Set
+};
 var mtg_core_util_Arrays = function() { };
 mtg_core_util_Arrays.__name__ = ["mtg","core","util","Arrays"];
 mtg_core_util_Arrays.map = function(arr,mapper) {
@@ -1971,11 +2027,24 @@ mtg_server_Main.main = function() {
 	var __abe_uses = [];
 	__abe_uses = __abe_uses.concat([mw_BodyParser.json()]);
 	router.registerMethod("/cards","post",__abe_process,__abe_uses,[]);
-	router.registerMethod("/cards/:id","put",new mtg_server_route_ApiRoute_$updateCard_$RouteProcess({ },instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[])),[],[]);
-	router.registerMethod("/editions","get",new mtg_server_route_ApiRoute_$getEditions_$RouteProcess({ },instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[])),[],[]);
-	router.registerMethod("/editions/:code","get",new mtg_server_route_ApiRoute_$getEdition_$RouteProcess({ code : null},instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[{ name : "code", optional : false, type : "String", sources : ["params"]}])),[],[]);
-	router.registerMethod("/editions","post",new mtg_server_route_ApiRoute_$createEdition_$RouteProcess({ },instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[])),[],[]);
-	router.registerMethod("/editions","put",new mtg_server_route_ApiRoute_$updateEdition_$RouteProcess({ },instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[])),[],[]);
+	var __abe_process1 = new mtg_server_route_ApiRoute_$updateCard_$RouteProcess({ id : null},instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[{ name : "id", optional : false, type : "String", sources : ["params"]}]));
+	var __abe_uses1 = [];
+	__abe_uses1 = __abe_uses1.concat([mw_BodyParser.json()]);
+	router.registerMethod("/cards/:id","put",__abe_process1,__abe_uses1,[]);
+	router.registerMethod("/cards/:id","delete",new mtg_server_route_ApiRoute_$deleteCard_$RouteProcess({ id : null},instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[{ name : "id", optional : false, type : "String", sources : ["params"]}])),[],[]);
+	router.registerMethod("/sets","get",new mtg_server_route_ApiRoute_$getSets_$RouteProcess({ },instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[])),[],[]);
+	router.registerMethod("/sets/:code","get",new mtg_server_route_ApiRoute_$getSet_$RouteProcess({ code : null},instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[{ name : "code", optional : false, type : "String", sources : ["params"]}])),[],[]);
+	var __abe_process2 = new mtg_server_route_ApiRoute_$createSet_$RouteProcess({ },instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[]));
+	var __abe_uses2 = [];
+	__abe_uses2 = __abe_uses2.concat([mw_BodyParser.json()]);
+	router.registerMethod("/sets","post",__abe_process2,__abe_uses2,[]);
+	var __abe_process3 = new mtg_server_route_ApiRoute_$updateSet_$RouteProcess({ code : null},instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[{ name : "code", optional : false, type : "String", sources : ["params"]}]));
+	var __abe_uses3 = [];
+	__abe_uses3 = __abe_uses3.concat([mw_BodyParser.json()]);
+	router.registerMethod("/sets/:code","put",__abe_process3,__abe_uses3,[]);
+	router.registerMethod("/sets/:code","delete",new mtg_server_route_ApiRoute_$deleteSet_$RouteProcess({ code : null},instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[{ name : "code", optional : false, type : "String", sources : ["params"]}])),[],[]);
+	router.registerMethod("/sets/:code/cards/:id","post",new mtg_server_route_ApiRoute_$createSetCard_$RouteProcess({ code : null, id : null},instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[{ name : "code", optional : false, type : "String", sources : ["params"]},{ name : "id", optional : false, type : "String", sources : ["params"]}])),[],[]);
+	router.registerMethod("/sets/:code/cards/:id","delete",new mtg_server_route_ApiRoute_$deleteSetCard_$RouteProcess({ code : null, id : null},instance,new abe_core_ArgumentProcessor(new abe_core_ArgumentsFilter(),[{ name : "code", optional : false, type : "String", sources : ["params"]},{ name : "id", optional : false, type : "String", sources : ["params"]}])),[],[]);
 	app.router.serve("/",js_node_Path.join(__dirname,"public"));
 	app.router["use"](null,function(req,res,next) {
 		next(mtg_server_error_HttpError.notFound("Not found",haxe_ds_Option.None));
@@ -1992,52 +2061,95 @@ var mtg_server_data_Database = function(connectionString) {
 	this.connectionString = connectionString;
 };
 mtg_server_data_Database.__name__ = ["mtg","server","data","Database"];
-mtg_server_data_Database.single = function(promise) {
+mtg_server_data_Database.firstRow = function(promise) {
 	return thx_promise__$Promise_Promise_$Impl_$.mapSuccessPromise(promise,function(items) {
 		if(items == null || items.length == 0) {
-			return thx_promise__$Promise_Promise_$Impl_$.error(new thx_Error("Not found",null,{ fileName : "Database.hx", lineNumber : 124, className : "mtg.server.data.Database", methodName : "single"}));
+			return thx_promise__$Promise_Promise_$Impl_$.error(new thx_Error("Not found",null,{ fileName : "Database.hx", lineNumber : 192, className : "mtg.server.data.Database", methodName : "firstRow"}));
 		} else {
 			return thx_promise__$Promise_Promise_$Impl_$.value(items[0]);
 		}
 	});
 };
+mtg_server_data_Database.nil = function(promise) {
+	return thx_promise__$Promise_Promise_$Impl_$.mapSuccessPromise(promise,function(_) {
+		return thx_promise__$Promise_Promise_$Impl_$.nil;
+	});
+};
+mtg_server_data_Database.rowToAny = function(row) {
+	return row;
+};
+mtg_server_data_Database.rowToCard = function(row) {
+	return new mtg_core_model_Card({ id : row.id, layout : row.layout, name : row.name, names : row.names, manaCost : row.mana_cost, cmc : row.cmc, colors : row.colors, colorIdentity : row.color_identity, type : row.type, supertypes : row.supertypes, types : row.types, subtypes : row.subtypes, rarity : row.rarity, text : row.rules_text, flavor : row.flavor_text, artist : row.artist, number : row.number, power : row.power, toughness : row.toughness, loyalty : row.loyalty, multiverseid : row.multiverse_id, variations : row.variations, imageName : row.image_name, watermark : row.watermark, border : row.border, timeshifted : row.timeshifted, hand : row.hand_modifier, life : row.life_modifier, reserved : row.reserved, releaseDate : row.release_date, starter : row.starter, rulings : row.rulings, foreignNames : row.foreign_names, printings : row.printings, originalText : row.original_rules_text, originalType : row.original_type, legalities : row.legalities, source : row.source, latest : row.latest_printing});
+};
+mtg_server_data_Database.rowToSet = function(row) {
+	return new mtg_core_model_Set({ code : row.code, name : row.name, gathererCode : row.gatherer_code, oldCode : row.old_code, magicCardsInfoCode : row.magic_cards_info_code, releaseDate : row.release_date, border : row.border, type : row.type, block : row.block, onlineOnly : row.online_only, booster : row.booster});
+};
 mtg_server_data_Database.prototype = {
 	connectionString: null
 	,getCards: function() {
-		var f = function(data,delimiter) {
-			return dataclass_DynamicObjectConverter.fromDynamic(mtg_core_model_Card,data,delimiter);
-		};
-		return this.query("select * from cards",null,function(a1) {
-			return f(a1,null);
-		});
+		return this.query("select * from cards",null,mtg_server_data_Database.rowToCard);
 	}
 	,getCardById: function(id) {
-		var f = function(data,delimiter) {
-			return dataclass_DynamicObjectConverter.fromDynamic(mtg_core_model_Card,data,delimiter);
-		};
-		return mtg_server_data_Database.single(this.query("select * from card where id = $1",[id],function(a1) {
-			return f(a1,null);
-		}));
+		return mtg_server_data_Database.firstRow(this.query("select * from card where id = $1",[id],mtg_server_data_Database.rowToCard));
 	}
 	,createCard: function(card) {
 		var _g = this;
-		return thx_promise__$Promise_Promise_$Impl_$.mapSuccessPromise(this.query("insert into card (\n        id, layout, name, names, mana_cost,\n        cmc, colors, color_identity, type, supertypes,\n        types, subtypes, rarity, rules_text, flavor_text,\n        artist, number, power, toughness, loyalty,\n        multiverse_id, variations, image_name, watermark, border,\n        timeshifted, hand_modifier, life_modifier, reserved, release_date,\n        starter, rulings, foreign_names, printings, original_rules_text,\n        original_type, legalities, source, is_latest_printing\n      ) values ($1, $2, $3, $4, $5,\n        $6, $7, $8, $9, $10,\n        $11, $12, $13, $14, $15,\n        $16, $17, $18, $19, $20,\n        $21, $22, $23, $24, $25,\n        $26, $27, $28, $29, $30,\n        $31, $32, $33, $34, $35,\n        $36, $37, $38, $39)",[card.id,card.layout,card.name,card.names,card.manaCost,card.cmc,card.colors,card.colorIdentity,card.type,card.supertypes,card.types,card.subtypes,card.rarity,card.text,card.flavor,card.artist,card.number,card.power,card.toughness,card.loyalty,card.multiverseid,card.variations,card.imageName,card.watermark,card.border,card.timeshifted,card.hand,card.life,card.reserved,card.releaseDate,card.starter,card.rulings,card.foreignNames,card.printings,card.originalText,card.originalType,card.legalities,card.source,card.latest],$bind(this,this.castConverter)),function(_) {
+		return thx_promise__$Promise_Promise_$Impl_$.mapSuccessPromise(this.query("insert into card (\n        id, layout, name, names, mana_cost,\n        cmc, colors, color_identity, type, supertypes,\n        types, subtypes, rarity, rules_text, flavor_text,\n        artist, number, power, toughness, loyalty,\n        multiverse_id, variations, image_name, watermark, border,\n        timeshifted, hand_modifier, life_modifier, reserved, release_date,\n        starter, rulings, foreign_names, printings, original_rules_text,\n        original_type, legalities, source, latest_printing\n      ) values ($1, $2, $3, $4, $5,\n        $6, $7, $8, $9, $10,\n        $11, $12, $13, $14, $15,\n        $16, $17, $18, $19, $20,\n        $21, $22, $23, $24, $25,\n        $26, $27, $28, $29, $30,\n        $31, $32, $33, $34, $35,\n        $36, $37, $38, $39\n      )",[card.id,card.layout,card.name,card.names,card.manaCost,card.cmc,card.colors,card.colorIdentity,card.type,card.supertypes,card.types,card.subtypes,card.rarity,card.text,card.flavor,card.artist,card.number,card.power,card.toughness,card.loyalty,card.multiverseid,card.variations,card.imageName,card.watermark,card.border,card.timeshifted,card.hand,card.life,card.reserved,card.releaseDate,card.starter,this.jstr(card.rulings),this.jstr(card.foreignNames),card.printings,card.originalText,card.originalType,this.jstr(card.legalities),card.source,card.latest]),function(_) {
 			return _g.getCardById(card.id);
 		});
 	}
 	,updateCard: function(card) {
 		var _g = this;
-		return thx_promise__$Promise_Promise_$Impl_$.mapSuccessPromise(this.query("update card set\n        id = $1, layout = $2, name = $3, names = $4, mana_cost = $5,\n        cmc = $6, colors = $7, color_identity = $8, type = $9, supertypes = $10,\n        types = $11, subtypes = $12, rarity = $13, rules_text = $14, flavor_text = $15,\n        artist = $16, number = $17, power = $18, toughness = $19, loyalty = $20,\n        multiverse_id = $21, variations = $22, image_name = $23, watermark = $24, border = $25,\n        timeshifted = $26, hand_modifier = $27, life_modifier = $28, reserved = $29, release_date = $30,\n        starter = $31, rulings = $32, foreign_names = $33, printings = $34, original_rules_text = $35,\n        original_type = $36, legalities = $37, source = $38, is_latest_printing = $39\n      where id = $1;",[card.id,card.layout,card.name,card.names,card.manaCost,card.cmc,card.colors,card.colorIdentity,card.type,card.supertypes,card.types,card.subtypes,card.rarity,card.text,card.flavor,card.artist,card.number,card.power,card.toughness,card.loyalty,card.multiverseid,card.variations,card.imageName,card.watermark,card.border,card.timeshifted,card.hand,card.life,card.reserved,card.releaseDate,card.starter,card.rulings,card.foreignNames,card.printings,card.originalText,card.originalType,card.legalities,card.source,card.latest],$bind(this,this.castConverter)),function(_) {
+		return thx_promise__$Promise_Promise_$Impl_$.mapSuccessPromise(this.query("update card set\n        id = $1, layout = $2, name = $3, names = $4, mana_cost = $5,\n        cmc = $6, colors = $7, color_identity = $8, type = $9, supertypes = $10,\n        types = $11, subtypes = $12, rarity = $13, rules_text = $14, flavor_text = $15,\n        artist = $16, number = $17, power = $18, toughness = $19, loyalty = $20,\n        multiverse_id = $21, variations = $22, image_name = $23, watermark = $24, border = $25,\n        timeshifted = $26, hand_modifier = $27, life_modifier = $28, reserved = $29, release_date = $30,\n        starter = $31, rulings = $32, foreign_names = $33, printings = $34, original_rules_text = $35,\n        original_type = $36, legalities = $37, source = $38, latest_printing = $39\n      where id = $1;\n      ",[card.id,card.layout,card.name,card.names,card.manaCost,card.cmc,card.colors,card.colorIdentity,card.type,card.supertypes,card.types,card.subtypes,card.rarity,card.text,card.flavor,card.artist,card.number,card.power,card.toughness,card.loyalty,card.multiverseid,card.variations,card.imageName,card.watermark,card.border,card.timeshifted,card.hand,card.life,card.reserved,card.releaseDate,card.starter,this.jstr(card.rulings),this.jstr(card.foreignNames),card.printings,card.originalText,card.originalType,this.jstr(card.legalities),card.source,card.latest]),function(_) {
 			return _g.getCardById(card.id);
 		});
 	}
+	,deleteCard: function(card) {
+		return this.deleteCardById(card.id);
+	}
+	,deleteCardById: function(id) {
+		return mtg_server_data_Database.nil(this.query("delete from card where id = $1",[id]));
+	}
+	,getSets: function() {
+		return this.query("select * from set",null,mtg_server_data_Database.rowToSet);
+	}
+	,getSetByCode: function(code) {
+		return mtg_server_data_Database.firstRow(this.query("select * from set where code = $1",[code],mtg_server_data_Database.rowToSet));
+	}
+	,createSet: function(set) {
+		var _g = this;
+		return thx_promise__$Promise_Promise_$Impl_$.mapSuccessPromise(this.query("insert into set (\n        code, name, gatherer_code, old_code, magic_cards_info_code,\n        release_date, border, type, block, online_only,\n        booster\n      ) values (\n        $1, $2, $3, $4, $5,\n        $6, $7, $8, $9, $10,\n        $11\n      )",[set.code,set.name,set.gathererCode,set.oldCode,set.magicCardsInfoCode,set.releaseDate,set.border,set.type,set.block,set.onlineOnly,this.jstr(set.booster)]),function(_) {
+			return _g.getSetByCode(set.code);
+		});
+	}
+	,updateSet: function(set) {
+		var _g = this;
+		return thx_promise__$Promise_Promise_$Impl_$.mapSuccessPromise(this.query("update \"set\" set\n        code = $1, name = $2, gatherer_code = $3, old_code = $4, magic_cards_info_code = $5,\n        release_date = $6, border = $7, type = $8, block = $9, online_only = $10,\n        booster = $11\n      where code = $1",[set.code,set.name,set.gathererCode,set.oldCode,set.magicCardsInfoCode,set.releaseDate,set.border,set.type,set.block,set.onlineOnly,this.jstr(set.booster)]),function(_) {
+			return _g.getSetByCode(set.code);
+		});
+	}
+	,deleteSet: function(set) {
+		return this.deleteSetByCode(set.code);
+	}
+	,deleteSetByCode: function(code) {
+		return mtg_server_data_Database.nil(this.query("delete from set where code = $1",[code]));
+	}
+	,createSetCard: function(setCode,cardId) {
+		return mtg_server_data_Database.nil(this.query("insert into set_card (set_code, card_id) values($1, $2)",[setCode,cardId]));
+	}
+	,deleteSetCard: function(setCode,cardId) {
+		return mtg_server_data_Database.nil(this.query("delete from set_card where set_code = $1 and card_id = $2",[setCode,cardId]));
+	}
 	,query: function(sql,params,converter) {
 		var _g = this;
+		if(converter == null) {
+			converter = mtg_server_data_Database.rowToAny;
+		}
 		return thx_promise__$Promise_Promise_$Impl_$.create(function(resolve,reject) {
 			npm_PG.connect(_g.connectionString,function(err,client,done) {
 				if(err != null) {
 					done();
-					reject(thx_Error.fromDynamic(err,{ fileName : "Database.hx", lineNumber : 93, className : "mtg.server.data.Database", methodName : "query"}));
+					reject(thx_Error.fromDynamic(err,{ fileName : "Database.hx", lineNumber : 166, className : "mtg.server.data.Database", methodName : "query"}));
 					return;
 				}
 				console.log(sql);
@@ -2047,12 +2159,11 @@ mtg_server_data_Database.prototype = {
 				client.query(sql,params,function(err1,queryResult) {
 					if(err1 != null) {
 						done();
-						reject(thx_Error.fromDynamic(err1,{ fileName : "Database.hx", lineNumber : 103, className : "mtg.server.data.Database", methodName : "query"}));
+						reject(thx_Error.fromDynamic(err1,{ fileName : "Database.hx", lineNumber : 176, className : "mtg.server.data.Database", methodName : "query"}));
 						return;
 					}
 					var results = queryResult.rows.map(function(row) {
-						var data = row;
-						return converter(data);
+						return converter(row);
 					});
 					done();
 					resolve(results);
@@ -2060,8 +2171,8 @@ mtg_server_data_Database.prototype = {
 			});
 		});
 	}
-	,castConverter: function(row) {
-		return row;
+	,jstr: function(input) {
+		return JSON.stringify(input);
 	}
 	,__class__: mtg_server_data_Database
 };
@@ -2174,11 +2285,21 @@ var mtg_server_route_ApiRoute = function() {
 mtg_server_route_ApiRoute.__name__ = ["mtg","server","route","ApiRoute"];
 mtg_server_route_ApiRoute.__interfaces__ = [abe_IRoute];
 mtg_server_route_ApiRoute.sendData = function(promise,statusCode,response,next) {
+	if(statusCode == null) {
+		statusCode = 200;
+	}
 	thx_promise__$Promise_Promise_$Impl_$.failure(thx_promise__$Promise_Promise_$Impl_$.success(promise,function(data) {
-		if(statusCode == null) {
-			statusCode = 200;
-		}
 		response.status(statusCode).send(data);
+	}),function(err) {
+		next(err);
+	});
+};
+mtg_server_route_ApiRoute.sendEmpty = function(promise,statusCode,response,next) {
+	if(statusCode == null) {
+		statusCode = 204;
+	}
+	thx_promise__$Promise_Promise_$Impl_$.failure(thx_promise__$Promise_Promise_$Impl_$.success(promise,function(_) {
+		response.sendStatus(statusCode);
 	}),function(err) {
 		next(err);
 	});
@@ -2192,20 +2313,49 @@ mtg_server_route_ApiRoute.prototype = {
 		mtg_server_route_ApiRoute.sendData(this.database.getCards(),null,response,next);
 	}
 	,getCard: function(id,request,response,next) {
+		mtg_server_route_ApiRoute.sendData(this.database.getCardById(id),null,response,next);
 	}
 	,createCard: function(request,response,next) {
-		console.log(request.body);
-		mtg_server_route_ApiRoute.sendData(this.database.createCard(dataclass_DynamicObjectConverter.fromDynamic(mtg_core_model_Card,request.body)),201,response,next);
+		mtg_server_route_ApiRoute.sendData(this.database.createCard(new mtg_core_model_Card(request.body)),201,response,next);
 	}
-	,updateCard: function(request,response,next) {
+	,updateCard: function(id,request,response,next) {
+		var card = new mtg_core_model_Card(request.body);
+		if(id != card.id) {
+			next(new mtg_server_error_ValidationError("Card id " + id + " in URL does not match card id " + card.id + " in request body",null,{ fileName : "ApiRoute.hx", lineNumber : 52, className : "mtg.server.route.ApiRoute", methodName : "updateCard"}));
+			return;
+		}
+		mtg_server_route_ApiRoute.sendData(this.database.updateCard(card),200,response,next);
 	}
-	,getEditions: function(request,response,next) {
+	,deleteCard: function(id,request,response,next) {
+		mtg_server_route_ApiRoute.sendEmpty(this.database.deleteCardById(id),null,response,next);
 	}
-	,getEdition: function(code,request,response,next) {
+	,getSets: function(request,response,next) {
+		mtg_server_route_ApiRoute.sendData(this.database.getSets(),null,response,next);
+		return;
 	}
-	,createEdition: function(request,response,next) {
+	,getSet: function(code,request,response,next) {
+		mtg_server_route_ApiRoute.sendData(this.database.getSetByCode(code),null,response,next);
+		return;
 	}
-	,updateEdition: function(request,response,next) {
+	,createSet: function(request,response,next) {
+		mtg_server_route_ApiRoute.sendData(this.database.createSet(new mtg_core_model_Set(request.body)),201,response,next);
+	}
+	,updateSet: function(code,request,response,next) {
+		var set = new mtg_core_model_Set(request.body);
+		if(code != set.code) {
+			next(new mtg_server_error_ValidationError("Set code " + code + " in URL does not match set code " + set.code + " in request body",null,{ fileName : "ApiRoute.hx", lineNumber : 88, className : "mtg.server.route.ApiRoute", methodName : "updateSet"}));
+			return;
+		}
+		mtg_server_route_ApiRoute.sendData(this.database.updateSet(set),null,response,next);
+	}
+	,deleteSet: function(code,request,response,next) {
+		mtg_server_route_ApiRoute.sendEmpty(this.database.deleteSetByCode(code),null,response,next);
+	}
+	,createSetCard: function(code,id,request,response,next) {
+		mtg_server_route_ApiRoute.sendEmpty(this.database.createSetCard(code,id),null,response,next);
+	}
+	,deleteSetCard: function(code,id,request,response,next) {
+		mtg_server_route_ApiRoute.sendEmpty(this.database.deleteSetCard(code,id),null,response,next);
 	}
 	,toString: function() {
 		return "mtg.server.route.ApiRoute";
@@ -2223,16 +2373,60 @@ mtg_server_route_ApiRoute_$createCard_$RouteProcess.prototype = $extend(abe_core
 	}
 	,__class__: mtg_server_route_ApiRoute_$createCard_$RouteProcess
 });
-var mtg_server_route_ApiRoute_$createEdition_$RouteProcess = function(args,instance,argumentProcessor) {
+var mtg_server_route_ApiRoute_$createSetCard_$RouteProcess = function(args,instance,argumentProcessor) {
 	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
 };
-mtg_server_route_ApiRoute_$createEdition_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_createEdition_RouteProcess"];
-mtg_server_route_ApiRoute_$createEdition_$RouteProcess.__super__ = abe_core_RouteProcess;
-mtg_server_route_ApiRoute_$createEdition_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
+mtg_server_route_ApiRoute_$createSetCard_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_createSetCard_RouteProcess"];
+mtg_server_route_ApiRoute_$createSetCard_$RouteProcess.__super__ = abe_core_RouteProcess;
+mtg_server_route_ApiRoute_$createSetCard_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
 	execute: function(request,response,next) {
-		this.instance.createEdition(request,response,next);
+		this.instance.createSetCard(this.args.code,this.args.id,request,response,next);
 	}
-	,__class__: mtg_server_route_ApiRoute_$createEdition_$RouteProcess
+	,__class__: mtg_server_route_ApiRoute_$createSetCard_$RouteProcess
+});
+var mtg_server_route_ApiRoute_$createSet_$RouteProcess = function(args,instance,argumentProcessor) {
+	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
+};
+mtg_server_route_ApiRoute_$createSet_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_createSet_RouteProcess"];
+mtg_server_route_ApiRoute_$createSet_$RouteProcess.__super__ = abe_core_RouteProcess;
+mtg_server_route_ApiRoute_$createSet_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
+	execute: function(request,response,next) {
+		this.instance.createSet(request,response,next);
+	}
+	,__class__: mtg_server_route_ApiRoute_$createSet_$RouteProcess
+});
+var mtg_server_route_ApiRoute_$deleteCard_$RouteProcess = function(args,instance,argumentProcessor) {
+	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
+};
+mtg_server_route_ApiRoute_$deleteCard_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_deleteCard_RouteProcess"];
+mtg_server_route_ApiRoute_$deleteCard_$RouteProcess.__super__ = abe_core_RouteProcess;
+mtg_server_route_ApiRoute_$deleteCard_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
+	execute: function(request,response,next) {
+		this.instance.deleteCard(this.args.id,request,response,next);
+	}
+	,__class__: mtg_server_route_ApiRoute_$deleteCard_$RouteProcess
+});
+var mtg_server_route_ApiRoute_$deleteSetCard_$RouteProcess = function(args,instance,argumentProcessor) {
+	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
+};
+mtg_server_route_ApiRoute_$deleteSetCard_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_deleteSetCard_RouteProcess"];
+mtg_server_route_ApiRoute_$deleteSetCard_$RouteProcess.__super__ = abe_core_RouteProcess;
+mtg_server_route_ApiRoute_$deleteSetCard_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
+	execute: function(request,response,next) {
+		this.instance.deleteSetCard(this.args.code,this.args.id,request,response,next);
+	}
+	,__class__: mtg_server_route_ApiRoute_$deleteSetCard_$RouteProcess
+});
+var mtg_server_route_ApiRoute_$deleteSet_$RouteProcess = function(args,instance,argumentProcessor) {
+	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
+};
+mtg_server_route_ApiRoute_$deleteSet_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_deleteSet_RouteProcess"];
+mtg_server_route_ApiRoute_$deleteSet_$RouteProcess.__super__ = abe_core_RouteProcess;
+mtg_server_route_ApiRoute_$deleteSet_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
+	execute: function(request,response,next) {
+		this.instance.deleteSet(this.args.code,request,response,next);
+	}
+	,__class__: mtg_server_route_ApiRoute_$deleteSet_$RouteProcess
 });
 var mtg_server_route_ApiRoute_$getCard_$RouteProcess = function(args,instance,argumentProcessor) {
 	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
@@ -2256,27 +2450,27 @@ mtg_server_route_ApiRoute_$getCards_$RouteProcess.prototype = $extend(abe_core_R
 	}
 	,__class__: mtg_server_route_ApiRoute_$getCards_$RouteProcess
 });
-var mtg_server_route_ApiRoute_$getEdition_$RouteProcess = function(args,instance,argumentProcessor) {
+var mtg_server_route_ApiRoute_$getSet_$RouteProcess = function(args,instance,argumentProcessor) {
 	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
 };
-mtg_server_route_ApiRoute_$getEdition_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_getEdition_RouteProcess"];
-mtg_server_route_ApiRoute_$getEdition_$RouteProcess.__super__ = abe_core_RouteProcess;
-mtg_server_route_ApiRoute_$getEdition_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
+mtg_server_route_ApiRoute_$getSet_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_getSet_RouteProcess"];
+mtg_server_route_ApiRoute_$getSet_$RouteProcess.__super__ = abe_core_RouteProcess;
+mtg_server_route_ApiRoute_$getSet_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
 	execute: function(request,response,next) {
-		this.instance.getEdition(this.args.code,request,response,next);
+		this.instance.getSet(this.args.code,request,response,next);
 	}
-	,__class__: mtg_server_route_ApiRoute_$getEdition_$RouteProcess
+	,__class__: mtg_server_route_ApiRoute_$getSet_$RouteProcess
 });
-var mtg_server_route_ApiRoute_$getEditions_$RouteProcess = function(args,instance,argumentProcessor) {
+var mtg_server_route_ApiRoute_$getSets_$RouteProcess = function(args,instance,argumentProcessor) {
 	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
 };
-mtg_server_route_ApiRoute_$getEditions_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_getEditions_RouteProcess"];
-mtg_server_route_ApiRoute_$getEditions_$RouteProcess.__super__ = abe_core_RouteProcess;
-mtg_server_route_ApiRoute_$getEditions_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
+mtg_server_route_ApiRoute_$getSets_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_getSets_RouteProcess"];
+mtg_server_route_ApiRoute_$getSets_$RouteProcess.__super__ = abe_core_RouteProcess;
+mtg_server_route_ApiRoute_$getSets_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
 	execute: function(request,response,next) {
-		this.instance.getEditions(request,response,next);
+		this.instance.getSets(request,response,next);
 	}
-	,__class__: mtg_server_route_ApiRoute_$getEditions_$RouteProcess
+	,__class__: mtg_server_route_ApiRoute_$getSets_$RouteProcess
 });
 var mtg_server_route_ApiRoute_$ping_$RouteProcess = function(args,instance,argumentProcessor) {
 	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
@@ -2296,20 +2490,20 @@ mtg_server_route_ApiRoute_$updateCard_$RouteProcess.__name__ = ["mtg","server","
 mtg_server_route_ApiRoute_$updateCard_$RouteProcess.__super__ = abe_core_RouteProcess;
 mtg_server_route_ApiRoute_$updateCard_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
 	execute: function(request,response,next) {
-		this.instance.updateCard(request,response,next);
+		this.instance.updateCard(this.args.id,request,response,next);
 	}
 	,__class__: mtg_server_route_ApiRoute_$updateCard_$RouteProcess
 });
-var mtg_server_route_ApiRoute_$updateEdition_$RouteProcess = function(args,instance,argumentProcessor) {
+var mtg_server_route_ApiRoute_$updateSet_$RouteProcess = function(args,instance,argumentProcessor) {
 	abe_core_RouteProcess.call(this,args,instance,argumentProcessor);
 };
-mtg_server_route_ApiRoute_$updateEdition_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_updateEdition_RouteProcess"];
-mtg_server_route_ApiRoute_$updateEdition_$RouteProcess.__super__ = abe_core_RouteProcess;
-mtg_server_route_ApiRoute_$updateEdition_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
+mtg_server_route_ApiRoute_$updateSet_$RouteProcess.__name__ = ["mtg","server","route","ApiRoute_updateSet_RouteProcess"];
+mtg_server_route_ApiRoute_$updateSet_$RouteProcess.__super__ = abe_core_RouteProcess;
+mtg_server_route_ApiRoute_$updateSet_$RouteProcess.prototype = $extend(abe_core_RouteProcess.prototype,{
 	execute: function(request,response,next) {
-		this.instance.updateEdition(request,response,next);
+		this.instance.updateSet(this.args.code,request,response,next);
 	}
-	,__class__: mtg_server_route_ApiRoute_$updateEdition_$RouteProcess
+	,__class__: mtg_server_route_ApiRoute_$updateSet_$RouteProcess
 });
 var mw_BodyParser = require("body-parser");
 var mw_Compression = require("compression");
@@ -8572,6 +8766,7 @@ haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
 haxe_ds_ObjectMap.count = 0;
 js_Boot.__toStr = {}.toString;
 mtg_core_model_Card.__meta__ = { obj : { immutable : null}, fields : { id : { convertTo : ["String"]}, layout : { convertTo : ["String"]}, name : { convertTo : ["String"]}, manaCost : { convertTo : ["String"]}, cmc : { convertTo : ["Int"]}, type : { convertTo : ["String"]}, rarity : { convertTo : ["String"]}, text : { convertTo : ["String"]}, flavor : { convertTo : ["String"]}, artist : { convertTo : ["String"]}, number : { convertTo : ["String"]}, mciNumber : { convertTo : ["String"]}, power : { convertTo : ["String"]}, toughness : { convertTo : ["String"]}, loyalty : { convertTo : ["Int"]}, multiverseid : { convertTo : ["Int"]}, imageName : { convertTo : ["String"]}, watermark : { convertTo : ["String"]}, border : { convertTo : ["String"]}, timeshifted : { convertTo : ["Bool"]}, hand : { convertTo : ["Int"]}, life : { convertTo : ["Int"]}, reserved : { convertTo : ["Bool"]}, releaseDate : { convertTo : ["String"]}, starter : { convertTo : ["Bool"]}, originalText : { convertTo : ["String"]}, originalType : { convertTo : ["String"]}, source : { convertTo : ["String"]}, latest : { convertTo : ["Bool"]}}};
+mtg_core_model_Set.__meta__ = { obj : { immutable : null}, fields : { name : { convertTo : ["String"]}, code : { convertTo : ["String"]}, gathererCode : { convertTo : ["String"]}, oldCode : { convertTo : ["String"]}, magicCardsInfoCode : { convertTo : ["String"]}, releaseDate : { convertTo : ["String"]}, border : { convertTo : ["String"]}, type : { convertTo : ["String"]}, block : { convertTo : ["String"]}, onlineOnly : { convertTo : ["Bool"]}}};
 mtg_server_Config.MTG_DATABASE_URL = "postgres://mtguser:mtgpassword@localhost:5432/mtg";
 mtg_server_Main.DEFAULT_HOST = "0.0.0.0";
 mtg_server_Main.DEFAULT_PORT = 9999;

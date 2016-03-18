@@ -15,14 +15,14 @@ class ApiClient {
     return http({
       type: 'GET',
       url: '/api/cards',
-    });
+    }, arrayConverter(Card.fromObject));
   }
 
   public function getCard(cardId : String) : Promise<Card> {
     return http({
       type: 'GET',
       url: '/api/cards/$cardId'
-    });
+    }, Card.fromObject);
   }
 
   function http<T>(options : JQueryAjaxOptions, ?converter : Dynamic -> T) : Promise<T> {
@@ -38,7 +38,7 @@ class ApiClient {
     });
   }
 
-  public function fromArray<T>(converter : Dynamic -> T) {
+  public function arrayConverter<T>(converter : Dynamic -> T) {
     return function(input : Dynamic) : Array<T> {
       return Arrays.map(input, converter);
     };
