@@ -2087,7 +2087,7 @@ mtg_server_data_Database.rowToSet = function(row) {
 mtg_server_data_Database.prototype = {
 	connectionString: null
 	,getCards: function() {
-		return this.query("select * from cards",null,mtg_server_data_Database.rowToCard);
+		return this.query("select * from card limit 100;",null,mtg_server_data_Database.rowToCard);
 	}
 	,getCardById: function(id) {
 		return mtg_server_data_Database.firstRow(this.query("select * from card where id = $1",[id],mtg_server_data_Database.rowToCard));

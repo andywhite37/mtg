@@ -21,7 +21,7 @@ class Database {
   }
 
   public function getCards() : Promise<Array<Card>> {
-    return query('select * from cards', Database.rowToCard);
+    return query('select * from card limit 100;', Database.rowToCard);
   }
 
   public function getCardById(id : String) : Promise<Card> {
