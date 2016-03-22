@@ -20,8 +20,20 @@ class Database {
     this.connectionString = connectionString;
   }
 
-  public function getCards() : Promise<Array<Card>> {
-    return query('select * from card limit 100;', Database.rowToCard);
+  public function getCards(cardQuery : CardQuery) : Promise<Array<Card>> {
+    var searchText = 'atarka'; //cardQuery.searchText;
+    var limit = cardQuery.pageSize;
+    var offset = (cardQuery.pageNumber - 1) * cardQuery.pageSize;
+
+    return query(
+      "select *
+      from card
+      where (($1 = '') or (search_vector @@ plainto_tsquery($1)))
+      order by ts_rank(search_vector, plainto_tsquery($1)) desc
+      offset $2
+      limit $3;",
+      [searchText, offset, limit],
+      Database.rowToCard);
   }
 
   public function getCardById(id : String) : Promise<Card> {

@@ -3521,6 +3521,8 @@ mtg_client_view_CardTextView.prototype = $extend(doom_html_Component.prototype,{
 				return doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("span",_g1,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(text))])));
 			case 1:
 				return doom_core_VChildImpl.Comp(new mtg_client_view_SymbolView({ symbol : token[2]}));
+			case 2:
+				return doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("br",null,null));
 			}
 		})));
 	}
@@ -4201,9 +4203,11 @@ mtg_core_util_Arrays.map = function(arr,mapper) {
 	}
 	return result;
 };
-var mtg_core_util_CardTextToken = { __ename__ : ["mtg","core","util","CardTextToken"], __constructs__ : ["TText","TSymbol"] };
+var mtg_core_util_CardTextToken = { __ename__ : ["mtg","core","util","CardTextToken"], __constructs__ : ["TText","TSymbol","TNewline"] };
 mtg_core_util_CardTextToken.TText = function(text) { var $x = ["TText",0,text]; $x.__enum__ = mtg_core_util_CardTextToken; return $x; };
 mtg_core_util_CardTextToken.TSymbol = function(symbol) { var $x = ["TSymbol",1,symbol]; $x.__enum__ = mtg_core_util_CardTextToken; return $x; };
+mtg_core_util_CardTextToken.TNewline = ["TNewline",2];
+mtg_core_util_CardTextToken.TNewline.__enum__ = mtg_core_util_CardTextToken;
 var mtg_core_util_CardTextParser = function(input) {
 	this.input = input;
 	this.index = 0;
@@ -4216,6 +4220,7 @@ mtg_core_util_CardTextParser.prototype = {
 	input: null
 	,index: null
 	,internalParse: function() {
+		console.log(this.input);
 		if(this.input == "" || this.input == null) {
 			return [mtg_core_util_CardTextToken.TText("")];
 		}
@@ -4224,18 +4229,25 @@ mtg_core_util_CardTextParser.prototype = {
 		return tokens;
 	}
 	,readToken: function() {
+		console.log("char = " + this["char"]());
 		if(this["char"]() == "{") {
 			return this.readSymbolToken();
+		} else if(this["char"]() == "\n") {
+			return this.readNewlineToken();
 		} else {
 			return this.readTextToken();
 		}
 	}
 	,readTextToken: function() {
-		return mtg_core_util_CardTextToken.TText(this.readUpTo("{"));
+		return mtg_core_util_CardTextToken.TText(this.readUpTo(["{","\n"]));
+	}
+	,readNewlineToken: function() {
+		this.readChar("\n");
+		return mtg_core_util_CardTextToken.TNewline;
 	}
 	,readSymbolToken: function() {
 		var token = this.readChar("{");
-		token += this.readUpTo("}");
+		token += this.readUpTo(["}"]);
 		token += this.readChar("}");
 		var _g = mtg_core_model__$Symbol_Symbol_$Impl_$.safeParse(token);
 		switch(_g[1]) {
@@ -4251,9 +4263,9 @@ mtg_core_util_CardTextParser.prototype = {
 		}
 		return c;
 	}
-	,readUpTo: function(c) {
+	,readUpTo: function(cs) {
 		var startIndex = this.index;
-		while(this["char"]() != c && this.index < this.input.length) this.index++;
+		while(!thx_Arrays.contains(cs,this["char"]()) && this.index < this.input.length) this.index++;
 		return this.input.substring(startIndex,this.index);
 	}
 	,'char': function() {

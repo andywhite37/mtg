@@ -2,10 +2,12 @@ package mtg.core.util;
 
 import haxe.ds.Option;
 import mtg.core.model.Symbol;
+using thx.Arrays;
 
 enum CardTextToken {
   TText(text : String);
   TSymbol(symbol : Symbol);
+  TNewline;
 }
 
 class CardTextParser {
@@ -22,7 +24,7 @@ class CardTextParser {
   }
 
   function internalParse() : Array<CardTextToken> {
-    //trace(input);
+    trace(input);
     if (input == '' || input == null) {
       return [TText('')];
     }
@@ -34,20 +36,28 @@ class CardTextParser {
   }
 
   function readToken() : CardTextToken {
+    trace('char = ${char()}');
     return if (char() == '{') {
       readSymbolToken();
+    } else if (char() == '\n') {
+      readNewlineToken();
     } else {
       readTextToken();
     }
   }
 
   function readTextToken() : CardTextToken {
-    return TText(readUpTo('{'));
+    return TText(readUpTo(['{', '\n']));
+  }
+
+  function readNewlineToken() : CardTextToken {
+    var token = readChar('\n');
+    return TNewline;
   }
 
   function readSymbolToken() : CardTextToken {
     var token = readChar('{');
-    token += readUpTo('}');
+    token += readUpTo(['}']);
     token += readChar('}');
     return switch Symbol.safeParse(token) {
       case Some(symbol) : TSymbol(symbol);
@@ -62,9 +72,9 @@ class CardTextParser {
     return c;
   }
 
-  function readUpTo(c : String) : String {
+  function readUpTo(cs : Array<String>) : String {
     var startIndex = index;
-    while (char() != c && index < input.length) {
+    while (!cs.contains(char()) && index < input.length) {
       index++;
     }
     var result = input.substring(startIndex, index);

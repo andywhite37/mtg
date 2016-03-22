@@ -27,7 +27,8 @@ class ApiRoute implements IRoute {
 
   @:get('/cards')
   function getCards() {
-    database.getCards().sendData(response, next);
+    var cardQuery = CardQuery.fromQueryString(request.query);
+    database.getCards(cardQuery).sendData(response, next);
   }
 
   @:get('/cards/:id')
