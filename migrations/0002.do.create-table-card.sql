@@ -37,6 +37,28 @@ create table card (
   original_type varchar(250) null,
   legalities jsonb not null,
   source text null,
-
-  latest_printing boolean not null
+  latest_printing boolean not null,
+  search_vector tsvector
 );
+
+create index card_search_vector_gin on "card" using gin(search_vector);
+
+create function update_card_search_vector() returns trigger as $$
+begin
+  new.search_vector :=
+    setweight(to_tsvector('pg_catalog.english', coalesce(new.name, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.english', coalesce(new.rules_text, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.english', coalesce(new.multiverse_id::text, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.english', coalesce(new.artist, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.english', coalesce(new.number, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.english', coalesce(new.watermark, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.english', coalesce(new.flavor_text, '')), 'B') ||
+    setweight(to_tsvector('pg_catalog.english', coalesce(new.rarity, '')), 'B') ||
+    setweight(to_tsvector('pg_catalog.english', coalesce(new.original_rules_text, '')), 'B') ||
+    setweight(to_tsvector('pg_catalog.english', coalesce(new.original_type, '')), 'B');
+  return new;
+end
+$$ language plpgsql;
+
+create trigger update_card_search_vector_trigger before insert or update
+on "card" for each row execute procedure update_card_search_vector();
