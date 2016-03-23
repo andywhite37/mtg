@@ -11,10 +11,10 @@ class ApiClient {
   public function new() {
   }
 
-  public function getCards() : Promise<Array<Card>> {
+  public function getCards(options : { cardQuery: CardQuery }) : Promise<Array<Card>> {
     return http({
       type: 'GET',
-      url: '/api/cards',
+      url: '/api/cards?${options.cardQuery.toQueryString()}',
     }, arrayConverter(Card.fromObject));
   }
 

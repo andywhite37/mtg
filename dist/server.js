@@ -1958,6 +1958,7 @@ mtg_core_model_Card.prototype = {
 	,__class__: mtg_core_model_Card
 };
 var mtg_core_model_CardQuery = function(data) {
+	this.latestPrintingOnly = true;
 	this.searchText = "";
 	this.pageSize = 100;
 	this.pageNumber = 1;
@@ -1970,16 +1971,75 @@ var mtg_core_model_CardQuery = function(data) {
 		throw new js__$Boot_HaxeError("Field " + "CardQuery" + "." + "pageSize" + " failed validation \"" + "_ <= 100" + "\" with value \"" + this.pageSize + "\"");
 	}
 	this.searchText = data.searchText != null?data.searchText:"";
+	this.latestPrintingOnly = data.latestPrintingOnly != null?data.latestPrintingOnly:true;
 };
 mtg_core_model_CardQuery.__name__ = ["mtg","core","model","CardQuery"];
 mtg_core_model_CardQuery.__interfaces__ = [dataclass_DataClass];
-mtg_core_model_CardQuery.fromQueryString = function(qs) {
-	return new mtg_core_model_CardQuery({ searchText : Reflect.field(qs,"q"), pageNumber : Reflect.field(qs,"page-number"), pageSize : Reflect.field(qs,"page-size")});
+mtg_core_model_CardQuery.fromMap = function(map) {
+	var tmp;
+	var key = mtg_core_model_CardQuery.QUERY;
+	if(__map_reserved[key] != null) {
+		tmp = map.getReserved(key);
+	} else {
+		tmp = map.h[key];
+	}
+	var tmp1 = tmp;
+	var tmp2;
+	var key1 = mtg_core_model_CardQuery.PAGE_NUMBER;
+	if(__map_reserved[key1] != null) {
+		tmp2 = map.getReserved(key1);
+	} else {
+		tmp2 = map.h[key1];
+	}
+	var tmp3 = mtg_core_model_CardQuery.stringToInt(tmp2);
+	var tmp4;
+	var key2 = mtg_core_model_CardQuery.PAGE_SIZE;
+	if(__map_reserved[key2] != null) {
+		tmp4 = map.getReserved(key2);
+	} else {
+		tmp4 = map.h[key2];
+	}
+	var tmp5 = mtg_core_model_CardQuery.stringToInt(tmp4);
+	var tmp6;
+	var key3 = mtg_core_model_CardQuery.LATEST_PRINTING_ONLY;
+	if(__map_reserved[key3] != null) {
+		tmp6 = map.getReserved(key3);
+	} else {
+		tmp6 = map.h[key3];
+	}
+	return new mtg_core_model_CardQuery({ searchText : tmp1, pageNumber : tmp3, pageSize : tmp5, latestPrintingOnly : mtg_core_model_CardQuery.stringToBool(tmp6)});
+};
+mtg_core_model_CardQuery.fromObject = function(obj) {
+	return mtg_core_model_CardQuery.fromMap(Reflect.fields(obj).reduce(function(acc,key) {
+		var value = Reflect.field(obj,key);
+		if(__map_reserved[key] != null) {
+			acc.setReserved(key,value);
+		} else {
+			acc.h[key] = value;
+		}
+		return acc;
+	},new haxe_ds_StringMap()));
+};
+mtg_core_model_CardQuery.stringToInt = function(input,defaultValue) {
+	if(thx_Strings.isEmpty(input) || !thx_Ints.canParse(input)) {
+		return defaultValue;
+	}
+	return Std.parseInt(input);
+};
+mtg_core_model_CardQuery.stringToBool = function(input,defaultValue) {
+	if(thx_Strings.isEmpty(input)) {
+		return defaultValue;
+	}
+	return input.toLowerCase() == "true";
 };
 mtg_core_model_CardQuery.prototype = {
 	pageNumber: null
 	,pageSize: null
 	,searchText: null
+	,latestPrintingOnly: null
+	,toQueryString: function() {
+		return "" + mtg_core_model_CardQuery.QUERY + "=" + this.searchText + "&" + mtg_core_model_CardQuery.PAGE_NUMBER + "=" + this.pageNumber + "&" + mtg_core_model_CardQuery.PAGE_SIZE + "=" + this.pageSize;
+	}
 	,__class__: mtg_core_model_CardQuery
 };
 var mtg_core_model_Set = function(data) {
@@ -2102,7 +2162,7 @@ mtg_server_data_Database.__name__ = ["mtg","server","data","Database"];
 mtg_server_data_Database.firstRow = function(promise) {
 	return thx_promise__$Promise_Promise_$Impl_$.mapSuccessPromise(promise,function(items) {
 		if(items == null || items.length == 0) {
-			return thx_promise__$Promise_Promise_$Impl_$.error(new thx_Error("Expected at least one row",null,{ fileName : "Database.hx", lineNumber : 237, className : "mtg.server.data.Database", methodName : "firstRow"}));
+			return thx_promise__$Promise_Promise_$Impl_$.error(new thx_Error("Expected at least one row",null,{ fileName : "Database.hx", lineNumber : 239, className : "mtg.server.data.Database", methodName : "firstRow"}));
 		} else {
 			return thx_promise__$Promise_Promise_$Impl_$.value(items[0]);
 		}
@@ -2111,7 +2171,7 @@ mtg_server_data_Database.firstRow = function(promise) {
 mtg_server_data_Database.singleRow = function(promise) {
 	return thx_promise__$Promise_Promise_$Impl_$.mapSuccessPromise(promise,function(items) {
 		if(items == null || items.length != 1) {
-			return thx_promise__$Promise_Promise_$Impl_$.error(new thx_Error("Expected exactly one row",null,{ fileName : "Database.hx", lineNumber : 247, className : "mtg.server.data.Database", methodName : "singleRow"}));
+			return thx_promise__$Promise_Promise_$Impl_$.error(new thx_Error("Expected exactly one row",null,{ fileName : "Database.hx", lineNumber : 249, className : "mtg.server.data.Database", methodName : "singleRow"}));
 		} else {
 			return thx_promise__$Promise_Promise_$Impl_$.value(items[0]);
 		}
@@ -2147,7 +2207,7 @@ mtg_server_data_Database.rowToCountRow = function(row) {
 mtg_server_data_Database.prototype = {
 	connectionString: null
 	,getCards: function(cardQuery) {
-		return this.query("select *\n      from card\n      where (($1 = '') or (search_vector @@ plainto_tsquery($1)))\n      order by ts_rank(search_vector, plainto_tsquery($1)) desc\n      offset $2\n      limit $3;",["atarka",(cardQuery.pageNumber - 1) * cardQuery.pageSize,cardQuery.pageSize],mtg_server_data_Database.rowToCard);
+		return this.query("select *\n      from card\n      where (($3 = '') or (search_vector @@ plainto_tsquery($3)))\n      and (($4 = false) or (latest_printing = true))\n      order by ts_rank(search_vector, plainto_tsquery($3)) desc\n      offset $1\n      limit $2;",[(cardQuery.pageNumber - 1) * cardQuery.pageSize,cardQuery.pageSize,cardQuery.searchText,cardQuery.latestPrintingOnly],mtg_server_data_Database.rowToCard);
 	}
 	,getCardById: function(id) {
 		return mtg_server_data_Database.singleRow(this.query("select * from card where id = $1",[id],mtg_server_data_Database.rowToCard));
@@ -2224,7 +2284,7 @@ mtg_server_data_Database.prototype = {
 			npm_PG.connect(_g.connectionString,function(err,client,done) {
 				if(err != null) {
 					done();
-					reject(thx_Error.fromDynamic(err,{ fileName : "Database.hx", lineNumber : 209, className : "mtg.server.data.Database", methodName : "query"}));
+					reject(thx_Error.fromDynamic(err,{ fileName : "Database.hx", lineNumber : 211, className : "mtg.server.data.Database", methodName : "query"}));
 					return;
 				}
 				console.log("---- SQL ----");
@@ -2236,7 +2296,7 @@ mtg_server_data_Database.prototype = {
 				client.query(sql,params,function(err1,queryResult) {
 					if(err1 != null) {
 						done();
-						reject(thx_Error.fromDynamic(err1,{ fileName : "Database.hx", lineNumber : 221, className : "mtg.server.data.Database", methodName : "query"}));
+						reject(thx_Error.fromDynamic(err1,{ fileName : "Database.hx", lineNumber : 223, className : "mtg.server.data.Database", methodName : "query"}));
 						return;
 					}
 					var results = queryResult.rows.map(function(row) {
@@ -2394,7 +2454,7 @@ mtg_server_route_ApiRoute.prototype = {
 		response.send({ status : "OK"});
 	}
 	,getCards: function(request,response,next) {
-		mtg_server_route_ApiRoute.sendData(this.database.getCards(mtg_core_model_CardQuery.fromQueryString(request.query)),null,response,next);
+		mtg_server_route_ApiRoute.sendData(this.database.getCards(mtg_core_model_CardQuery.fromObject(request.query)),null,response,next);
 	}
 	,headCard: function(id,request,response,next) {
 		mtg_server_route_ApiRoute.sendEmptyExists(this.database.hasCardById(id),response,next);
@@ -8907,7 +8967,11 @@ haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
 haxe_ds_ObjectMap.count = 0;
 js_Boot.__toStr = {}.toString;
 mtg_core_model_Card.__meta__ = { obj : { immutable : null}, fields : { id : { convertTo : ["String"]}, layout : { convertTo : ["String"]}, name : { convertTo : ["String"]}, manaCost : { convertTo : ["String"]}, cmc : { convertTo : ["Int"]}, type : { convertTo : ["String"]}, rarity : { convertTo : ["String"]}, text : { convertTo : ["String"]}, flavor : { convertTo : ["String"]}, artist : { convertTo : ["String"]}, number : { convertTo : ["String"]}, mciNumber : { convertTo : ["String"]}, power : { convertTo : ["String"]}, toughness : { convertTo : ["String"]}, loyalty : { convertTo : ["Int"]}, multiverseid : { convertTo : ["Int"]}, imageName : { convertTo : ["String"]}, watermark : { convertTo : ["String"]}, border : { convertTo : ["String"]}, timeshifted : { convertTo : ["Bool"]}, hand : { convertTo : ["Int"]}, life : { convertTo : ["Int"]}, reserved : { convertTo : ["Bool"]}, releaseDate : { convertTo : ["String"]}, starter : { convertTo : ["Bool"]}, originalText : { convertTo : ["String"]}, originalType : { convertTo : ["String"]}, source : { convertTo : ["String"]}, latest : { convertTo : ["Bool"]}}};
-mtg_core_model_CardQuery.__meta__ = { obj : { immutable : null}, fields : { pageNumber : { convertTo : ["Int"]}, pageSize : { validate : ["_ <= 100"], convertTo : ["Int"]}, searchText : { convertTo : ["String"]}}};
+mtg_core_model_CardQuery.__meta__ = { obj : { immutable : null}, fields : { pageNumber : { convertTo : ["Int"]}, pageSize : { validate : ["_ <= 100"], convertTo : ["Int"]}, searchText : { convertTo : ["String"]}, latestPrintingOnly : { convertTo : ["Bool"]}}};
+mtg_core_model_CardQuery.QUERY = "q";
+mtg_core_model_CardQuery.PAGE_NUMBER = "page-number";
+mtg_core_model_CardQuery.PAGE_SIZE = "page-size";
+mtg_core_model_CardQuery.LATEST_PRINTING_ONLY = "latest-only";
 mtg_core_model_Set.__meta__ = { obj : { immutable : null}, fields : { name : { convertTo : ["String"]}, code : { convertTo : ["String"]}, gathererCode : { convertTo : ["String"]}, oldCode : { convertTo : ["String"]}, magicCardsInfoCode : { convertTo : ["String"]}, releaseDate : { convertTo : ["String"]}, border : { convertTo : ["String"]}, type : { convertTo : ["String"]}, block : { convertTo : ["String"]}, onlineOnly : { convertTo : ["Bool"]}}};
 mtg_server_Config.MTG_DATABASE_URL = "postgres://mtguser:mtgpassword@localhost:5432/mtg";
 mtg_server_Main.DEFAULT_HOST = "0.0.0.0";

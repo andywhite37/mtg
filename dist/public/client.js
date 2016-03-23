@@ -3198,11 +3198,13 @@ mtg_client_Main.setupRouter = function(store) {
 	}
 	if(__map_reserved["/cards"] != null) {
 		_g.setReserved("/cards",function(descriptor21) {
-			store.dispatch(mtg_client_state_AppAction.ShowPage(mtg_client_state_Page.CardsPage(mtg_client_state_Loader.Loading(thx_Nil.nil))));
+			var cardQuery1 = mtg_core_model_CardQuery.fromMap(descriptor21.query);
+			store.dispatch(mtg_client_state_AppAction.ShowPage(mtg_client_state_Page.CardsPage(mtg_client_state_Loader.Loading({ cardQuery : cardQuery1}))));
 		});
 	} else {
 		_g.h["/cards"] = function(descriptor21) {
-			store.dispatch(mtg_client_state_AppAction.ShowPage(mtg_client_state_Page.CardsPage(mtg_client_state_Loader.Loading(thx_Nil.nil))));
+			var cardQuery1 = mtg_core_model_CardQuery.fromMap(descriptor21.query);
+			store.dispatch(mtg_client_state_AppAction.ShowPage(mtg_client_state_Page.CardsPage(mtg_client_state_Loader.Loading({ cardQuery : cardQuery1}))));
 		};
 	}
 	if(__map_reserved["/card/:id"] != null) {
@@ -3215,7 +3217,7 @@ mtg_client_Main.setupRouter = function(store) {
 				tmp = _this1.h["id"];
 			}
 			var cardId1 = tmp;
-			store.dispatch(mtg_client_state_AppAction.ShowPage(mtg_client_state_Page.CardPage(mtg_client_state_Loader.Loading(cardId1))));
+			store.dispatch(mtg_client_state_AppAction.ShowPage(mtg_client_state_Page.CardPage(mtg_client_state_Loader.Loading({ cardId : cardId1}))));
 		});
 	} else {
 		_g.h["/card/:id"] = function(descriptor31) {
@@ -3227,7 +3229,7 @@ mtg_client_Main.setupRouter = function(store) {
 				tmp1 = _this1.h["id"];
 			}
 			var cardId1 = tmp1;
-			store.dispatch(mtg_client_state_AppAction.ShowPage(mtg_client_state_Page.CardPage(mtg_client_state_Loader.Loading(cardId1))));
+			store.dispatch(mtg_client_state_AppAction.ShowPage(mtg_client_state_Page.CardPage(mtg_client_state_Loader.Loading({ cardId : cardId1}))));
 		};
 	}
 	router.routes(_g);
@@ -3240,8 +3242,8 @@ var mtg_client_api_ApiClient = function() {
 };
 mtg_client_api_ApiClient.__name__ = ["mtg","client","api","ApiClient"];
 mtg_client_api_ApiClient.prototype = {
-	getCards: function() {
-		return this.http({ type : "GET", url : "/api/cards"},this.arrayConverter(mtg_core_model_Card.fromObject));
+	getCards: function(options) {
+		return this.http({ type : "GET", url : "/api/cards?" + options.cardQuery.toQueryString()},this.arrayConverter(mtg_core_model_Card.fromObject));
 	}
 	,getCard: function(cardId) {
 		return this.http({ type : "GET", url : "/api/cards/" + cardId},mtg_core_model_Card.fromObject);
@@ -3345,7 +3347,7 @@ mtg_client_state_Reducer.prototype = {
 		}
 	}
 	,showCardsPageLoading: function(state,data) {
-		return lies__$Reduced_Reduced_$Impl_$.withFuture({ _0 : state, _1 : []},thx_promise__$Promise_Promise_$Impl_$.mapEitherFuture(this.apiClient.getCards(),function(cards) {
+		return lies__$Reduced_Reduced_$Impl_$.withFuture({ _0 : state, _1 : []},thx_promise__$Promise_Promise_$Impl_$.mapEitherFuture(this.apiClient.getCards(data),function(cards) {
 			return thx_promise_Future.value(mtg_client_state_AppAction.ShowPage(mtg_client_state_Page.CardsPage(mtg_client_state_Loader.Loaded({ cards : cards}))));
 		},function(error) {
 			return thx_promise_Future.value(mtg_client_state_AppAction.ShowPage(mtg_client_state_Page.ErrorPage({ message : error.message})));
@@ -3450,14 +3452,91 @@ mtg_client_view_AppView.__super__ = doom_html_Component;
 mtg_client_view_AppView.prototype = $extend(doom_html_Component.prototype,{
 	render: function() {
 		var tmp = doom_core_VChildImpl.Node(this.navMenu());
-		var _g1 = new haxe_ds_StringMap();
+		var _g8 = new haxe_ds_StringMap();
 		var value = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("ui main container");
 		if(__map_reserved["class"] != null) {
-			_g1.setReserved("class",value);
+			_g8.setReserved("class",value);
 		} else {
-			_g1.h["class"] = value;
+			_g8.h["class"] = value;
 		}
-		return doom_core__$VNode_VNode_$Impl_$.el("div",null,doom_core__$VChildren_VChildren_$Impl_$.children([tmp,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g1,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(this.contentView())])))]));
+		var tmp1 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g8,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(this.contentView())])));
+		var _g9 = new haxe_ds_StringMap();
+		var value1 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("ui inverted vertical footer segment");
+		if(__map_reserved["class"] != null) {
+			_g9.setReserved("class",value1);
+		} else {
+			_g9.h["class"] = value1;
+		}
+		var _g10 = new haxe_ds_StringMap();
+		var value2 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("ui center aligned container");
+		if(__map_reserved["class"] != null) {
+			_g10.setReserved("class",value2);
+		} else {
+			_g10.h["class"] = value2;
+		}
+		var _g11 = new haxe_ds_StringMap();
+		var value3 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("ui horizontal inverted small divided link list");
+		if(__map_reserved["class"] != null) {
+			_g11.setReserved("class",value3);
+		} else {
+			_g11.h["class"] = value3;
+		}
+		var _g12 = new haxe_ds_StringMap();
+		var value4 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("item");
+		if(__map_reserved["class"] != null) {
+			_g12.setReserved("class",value4);
+		} else {
+			_g12.h["class"] = value4;
+		}
+		var value5 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("/#/");
+		if(__map_reserved.href != null) {
+			_g12.setReserved("href",value5);
+		} else {
+			_g12.h["href"] = value5;
+		}
+		var tmp2 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("a",_g12,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Home"))])));
+		var _g13 = new haxe_ds_StringMap();
+		var value6 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("item");
+		if(__map_reserved["class"] != null) {
+			_g13.setReserved("class",value6);
+		} else {
+			_g13.h["class"] = value6;
+		}
+		var value7 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("/#/sets");
+		if(__map_reserved.href != null) {
+			_g13.setReserved("href",value7);
+		} else {
+			_g13.h["href"] = value7;
+		}
+		var tmp3 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("a",_g13,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Sets"))])));
+		var _g14 = new haxe_ds_StringMap();
+		var value8 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("item");
+		if(__map_reserved["class"] != null) {
+			_g14.setReserved("class",value8);
+		} else {
+			_g14.h["class"] = value8;
+		}
+		var value9 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("/#/cards");
+		if(__map_reserved.href != null) {
+			_g14.setReserved("href",value9);
+		} else {
+			_g14.h["href"] = value9;
+		}
+		var tmp4 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("a",_g14,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Cards"))])));
+		var _g15 = new haxe_ds_StringMap();
+		var value10 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("item");
+		if(__map_reserved["class"] != null) {
+			_g15.setReserved("class",value10);
+		} else {
+			_g15.h["class"] = value10;
+		}
+		var value11 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("/#/cards");
+		if(__map_reserved.href != null) {
+			_g15.setReserved("href",value11);
+		} else {
+			_g15.h["href"] = value11;
+		}
+		return doom_core__$VNode_VNode_$Impl_$.el("div",null,doom_core__$VChildren_VChildren_$Impl_$.children([tmp,tmp1,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g9,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g10,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g11,doom_core__$VChildren_VChildren_$Impl_$.children([tmp2,tmp3,tmp4,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("a",_g15,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Decks"))])))])))])))])))]));
 	}
 	,navMenu: function() {
 		return new mtg_client_view_AppNavView({ state : this.props.state}).render();
@@ -4050,6 +4129,74 @@ mtg_core_model_Card.prototype = {
 		return this.variations.map($bind(this,this.getImageUrl));
 	}
 	,__class__: mtg_core_model_Card
+};
+var mtg_core_model_CardQuery = function(data) {
+	this.searchText = "";
+	this.pageSize = 100;
+	this.pageNumber = 1;
+	if(data == null) {
+		data = { };
+	}
+	this.pageNumber = data.pageNumber != null?data.pageNumber:1;
+	this.pageSize = data.pageSize != null?data.pageSize:100;
+	if(this.pageSize != null && this.pageSize > 100) {
+		throw new js__$Boot_HaxeError("Field " + "CardQuery" + "." + "pageSize" + " failed validation \"" + "_ <= 100" + "\" with value \"" + this.pageSize + "\"");
+	}
+	this.searchText = data.searchText != null?data.searchText:"";
+};
+mtg_core_model_CardQuery.__name__ = ["mtg","core","model","CardQuery"];
+mtg_core_model_CardQuery.__interfaces__ = [dataclass_DataClass];
+mtg_core_model_CardQuery.fromMap = function(map) {
+	var tmp;
+	var key = mtg_core_model_CardQuery.QUERY;
+	if(__map_reserved[key] != null) {
+		tmp = map.getReserved(key);
+	} else {
+		tmp = map.h[key];
+	}
+	var tmp1 = tmp;
+	var tmp2;
+	var key1 = mtg_core_model_CardQuery.PAGE_NUMBER;
+	if(__map_reserved[key1] != null) {
+		tmp2 = map.getReserved(key1);
+	} else {
+		tmp2 = map.h[key1];
+	}
+	var tmp3 = mtg_core_model_CardQuery.stringToInt(tmp2);
+	var tmp4;
+	var key2 = mtg_core_model_CardQuery.PAGE_SIZE;
+	if(__map_reserved[key2] != null) {
+		tmp4 = map.getReserved(key2);
+	} else {
+		tmp4 = map.h[key2];
+	}
+	return new mtg_core_model_CardQuery({ searchText : tmp1, pageNumber : tmp3, pageSize : mtg_core_model_CardQuery.stringToInt(tmp4)});
+};
+mtg_core_model_CardQuery.fromObject = function(obj) {
+	return mtg_core_model_CardQuery.fromMap(Reflect.fields(obj).reduce(function(acc,key) {
+		var value = Reflect.field(obj,key);
+		if(__map_reserved[key] != null) {
+			acc.setReserved(key,value);
+		} else {
+			acc.h[key] = value;
+		}
+		return acc;
+	},new haxe_ds_StringMap()));
+};
+mtg_core_model_CardQuery.stringToInt = function(input,defaultValue) {
+	if(thx_Strings.isEmpty(input) || !thx_Ints.canParse(input)) {
+		return defaultValue;
+	}
+	return Std.parseInt(input);
+};
+mtg_core_model_CardQuery.prototype = {
+	pageNumber: null
+	,pageSize: null
+	,searchText: null
+	,toQueryString: function() {
+		return "" + mtg_core_model_CardQuery.QUERY + "=" + this.searchText + "&" + mtg_core_model_CardQuery.PAGE_NUMBER + "=" + this.pageNumber + "&" + mtg_core_model_CardQuery.PAGE_SIZE + "=" + this.pageSize;
+	}
+	,__class__: mtg_core_model_CardQuery
 };
 var mtg_core_model_Deck = function() {
 };
@@ -10953,6 +11100,10 @@ haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
 haxe_ds_ObjectMap.count = 0;
 js_Boot.__toStr = {}.toString;
 mtg_core_model_Card.__meta__ = { obj : { immutable : null}, fields : { id : { convertTo : ["String"]}, layout : { convertTo : ["String"]}, name : { convertTo : ["String"]}, manaCost : { convertTo : ["String"]}, cmc : { convertTo : ["Int"]}, type : { convertTo : ["String"]}, rarity : { convertTo : ["String"]}, text : { convertTo : ["String"]}, flavor : { convertTo : ["String"]}, artist : { convertTo : ["String"]}, number : { convertTo : ["String"]}, mciNumber : { convertTo : ["String"]}, power : { convertTo : ["String"]}, toughness : { convertTo : ["String"]}, loyalty : { convertTo : ["Int"]}, multiverseid : { convertTo : ["Int"]}, imageName : { convertTo : ["String"]}, watermark : { convertTo : ["String"]}, border : { convertTo : ["String"]}, timeshifted : { convertTo : ["Bool"]}, hand : { convertTo : ["Int"]}, life : { convertTo : ["Int"]}, reserved : { convertTo : ["Bool"]}, releaseDate : { convertTo : ["String"]}, starter : { convertTo : ["Bool"]}, originalText : { convertTo : ["String"]}, originalType : { convertTo : ["String"]}, source : { convertTo : ["String"]}, latest : { convertTo : ["Bool"]}}};
+mtg_core_model_CardQuery.__meta__ = { obj : { immutable : null}, fields : { pageNumber : { convertTo : ["Int"]}, pageSize : { validate : ["_ <= 100"], convertTo : ["Int"]}, searchText : { convertTo : ["String"]}}};
+mtg_core_model_CardQuery.QUERY = "q";
+mtg_core_model_CardQuery.PAGE_NUMBER = "page-number";
+mtg_core_model_CardQuery.PAGE_SIZE = "page-size";
 mtg_core_model__$Symbol_Symbol_$Impl_$.C = "{C}";
 mtg_core_model__$Symbol_Symbol_$Impl_$.C0 = "{0}";
 mtg_core_model__$Symbol_Symbol_$Impl_$.C1 = "{1}";

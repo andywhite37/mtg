@@ -9,6 +9,7 @@ import mtg.client.state.AppAction;
 import mtg.client.state.AppState;
 import mtg.client.state.Reducer;
 import mtg.client.view.AppView;
+import mtg.core.model.CardQuery;
 import routly.RouteDescriptor;
 import routly.Routly;
 import thx.Nil;
@@ -36,11 +37,12 @@ class Main {
         store.dispatch(ShowPage(HomePage(Loading(nil))));
       },
       "/cards" => function(descriptor : RouteDescriptor) {
-        store.dispatch(ShowPage(CardsPage(Loading(nil))));
+        var cardQuery = CardQuery.fromMap(descriptor.query);
+        store.dispatch(ShowPage(CardsPage(Loading({ cardQuery: cardQuery }))));
       },
       "/card/:id" => function(descriptor : RouteDescriptor) {
         var cardId = descriptor.arguments["id"];
-        store.dispatch(ShowPage(CardPage(Loading(cardId))));
+        store.dispatch(ShowPage(CardPage(Loading({ cardId: cardId }))));
       },
     ]);
     router.unknown(function(descriptor : RouteDescriptor) {

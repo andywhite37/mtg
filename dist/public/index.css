@@ -1,6 +1,9 @@
 body {
   padding-top: 6em;
 }
+.ui.main.container {
+  margin-bottom: 6em;
+}
 img.symbol {
   height: 15px;
   width: 15px;

@@ -13,6 +13,16 @@ class AppView extends doom.html.Component<{ api: AppApi, state: AppState }> {
       navMenu(),
       div(["class" => "ui main container"], [
         contentView(),
+      ]),
+      div(["class" => "ui inverted vertical footer segment"], [
+        div(["class" => "ui center aligned container"], [
+          div(["class" => "ui horizontal inverted small divided link list"], [
+            a(["class" => "item", "href" => "/#/"], "Home"),
+            a(["class" => "item", "href" => "/#/sets"], "Sets"),
+            a(["class" => "item", "href" => "/#/cards"], "Cards"),
+            a(["class" => "item", "href" => "/#/cards"], "Decks"),
+          ])
+        ])
       ])
     ]);
   }

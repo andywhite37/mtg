@@ -21,18 +21,20 @@ class Database {
   }
 
   public function getCards(cardQuery : CardQuery) : Promise<Array<Card>> {
-    var searchText = 'atarka'; //cardQuery.searchText;
+    var searchText = cardQuery.searchText;
+    var latestPrintingOnly = cardQuery.latestPrintingOnly;
     var limit = cardQuery.pageSize;
     var offset = (cardQuery.pageNumber - 1) * cardQuery.pageSize;
 
     return query(
       "select *
       from card
-      where (($1 = '') or (search_vector @@ plainto_tsquery($1)))
-      order by ts_rank(search_vector, plainto_tsquery($1)) desc
-      offset $2
-      limit $3;",
-      [searchText, offset, limit],
+      where (($3 = '') or (search_vector @@ plainto_tsquery($3)))
+      and (($4 = false) or (latest_printing = true))
+      order by ts_rank(search_vector, plainto_tsquery($3)) desc
+      offset $1
+      limit $2;",
+      [offset, limit, searchText, latestPrintingOnly],
       Database.rowToCard);
   }
 

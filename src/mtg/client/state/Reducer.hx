@@ -53,8 +53,8 @@ class Reducer {
     };
   }
 
-  function showCardsPageLoading(state : AppState, data : Nil) : Result {
-    var loadingCards = apiClient.getCards()
+  function showCardsPageLoading(state : AppState, data : { cardQuery : CardQuery }) : Result {
+    var loadingCards = apiClient.getCards(data)
       .mapEitherFuture(function(cards) {
         return Future.value(ShowPage(CardsPage(Loaded({ cards: cards }))));
       }, function(error) {
