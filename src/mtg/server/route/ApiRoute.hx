@@ -31,6 +31,12 @@ class ApiRoute implements IRoute {
     database.getCards(cardQuery).sendData(response, next);
   }
 
+  @:head('/cards/:id')
+  @:args(Params)
+  function headCard(id : String) {
+    database.hasCardById(id).sendEmptyExists(response, next);
+  }
+
   @:get('/cards/:id')
   @:args(Params)
   function getCard(id : String) {
@@ -67,6 +73,12 @@ class ApiRoute implements IRoute {
     return database.getSets().sendData(response, next);
   }
 
+  @:head('/sets/:code')
+  @:args(Params)
+  function headSet(code : String) {
+    return database.hasSetByCode(code).sendEmptyExists(response, next);
+  }
+
   @:get('/sets/:code')
   @:args(Params)
   function getSet(code : String) {
@@ -98,6 +110,12 @@ class ApiRoute implements IRoute {
     database.deleteSetByCode(code).sendEmpty(response, next);
   }
 
+  @:head('/sets/:code/cards/:id')
+  @:args(Params)
+  function headSetCard(code : String, id : String) {
+    database.hasSetCard(code, id).sendEmptyExists(response, next);
+  }
+
   @:post('/sets/:code/cards/:id')
   @:args(Params)
   function createSetCard(code : String, id : String) {
@@ -108,6 +126,11 @@ class ApiRoute implements IRoute {
   @:args(Params)
   function deleteSetCard(code : String, id : String) {
     database.deleteSetCard(code, id).sendEmpty(response, next);
+  }
+
+  @:put('/card-rankings')
+  function putCardRankings() {
+    database.rankCards().sendEmpty(response, next);
   }
 
   static function sendData<T>(promise : Promise<T>, ?statusCode : Int = 200, response : Response, next : Next) : Void {
@@ -123,6 +146,17 @@ class ApiRoute implements IRoute {
   static function sendEmpty<T>(promise : Promise<T>, ?statusCode : Int = 204, response : Response, next : Next) : Void {
     promise
       .success(function(_) {
+        response.sendStatus(statusCode);
+      })
+      .failure(function(err) {
+        next.error(err);
+      });
+  }
+
+  static function sendEmptyExists(promise : Promise<Bool>, response : Response, next : Next) : Void {
+    promise
+      .success(function(exists) {
+        var statusCode = exists ? 204 : 404;
         response.sendStatus(statusCode);
       })
       .failure(function(err) {

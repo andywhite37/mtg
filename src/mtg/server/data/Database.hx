@@ -37,7 +37,11 @@ class Database {
   }
 
   public function getCardById(id : String) : Promise<Card> {
-    return query('select * from card where id = $1', [id], Database.rowToCard).firstRow();
+    return query('select * from card where id = $1', [id], Database.rowToCard).singleRow();
+  }
+
+  public function hasCardById(id : String) : Promise<Bool> {
+    return query('select count(1) as count from card where id = $1', [id], Database.rowToCountRow).exists();
   }
 
   public function createCard(card : Card) : Promise<Card> {
@@ -77,7 +81,7 @@ class Database {
   public function updateCard(card : Card) : Promise<Card> {
     return query(
       "update card set
-        id = $1, layout = $2, name = $3, names = $4, mana_cost = $5,
+        layout = $2, name = $3, names = $4, mana_cost = $5,
         cmc = $6, colors = $7, color_identity = $8, type = $9, supertypes = $10,
         types = $11, subtypes = $12, rarity = $13, rules_text = $14, flavor_text = $15,
         artist = $16, number = $17, power = $18, toughness = $19, loyalty = $20,
@@ -114,7 +118,11 @@ class Database {
   }
 
   public function getSetByCode(code : String) : Promise<Set> {
-    return query('select * from set where code = $1', [code], Database.rowToSet).firstRow();
+    return query('select * from set where code = $1', [code], Database.rowToSet).singleRow();
+  }
+
+  public function hasSetByCode(code : String) : Promise<Bool> {
+    return query('select count(1) from set where code = $1', [code], Database.rowToCountRow).exists();
   }
 
   public function createSet(set : Set) : Promise<Set> {
@@ -140,10 +148,10 @@ class Database {
   public function updateSet(set : Set) : Promise<Set> {
     return query(
       "update \"set\" set
-        code = $1, name = $2, gatherer_code = $3, old_code = $4, magic_cards_info_code = $5,
+        name = $2, gatherer_code = $3, old_code = $4, magic_cards_info_code = $5,
         release_date = $6, border = $7, type = $8, block = $9, online_only = $10,
         booster = $11
-      where code = $1", [
+      where code = $1;", [
         set.code, set.name, set.gathererCode, set.oldCode, set.magicCardsInfoCode,
         set.releaseDate, set.border, set.type, set.block, set.onlineOnly,
         jstr(set.booster)
@@ -165,8 +173,31 @@ class Database {
     return query('insert into set_card (set_code, card_id) values($1, $2)', [setCode, cardId]).nil();
   }
 
+  public function hasSetCard(setCode : String, cardId : String) : Promise<Bool> {
+    return query('select count(1) as count from set_card where set_code = $1 and card_id = $2', [setCode, cardId], Database.rowToCountRow).exists();
+  }
+
   public function deleteSetCard(setCode : String, cardId : String) : Promise<Nil> {
     return query('delete from set_card where set_code = $1 and card_id = $2', [setCode, cardId]).nil();
+  }
+
+  public function rankCards() : Promise<Nil> {
+    return query('update card set latest_printing = false;')
+      .nil()
+      .mapSuccessPromise(function(_) {
+        return query(
+          'update card set latest_printing = true
+          where id in (
+            select c1.id
+            from card c1
+            inner join (
+              select name, max(release_date) as release_date
+              from card group by name
+            ) as c2 on c1.name = c2.name and c1.release_date = c2.release_date
+            order by c1.name
+          );');
+      })
+      .nil();
   }
 
   function query<T>(sql : String, ?params: Array<Dynamic>, ?converter : Row -> T) : Promise<Array<T>> {
@@ -178,10 +209,12 @@ class Database {
           reject(ThxError.fromDynamic(err));
           return;
         }
+        trace('---- SQL ----');
         trace(sql);
         if (params != null) {
           trace(params);
         }
+        trace('-------------');
         client.query(sql, params, function(err : Null<JsError>, queryResult : QueryResult) : Void {
           if (err != null) {
             done();
@@ -201,10 +234,32 @@ class Database {
   static function firstRow<T>(promise : Promise<Array<T>>) : Promise<T> {
     return promise.mapSuccessPromise(function(items) {
       return if (items == null || items.length == 0) {
-        Promise.error(new thx.Error('Not found'));
+        Promise.error(new thx.Error('Expected at least one row'));
       } else {
         Promise.value(items[0]);
       }
+    });
+  }
+
+  static function singleRow<T>(promise : Promise<Array<T>>) : Promise<T> {
+    return promise.mapSuccessPromise(function(items) {
+      return if (items == null || items.length != 1) {
+        Promise.error(new thx.Error('Expected exactly one row'));
+      } else {
+        Promise.value(items[0]);
+      }
+    });
+  }
+
+  static function singleCountRow<T : { count: Int }>(promise : Promise<Array<T>>) : Promise<Int> {
+    return promise.singleRow().mapSuccess(function(countRow) {
+      return countRow.count;
+    });
+  }
+
+  static function exists<T : { count : Int }>(promise : Promise<Array<T>>) : Promise<Bool> {
+    return promise.singleCountRow().mapSuccess(function(count) {
+      return count > 0;
     });
   }
 
@@ -237,6 +292,10 @@ class Database {
       releaseDate: row.release_date, border: row.border, type: row.type, block: row.block, onlineOnly: row.online_only,
       booster: row.booster
     });
+  }
+
+  static function rowToCountRow(row : Row) : { count : Int } {
+    return cast row;
   }
 
   function jstr(input : Dynamic) : String {

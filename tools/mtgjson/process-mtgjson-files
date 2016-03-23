@@ -12,18 +12,44 @@ var baseUrl = 'http://localhost:9999/api';
 var sets = JSON.parse(fs.readFileSync(path.join(__dirname, 'AllSets-x.json'), 'utf-8'));
 var setCodes = _.keys(sets);
 
-function publishSet(set) {
-  console.log('publishing set %s...', set.code);
-  //set.block = set.block || '';
-  return request.postAsync({
-    url: baseUrl + '/sets',
-    body: set,
-    json: true
+function hasSet(set) {
+  return request.headAsync({
+    url: baseUrl + '/sets/' + set.code,
   })
   .spread(function(response, body) {
-    //console.log(body);
-    checkResponse(response);
-    return body;
+    return isHttpSuccess(response);
+  });
+}
+
+function publishSet(set) {
+  return hasSet(set)
+    .then(function(exists) {
+      console.log('publishing set %s... (exists = %s)', set.code, exists);
+      //set.block = set.block || '';
+      return exists ?
+        request.putAsync({
+          url: baseUrl + '/sets/' + set.code,
+          body: set,
+          json: true
+        }) :
+        request.postAsync({
+          url: baseUrl + '/sets',
+          body: set,
+          json: true
+        });
+    })
+    .spread(function(response, body) {
+      checkResponse(response);
+      return body;
+    });
+}
+
+function hasCard(card) {
+  return request.headAsync({
+    url: baseUrl + '/cards/' + card.id,
+  })
+  .spread(function(response, body) {
+    return response.statusCode === 204;
   });
 }
 
@@ -33,22 +59,56 @@ function publishCard(set, card) {
   card.number = card.number || card.mciNumber;
   card.multiverseid = card.multiverseid || -1;
 
-  console.log('publishing card %s (%s)...', card.name, set.code);
-  return request.postAsync({
-    url: baseUrl + '/cards',
-    body: card,
-    json: true
+  return hasCard(card)
+    .then(function(exists) {
+      console.log('publishing card %s (%s) (exists = %s)...', card.name, set.code, exists);
+      return exists ?
+        request.putAsync({
+          url: baseUrl + '/cards/' + card.id,
+          body: card,
+          json: true
+        }) :
+        request.postAsync({
+          url: baseUrl + '/cards',
+          body: card,
+          json: true
+        });
+    })
+    .spread(function(response, body) {
+      checkResponse(response);
+      return body;
+    });
+}
+
+function hasSetCard(set, card) {
+  return request.headAsync({
+    url: baseUrl + '/sets/' + set.code + '/cards/' + card.id
   })
   .spread(function(response, body) {
-    checkResponse(response);
-    return body;
+    return response.statusCode === 204;
   });
 }
 
 function publishSetCard(set, card) {
-  console.log('publishing set_card %s <-> %s', set.code, card.name);
-  return request.postAsync({
-    url: 'http://localhost:9999/api/sets/' + set.code + '/cards/' + card.id
+  return hasSetCard(set, card)
+    .then(function(exists) {
+      console.log('publishing set_card %s <-> %s', set.code, card.name);
+      return exists ?
+        null :
+        request.postAsync({
+          url: baseUrl + '/sets/' + set.code + '/cards/' + card.id
+        })
+        .spread(function(response, body) {
+          checkResponse(response);
+          return null;
+        });
+    });
+}
+
+function rankCards(){
+  console.log('re-ranking cards...');
+  return request.putAsync({
+    url: baseUrl + '/card-rankings'
   })
   .spread(function(response, body) {
     checkResponse(response);
@@ -57,9 +117,13 @@ function publishSetCard(set, card) {
 }
 
 function checkResponse(response) {
-  if (response.statusCode < 200 || response.statusCode >= 300) {
+  if (!isHttpSuccess(response)) {
     throw new Error('API error ' + response.statusCode);
   }
+}
+
+function isHttpSuccess(response) {
+  return response.statusCode >= 200 && response.statusCode < 300;
 }
 
 Promise.each(setCodes, function(setCode) {
@@ -68,8 +132,6 @@ Promise.each(setCodes, function(setCode) {
   delete set.cards;
   return publishSet(set)
     .then(function(set) {
-      console.log(set);
-      //process.exit(1);
       return Promise.each(cards, function(card) {
         return publishCard(set, card)
           .then(function(card) {
@@ -77,6 +139,12 @@ Promise.each(setCodes, function(setCode) {
           });
       });
     });
+})
+.then(function(_) {
+  return rankCards();
+})
+.then(function(_) {
+  console.log(chalk.green('done!'));
 })
 .catch(function(err) {
   console.error(chalk.red('error'));

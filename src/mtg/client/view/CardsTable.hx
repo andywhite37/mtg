@@ -23,7 +23,7 @@ class CardsTable extends doom.html.Component<{ cards : Array<Card> }> {
       tbody(
         props.cards.map(function(card) : VChild {
           return tr([
-            td(img(["src" => "", "alt" => ""])),
+            td(img(["src" => card.getImageUrl(), "alt" => card.name])),
             td(card.name),
             td(new CardTextView({ text: card.manaCost })),
             td(card.type.capitalizeWords()),

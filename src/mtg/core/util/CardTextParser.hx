@@ -24,7 +24,7 @@ class CardTextParser {
   }
 
   function internalParse() : Array<CardTextToken> {
-    trace(input);
+    //trace(input);
     if (input == '' || input == null) {
       return [TText('')];
     }
@@ -36,7 +36,7 @@ class CardTextParser {
   }
 
   function readToken() : CardTextToken {
-    trace('char = ${char()}');
+    //trace('char = ${char()}');
     return if (char() == '{') {
       readSymbolToken();
     } else if (char() == '\n') {

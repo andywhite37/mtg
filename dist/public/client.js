@@ -3627,13 +3627,13 @@ mtg_client_view_CardsTable.prototype = $extend(doom_html_Component.prototype,{
 		}
 		return doom_core__$VNode_VNode_$Impl_$.el("table",_g,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("thead",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("tr",null,doom_core__$VChildren_VChildren_$Impl_$.children([tmp,tmp1,tmp2,tmp3,tmp4,tmp5,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g28,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Flavor text"))])))])))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("tbody",null,doom_core__$VChildren_VChildren_$Impl_$.children(this.props.cards.map(function(card) {
 			var _g32 = new haxe_ds_StringMap();
-			var value8 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("");
+			var value8 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString(card.getImageUrl());
 			if(__map_reserved.src != null) {
 				_g32.setReserved("src",value8);
 			} else {
 				_g32.h["src"] = value8;
 			}
-			var value9 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("");
+			var value9 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString(card.name);
 			if(__map_reserved.alt != null) {
 				_g32.setReserved("alt",value9);
 			} else {
@@ -4040,6 +4040,15 @@ mtg_core_model_Card.prototype = {
 	,legalities: null
 	,source: null
 	,latest: null
+	,getImageUrl: function(imageId) {
+		if(imageId == null) {
+			imageId = this.multiverseid;
+		}
+		return "https://image.deckbrew.com/mtg/multiverseid/" + imageId + ".jpg";
+	}
+	,getVariationImageUrls: function() {
+		return this.variations.map($bind(this,this.getImageUrl));
+	}
 	,__class__: mtg_core_model_Card
 };
 var mtg_core_model_Deck = function() {
@@ -4220,7 +4229,6 @@ mtg_core_util_CardTextParser.prototype = {
 	input: null
 	,index: null
 	,internalParse: function() {
-		console.log(this.input);
 		if(this.input == "" || this.input == null) {
 			return [mtg_core_util_CardTextToken.TText("")];
 		}
@@ -4229,7 +4237,6 @@ mtg_core_util_CardTextParser.prototype = {
 		return tokens;
 	}
 	,readToken: function() {
-		console.log("char = " + this["char"]());
 		if(this["char"]() == "{") {
 			return this.readSymbolToken();
 		} else if(this["char"]() == "\n") {

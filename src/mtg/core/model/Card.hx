@@ -55,4 +55,13 @@ class Card implements DataClass {
   public static function fromObject(data : {}) : Card {
     return new Card(cast data);
   }
+
+  public function getImageUrl(?imageId : Int) : String {
+    if (imageId == null) imageId = multiverseid;
+    return 'https://image.deckbrew.com/mtg/multiverseid/${imageId}.jpg';
+  }
+
+  public function getVariationImageUrls() : Array<String> {
+    return variations.map(getImageUrl);
+  }
 }
