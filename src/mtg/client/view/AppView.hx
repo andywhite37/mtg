@@ -27,6 +27,10 @@ class AppView extends doom.html.Component<{ api: AppApi, state: AppState }> {
     ]);
   }
 
+  override function willMount() {
+    trace('AppView.willMount');
+  }
+
   function navMenu() : VNode {
     return new AppNavView({ state: props.state }).render();
   }

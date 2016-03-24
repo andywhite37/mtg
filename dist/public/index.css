@@ -8,9 +8,9 @@ img.symbol {
   height: 15px;
   width: 15px;
 }
-table.cards-table .cost {
+table.card-table .cost {
   min-width: 120px;
 }
-table.cards-table img {
+table.card-table img {
   max-width: 60px;
 }

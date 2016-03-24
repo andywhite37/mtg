@@ -1957,6 +1957,23 @@ mtg_core_model_Card.prototype = {
 	}
 	,__class__: mtg_core_model_Card
 };
+var mtg_core_model_TextQuery = { __ename__ : ["mtg","core","model","TextQuery"], __constructs__ : ["ExactMatch","StartsWith","EndsWith","ContainsAll","ContainsAny"] };
+mtg_core_model_TextQuery.ExactMatch = function(text) { var $x = ["ExactMatch",0,text]; $x.__enum__ = mtg_core_model_TextQuery; return $x; };
+mtg_core_model_TextQuery.StartsWith = function(text) { var $x = ["StartsWith",1,text]; $x.__enum__ = mtg_core_model_TextQuery; return $x; };
+mtg_core_model_TextQuery.EndsWith = function(text) { var $x = ["EndsWith",2,text]; $x.__enum__ = mtg_core_model_TextQuery; return $x; };
+mtg_core_model_TextQuery.ContainsAll = function(text) { var $x = ["ContainsAll",3,text]; $x.__enum__ = mtg_core_model_TextQuery; return $x; };
+mtg_core_model_TextQuery.ContainsAny = function(text) { var $x = ["ContainsAny",4,text]; $x.__enum__ = mtg_core_model_TextQuery; return $x; };
+var mtg_core_model_ColorQuery = { __ename__ : ["mtg","core","model","ColorQuery"], __constructs__ : ["ExactMatch","ContainsAll","ContainsAny"] };
+mtg_core_model_ColorQuery.ExactMatch = function(colors) { var $x = ["ExactMatch",0,colors]; $x.__enum__ = mtg_core_model_ColorQuery; return $x; };
+mtg_core_model_ColorQuery.ContainsAll = function(colors) { var $x = ["ContainsAll",1,colors]; $x.__enum__ = mtg_core_model_ColorQuery; return $x; };
+mtg_core_model_ColorQuery.ContainsAny = function(colors) { var $x = ["ContainsAny",2,colors]; $x.__enum__ = mtg_core_model_ColorQuery; return $x; };
+var mtg_core_model_NumberQuery = { __ename__ : ["mtg","core","model","NumberQuery"], __constructs__ : ["Equals","GreaterThan","LessThan","GreaterThanOrEqual","LessThanOrEqual","Between"] };
+mtg_core_model_NumberQuery.Equals = function(value) { var $x = ["Equals",0,value]; $x.__enum__ = mtg_core_model_NumberQuery; return $x; };
+mtg_core_model_NumberQuery.GreaterThan = function(value) { var $x = ["GreaterThan",1,value]; $x.__enum__ = mtg_core_model_NumberQuery; return $x; };
+mtg_core_model_NumberQuery.LessThan = function(value) { var $x = ["LessThan",2,value]; $x.__enum__ = mtg_core_model_NumberQuery; return $x; };
+mtg_core_model_NumberQuery.GreaterThanOrEqual = function(value) { var $x = ["GreaterThanOrEqual",3,value]; $x.__enum__ = mtg_core_model_NumberQuery; return $x; };
+mtg_core_model_NumberQuery.LessThanOrEqual = function(value) { var $x = ["LessThanOrEqual",4,value]; $x.__enum__ = mtg_core_model_NumberQuery; return $x; };
+mtg_core_model_NumberQuery.Between = function(low,high) { var $x = ["Between",5,low,high]; $x.__enum__ = mtg_core_model_NumberQuery; return $x; };
 var mtg_core_model_CardQuery = function(data) {
 	this.latestPrintingOnly = true;
 	this.searchText = "";
@@ -2042,6 +2059,19 @@ mtg_core_model_CardQuery.prototype = {
 	}
 	,__class__: mtg_core_model_CardQuery
 };
+var mtg_core_model_Color = { __ename__ : ["mtg","core","model","Color"], __constructs__ : ["White","Blue","Black","Red","Green","Colorless"] };
+mtg_core_model_Color.White = ["White",0];
+mtg_core_model_Color.White.__enum__ = mtg_core_model_Color;
+mtg_core_model_Color.Blue = ["Blue",1];
+mtg_core_model_Color.Blue.__enum__ = mtg_core_model_Color;
+mtg_core_model_Color.Black = ["Black",2];
+mtg_core_model_Color.Black.__enum__ = mtg_core_model_Color;
+mtg_core_model_Color.Red = ["Red",3];
+mtg_core_model_Color.Red.__enum__ = mtg_core_model_Color;
+mtg_core_model_Color.Green = ["Green",4];
+mtg_core_model_Color.Green.__enum__ = mtg_core_model_Color;
+mtg_core_model_Color.Colorless = ["Colorless",5];
+mtg_core_model_Color.Colorless.__enum__ = mtg_core_model_Color;
 var mtg_core_model_Set = function(data) {
 	this.booster = [];
 	this.onlineOnly = false;

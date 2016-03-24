@@ -31,7 +31,7 @@ abstract Symbol(String) to String {
   var C100 = "{100}";
   var C1000000 = "{1000000}";
   var CHalf = "{1/2}";
-  var CInfinity = "{Infinity}";
+  var CInfinity = "{∞}";
 
   // Single color
   var W = "{W}";
@@ -123,6 +123,7 @@ abstract Symbol(String) to String {
       case "{1000000}": C1000000;
       case "{1/2}": CHalf;
       case "{Infinity}": CInfinity;
+      case "{∞}": CInfinity;
 
       // Single color
       case "{W}": W;

@@ -31,7 +31,7 @@ class SymbolView extends doom.html.Component<{ symbol : Symbol }> {
       case C100: "100.svg";
       case C1000000: "1000000.svg";
       case CHalf: "half.svg";
-      case CInfinity: "infinity.svg";
+      case CInfinity: "infinity.png";
       case W: "W.svg";
       case U: "U.svg";
       case B: "B.svg";

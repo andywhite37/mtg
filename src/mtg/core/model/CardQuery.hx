@@ -7,6 +7,29 @@ using thx.Maps;
 using thx.Strings;
 using thx.Iterators;
 
+enum TextQuery {
+  ExactMatch(text : String);
+  StartsWith(text : String);
+  EndsWith(text : String);
+  ContainsAll(text : String);
+  ContainsAny(text : String);
+}
+
+enum ColorQuery {
+  ExactMatch(colors : Array<Color>);
+  ContainsAll(colors : Array<Color>);
+  ContainsAny(colors : Array<Color>);
+}
+
+enum NumberQuery {
+  Equals(value : Float);
+  GreaterThan(value : Float);
+  LessThan(value : Float);
+  GreaterThanOrEqual(value : Float);
+  LessThanOrEqual(value : Float);
+  Between(low : Float, high : Float);
+}
+
 @immutable
 class CardQuery implements DataClass {
   public static var QUERY = "q";
@@ -15,8 +38,12 @@ class CardQuery implements DataClass {
   public static var LATEST_PRINTING_ONLY = "latest-only";
 
   public var pageNumber : Int = 1;
-  @validate(_ <= 100) public var pageSize : Int = 100;
+
+  @validate(_ <= 100)
+  public var pageSize : Int = 100;
+
   public var searchText : String = '';
+
   public var latestPrintingOnly : Bool = true;
 
   public static function fromMap(map : Map<String, String>) : CardQuery {
