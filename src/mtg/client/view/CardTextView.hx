@@ -13,7 +13,7 @@ class CardTextView extends doom.html.Component<{ text : String }> {
       return switch token {
         case TText(text) : span(["class" => "card-text"], text);
         case TSymbol(symbol) : new SymbolView({ symbol: symbol });
-        case TNewline : br();
+        case TNewline : div(["class" => "card-text-break"]);
       };
     }));
   }

@@ -4,13 +4,19 @@ body {
 .ui.main.container {
   margin-bottom: 6em;
 }
-img.symbol {
-  height: 15px;
-  width: 15px;
+.card-text-container .symbol {
+  height: 14px;
+  width: 14px;
+  vertical-align: middle;
+  margin-top: -3px;
+  margin-right: 3px;
 }
-table.card-table .cost {
+.card-text-container .card-text-break {
+  margin-top: 10px;
+}
+.card-table .cost {
   min-width: 120px;
 }
-table.card-table img {
+.card-table img {
   max-width: 60px;
 }

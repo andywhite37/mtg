@@ -2,6 +2,7 @@ package mtg.client.view;
 
 import doom.core.*;
 import doom.html.Html.*;
+import js.jquery.JQuery;
 import mtg.core.model.*;
 using thx.Functions;
 using thx.Strings;
@@ -10,7 +11,7 @@ class CardTableView extends doom.html.Component<{ cards : Array<Card> }> {
   override function render() : VNode {
     trace('CardTableView.render');
     return div(["class" => "card-table-container"], [
-      div(["class" => "ui form"], [
+      form(["class" => "ui form"], [
         label("Name"),
         div(["class" => "inline fields"], [
           div(["class" => "eight wide field"], [
@@ -18,19 +19,25 @@ class CardTableView extends doom.html.Component<{ cards : Array<Card> }> {
           ]),
           div(["class" => "field"], [
             div(["class" => "ui radio checkbox"], [
-              input(["type" => "radio", "name" => "namequery", "tabindex" => "0", "class" => "hidden"]),
+              input(["type" => "radio", "name" => "name-query", "tabindex" => "0", "class" => "hidden"]),
               label("Exact match")
             ]),
           ]),
           div(["class" => "field"], [
             div(["class" => "ui radio checkbox"], [
-              input(["type" => "radio", "name" => "namequery", "tabindex" => "0", "class" => "hidden"]),
+              input(["type" => "radio", "name" => "name-query", "tabindex" => "0", "class" => "hidden"]),
+              label("Starts with")
+            ]),
+          ]),
+          div(["class" => "field"], [
+            div(["class" => "ui radio checkbox"], [
+              input(["type" => "radio", "name" => "name-query", "tabindex" => "0", "class" => "hidden"]),
               label("Any words")
             ]),
           ]),
           div(["class" => "field"], [
             div(["class" => "ui radio checkbox"], [
-              input(["type" => "radio", "name" => "namequery", "tabindex" => "0", "class" => "hidden"]),
+              input(["type" => "radio", "name" => "name-query", "tabindex" => "0", "class" => "hidden"]),
               label("All words")
             ])
           ])
@@ -56,7 +63,7 @@ class CardTableView extends doom.html.Component<{ cards : Array<Card> }> {
               td([
                 span([
                   new CardTextView({ text: card.manaCost }).asChild(),
-                  span(' (${card.cmc})').asChild(),
+                  span('(${card.cmc})').asChild(),
                 ])
               ]),
               td(card.type.capitalizeWords()),
