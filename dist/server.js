@@ -1955,6 +1955,20 @@ mtg_core_model_Card.prototype = {
 	,getVariationImageUrls: function() {
 		return this.variations.map($bind(this,this.getImageUrl));
 	}
+	,getManaCostAndCmc: function() {
+		if(this.manaCost == null) {
+			return "-";
+		} else {
+			return "" + this.manaCost + " (" + this.cmc + ")";
+		}
+	}
+	,getPowerToughness: function() {
+		if(this.power == null || this.toughness == null) {
+			return "-";
+		} else {
+			return "" + this.power + "/" + this.toughness;
+		}
+	}
 	,__class__: mtg_core_model_Card
 };
 var mtg_core_model_TextQuery = { __ename__ : ["mtg","core","model","TextQuery"], __constructs__ : ["ExactMatch","StartsWith","EndsWith","ContainsAll","ContainsAny"] };

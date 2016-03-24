@@ -64,4 +64,14 @@ class Card implements DataClass {
   public function getVariationImageUrls() : Array<String> {
     return variations.map(getImageUrl);
   }
+
+  public function getManaCostAndCmc() : String {
+    return if (manaCost == null) '-';
+      else '${manaCost} (${cmc})';
+  }
+
+  public function getPowerToughness() : String {
+    return if (power == null || toughness == null) '-';
+      else '$power/$toughness';
+  }
 }

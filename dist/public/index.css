@@ -9,7 +9,7 @@ body {
   width: 14px;
   vertical-align: middle;
   margin-top: -3px;
-  margin-right: 3px;
+  margin-right: 2px;
 }
 .card-text-container .card-text-break {
   margin-top: 10px;
@@ -17,6 +17,6 @@ body {
 .card-table .cost {
   min-width: 120px;
 }
-.card-table img {
+.card-table .image img {
   max-width: 60px;
 }

@@ -15,7 +15,7 @@ class CardTableView extends doom.html.Component<{ cards : Array<Card> }> {
         label("Name"),
         div(["class" => "inline fields"], [
           div(["class" => "eight wide field"], [
-            input(["type" => "text", "placeholder" => "Name"]),
+            input(["type" => "text", "placeholder" => "Card name search"]),
           ]),
           div(["class" => "field"], [
             div(["class" => "ui radio checkbox"], [
@@ -47,29 +47,26 @@ class CardTableView extends doom.html.Component<{ cards : Array<Card> }> {
         thead([
           tr([
             th(["class" => "image"], "Image"),
-            th(["class" => "name"], "Name"),
             th(["class" => "cost"], "Cost"),
-            th(["class" => "types"], "Types"),
-            th(["class" => "rarity"], "Rarity"),
+            th(["class" => "name"], "Name"),
+            th(["class" => "type"], "Type"),
+            th(["class" => "power-toughness"], "P/T"),
             th(["class" => "text"], "Card text"),
             th(["class" => "flavor"], "Flavor text"),
+            th(["class" => "rarity"], "Rarity"),
           ])
         ]),
         tbody(
           props.cards.map(function(card) : VChild {
             return tr([
-              td(img(["src" => card.getImageUrl(), "alt" => card.name])),
-              td(card.name),
-              td([
-                span([
-                  new CardTextView({ text: card.manaCost }).asChild(),
-                  span('(${card.cmc})').asChild(),
-                ])
-              ]),
-              td(card.type.capitalizeWords()),
-              td(card.rarity.capitalizeWords()),
-              td(new CardTextView({ text: card.text })),
-              td(new CardTextView({ text: card.flavor })),
+              td(["class" => "image"], img(["src" => card.getImageUrl(), "alt" => card.name])),
+              td(["class" => "cost"], new CardTextView({ text: card.getManaCostAndCmc() })),
+              td(["class" => "name"], card.name),
+              td(["class" => "type"], card.type.capitalizeWords()),
+              td(["class" => "power-toughness"], card.getPowerToughness()),
+              td(["class" => "text"], new CardTextView({ text: card.text })),
+              td(["class" => "flavor"], new CardTextView({ text: card.flavor })),
+              td(["class" => "rarity"], card.rarity.capitalizeWords()),
             ]);
           })
         ),
