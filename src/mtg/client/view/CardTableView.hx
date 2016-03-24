@@ -21,10 +21,14 @@ class CardTableView extends doom.html.Component<{ cards : Array<Card> }> {
               input(["type" => "radio", "name" => "namequery", "tabindex" => "0", "class" => "hidden"]),
               label("Exact match")
             ]),
+          ]),
+          div(["class" => "field"], [
             div(["class" => "ui radio checkbox"], [
               input(["type" => "radio", "name" => "namequery", "tabindex" => "0", "class" => "hidden"]),
               label("Any words")
             ]),
+          ]),
+          div(["class" => "field"], [
             div(["class" => "ui radio checkbox"], [
               input(["type" => "radio", "name" => "namequery", "tabindex" => "0", "class" => "hidden"]),
               label("All words")
@@ -49,7 +53,12 @@ class CardTableView extends doom.html.Component<{ cards : Array<Card> }> {
             return tr([
               td(img(["src" => card.getImageUrl(), "alt" => card.name])),
               td(card.name),
-              td(new CardTextView({ text: card.manaCost })),
+              td([
+                span([
+                  new CardTextView({ text: card.manaCost }).asChild(),
+                  span(' (${card.cmc})').asChild(),
+                ])
+              ]),
               td(card.type.capitalizeWords()),
               td(card.rarity.capitalizeWords()),
               td(new CardTextView({ text: card.text })),

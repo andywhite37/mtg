@@ -3451,7 +3451,7 @@ mtg_client_view_AppView.__name__ = ["mtg","client","view","AppView"];
 mtg_client_view_AppView.__super__ = doom_html_Component;
 mtg_client_view_AppView.prototype = $extend(doom_html_Component.prototype,{
 	render: function() {
-		var tmp = doom_core_VChildImpl.Node(this.navMenu());
+		var tmp = this.navMenu();
 		var _g8 = new haxe_ds_StringMap();
 		var value = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("ui main container");
 		if(__map_reserved["class"] != null) {
@@ -3459,7 +3459,7 @@ mtg_client_view_AppView.prototype = $extend(doom_html_Component.prototype,{
 		} else {
 			_g8.h["class"] = value;
 		}
-		var tmp1 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g8,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(this.contentView())])));
+		var tmp1 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g8,doom_core__$VChildren_VChildren_$Impl_$.children([this.contentView()])));
 		var _g9 = new haxe_ds_StringMap();
 		var value1 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("ui inverted vertical footer segment");
 		if(__map_reserved["class"] != null) {
@@ -3542,23 +3542,23 @@ mtg_client_view_AppView.prototype = $extend(doom_html_Component.prototype,{
 		console.log("AppView.willMount");
 	}
 	,navMenu: function() {
-		return new mtg_client_view_AppNavView({ state : this.props.state}).render();
+		return doom_core_VChildImpl.Comp(new mtg_client_view_AppNavView({ state : this.props.state}));
 	}
 	,contentView: function() {
 		var _g = this.props.state.currentPage;
 		switch(_g[1]) {
 		case 0:
-			return new mtg_client_view_HomePageView({ state : _g[2], api : this.props.api}).render();
+			return doom_core_VChildImpl.Comp(new mtg_client_view_HomePageView({ state : _g[2], api : this.props.api}));
 		case 1:
-			return new mtg_client_view_CardsPageView({ state : _g[2], api : this.props.api}).render();
+			return doom_core_VChildImpl.Comp(new mtg_client_view_CardsPageView({ state : _g[2], api : this.props.api}));
 		case 2:
-			return new mtg_client_view_CardPageView({ state : _g[2], api : this.props.api}).render();
+			return doom_core_VChildImpl.Comp(new mtg_client_view_CardPageView({ state : _g[2], api : this.props.api}));
 		case 3:
-			return new mtg_client_view_DecksPageView({ state : _g[2], api : this.props.api}).render();
+			return doom_core_VChildImpl.Comp(new mtg_client_view_DecksPageView({ state : _g[2], api : this.props.api}));
 		case 4:
-			return new mtg_client_view_DeckPageView({ state : _g[2], api : this.props.api}).render();
+			return doom_core_VChildImpl.Comp(new mtg_client_view_DeckPageView({ state : _g[2], api : this.props.api}));
 		case 5:
-			return new mtg_client_view_ErrorPageView({ state : _g[2], api : this.props.api}).render();
+			return doom_core_VChildImpl.Comp(new mtg_client_view_ErrorPageView({ state : _g[2], api : this.props.api}));
 		}
 	}
 	,__class__: mtg_client_view_AppView
@@ -3664,150 +3664,164 @@ mtg_client_view_CardTableView.prototype = $extend(doom_html_Component.prototype,
 		} else {
 			_g7.h["class"] = value11;
 		}
-		var tmp2 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g6,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("input",_g7,null)),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("label",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Exact match"))])))])));
+		var tmp2 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g5,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g6,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("input",_g7,null)),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("label",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Exact match"))])))])))])));
 		var _g8 = new haxe_ds_StringMap();
-		var value12 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("ui radio checkbox");
+		var value12 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("field");
 		if(__map_reserved["class"] != null) {
 			_g8.setReserved("class",value12);
 		} else {
 			_g8.h["class"] = value12;
 		}
 		var _g9 = new haxe_ds_StringMap();
-		var value13 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("radio");
-		if(__map_reserved.type != null) {
-			_g9.setReserved("type",value13);
-		} else {
-			_g9.h["type"] = value13;
-		}
-		var value14 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("namequery");
-		if(__map_reserved.name != null) {
-			_g9.setReserved("name",value14);
-		} else {
-			_g9.h["name"] = value14;
-		}
-		var value15 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("0");
-		if(__map_reserved.tabindex != null) {
-			_g9.setReserved("tabindex",value15);
-		} else {
-			_g9.h["tabindex"] = value15;
-		}
-		var value16 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("hidden");
+		var value13 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("ui radio checkbox");
 		if(__map_reserved["class"] != null) {
-			_g9.setReserved("class",value16);
+			_g9.setReserved("class",value13);
 		} else {
-			_g9.h["class"] = value16;
+			_g9.h["class"] = value13;
 		}
-		var tmp3 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g8,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("input",_g9,null)),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("label",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Any words"))])))])));
 		var _g10 = new haxe_ds_StringMap();
-		var value17 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("ui radio checkbox");
+		var value14 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("radio");
+		if(__map_reserved.type != null) {
+			_g10.setReserved("type",value14);
+		} else {
+			_g10.h["type"] = value14;
+		}
+		var value15 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("namequery");
+		if(__map_reserved.name != null) {
+			_g10.setReserved("name",value15);
+		} else {
+			_g10.h["name"] = value15;
+		}
+		var value16 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("0");
+		if(__map_reserved.tabindex != null) {
+			_g10.setReserved("tabindex",value16);
+		} else {
+			_g10.h["tabindex"] = value16;
+		}
+		var value17 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("hidden");
 		if(__map_reserved["class"] != null) {
 			_g10.setReserved("class",value17);
 		} else {
 			_g10.h["class"] = value17;
 		}
+		var tmp3 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g8,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g9,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("input",_g10,null)),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("label",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Any words"))])))])))])));
 		var _g11 = new haxe_ds_StringMap();
-		var value18 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("radio");
-		if(__map_reserved.type != null) {
-			_g11.setReserved("type",value18);
-		} else {
-			_g11.h["type"] = value18;
-		}
-		var value19 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("namequery");
-		if(__map_reserved.name != null) {
-			_g11.setReserved("name",value19);
-		} else {
-			_g11.h["name"] = value19;
-		}
-		var value20 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("0");
-		if(__map_reserved.tabindex != null) {
-			_g11.setReserved("tabindex",value20);
-		} else {
-			_g11.h["tabindex"] = value20;
-		}
-		var value21 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("hidden");
+		var value18 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("field");
 		if(__map_reserved["class"] != null) {
-			_g11.setReserved("class",value21);
+			_g11.setReserved("class",value18);
 		} else {
-			_g11.h["class"] = value21;
+			_g11.h["class"] = value18;
 		}
-		var tmp4 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g1,doom_core__$VChildren_VChildren_$Impl_$.children([tmp,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g2,doom_core__$VChildren_VChildren_$Impl_$.children([tmp1,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g5,doom_core__$VChildren_VChildren_$Impl_$.children([tmp2,tmp3,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g10,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("input",_g11,null)),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("label",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("All words"))])))])))])))])))])));
 		var _g12 = new haxe_ds_StringMap();
-		var value22 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("ui selectable celled table card-table");
+		var value19 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("ui radio checkbox");
 		if(__map_reserved["class"] != null) {
-			_g12.setReserved("class",value22);
+			_g12.setReserved("class",value19);
 		} else {
-			_g12.h["class"] = value22;
+			_g12.h["class"] = value19;
 		}
-		var _g34 = new haxe_ds_StringMap();
-		var value23 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("image");
+		var _g13 = new haxe_ds_StringMap();
+		var value20 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("radio");
+		if(__map_reserved.type != null) {
+			_g13.setReserved("type",value20);
+		} else {
+			_g13.h["type"] = value20;
+		}
+		var value21 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("namequery");
+		if(__map_reserved.name != null) {
+			_g13.setReserved("name",value21);
+		} else {
+			_g13.h["name"] = value21;
+		}
+		var value22 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("0");
+		if(__map_reserved.tabindex != null) {
+			_g13.setReserved("tabindex",value22);
+		} else {
+			_g13.h["tabindex"] = value22;
+		}
+		var value23 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("hidden");
 		if(__map_reserved["class"] != null) {
-			_g34.setReserved("class",value23);
+			_g13.setReserved("class",value23);
 		} else {
-			_g34.h["class"] = value23;
+			_g13.h["class"] = value23;
 		}
-		var tmp5 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g34,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Image"))])));
-		var _g35 = new haxe_ds_StringMap();
-		var value24 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("name");
+		var tmp4 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g1,doom_core__$VChildren_VChildren_$Impl_$.children([tmp,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g2,doom_core__$VChildren_VChildren_$Impl_$.children([tmp1,tmp2,tmp3,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g11,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("div",_g12,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("input",_g13,null)),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("label",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("All words"))])))])))])))])))])));
+		var _g14 = new haxe_ds_StringMap();
+		var value24 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("ui selectable celled table card-table");
 		if(__map_reserved["class"] != null) {
-			_g35.setReserved("class",value24);
+			_g14.setReserved("class",value24);
 		} else {
-			_g35.h["class"] = value24;
+			_g14.h["class"] = value24;
 		}
-		var tmp6 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g35,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Name"))])));
 		var _g36 = new haxe_ds_StringMap();
-		var value25 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("cost");
+		var value25 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("image");
 		if(__map_reserved["class"] != null) {
 			_g36.setReserved("class",value25);
 		} else {
 			_g36.h["class"] = value25;
 		}
-		var tmp7 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g36,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Cost"))])));
+		var tmp5 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g36,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Image"))])));
 		var _g37 = new haxe_ds_StringMap();
-		var value26 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("types");
+		var value26 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("name");
 		if(__map_reserved["class"] != null) {
 			_g37.setReserved("class",value26);
 		} else {
 			_g37.h["class"] = value26;
 		}
-		var tmp8 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g37,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Types"))])));
+		var tmp6 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g37,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Name"))])));
 		var _g38 = new haxe_ds_StringMap();
-		var value27 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("rarity");
+		var value27 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("cost");
 		if(__map_reserved["class"] != null) {
 			_g38.setReserved("class",value27);
 		} else {
 			_g38.h["class"] = value27;
 		}
-		var tmp9 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g38,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Rarity"))])));
+		var tmp7 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g38,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Cost"))])));
 		var _g39 = new haxe_ds_StringMap();
-		var value28 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("text");
+		var value28 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("types");
 		if(__map_reserved["class"] != null) {
 			_g39.setReserved("class",value28);
 		} else {
 			_g39.h["class"] = value28;
 		}
-		var tmp10 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g39,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Card text"))])));
+		var tmp8 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g39,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Types"))])));
 		var _g40 = new haxe_ds_StringMap();
-		var value29 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("flavor");
+		var value29 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("rarity");
 		if(__map_reserved["class"] != null) {
 			_g40.setReserved("class",value29);
 		} else {
 			_g40.h["class"] = value29;
 		}
-		return doom_core__$VNode_VNode_$Impl_$.el("div",_g,doom_core__$VChildren_VChildren_$Impl_$.children([tmp4,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("table",_g12,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("thead",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("tr",null,doom_core__$VChildren_VChildren_$Impl_$.children([tmp5,tmp6,tmp7,tmp8,tmp9,tmp10,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g40,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Flavor text"))])))])))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("tbody",null,doom_core__$VChildren_VChildren_$Impl_$.children(this.props.cards.map(function(card) {
-			var _g44 = new haxe_ds_StringMap();
-			var value30 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString(card.getImageUrl());
+		var tmp9 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g40,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Rarity"))])));
+		var _g41 = new haxe_ds_StringMap();
+		var value30 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("text");
+		if(__map_reserved["class"] != null) {
+			_g41.setReserved("class",value30);
+		} else {
+			_g41.h["class"] = value30;
+		}
+		var tmp10 = doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g41,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Card text"))])));
+		var _g42 = new haxe_ds_StringMap();
+		var value31 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("flavor");
+		if(__map_reserved["class"] != null) {
+			_g42.setReserved("class",value31);
+		} else {
+			_g42.h["class"] = value31;
+		}
+		return doom_core__$VNode_VNode_$Impl_$.el("div",_g,doom_core__$VChildren_VChildren_$Impl_$.children([tmp4,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("table",_g14,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("thead",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("tr",null,doom_core__$VChildren_VChildren_$Impl_$.children([tmp5,tmp6,tmp7,tmp8,tmp9,tmp10,doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("th",_g42,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Flavor text"))])))])))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("tbody",null,doom_core__$VChildren_VChildren_$Impl_$.children(this.props.cards.map(function(card) {
+			var _g46 = new haxe_ds_StringMap();
+			var value32 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString(card.getImageUrl());
 			if(__map_reserved.src != null) {
-				_g44.setReserved("src",value30);
+				_g46.setReserved("src",value32);
 			} else {
-				_g44.h["src"] = value30;
+				_g46.h["src"] = value32;
 			}
-			var value31 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString(card.name);
+			var value33 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString(card.name);
 			if(__map_reserved.alt != null) {
-				_g44.setReserved("alt",value31);
+				_g46.setReserved("alt",value33);
 			} else {
-				_g44.h["alt"] = value31;
+				_g46.h["alt"] = value33;
 			}
-			return doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("tr",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("img",_g44,null))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(card.name))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Comp(new mtg_client_view_CardTextView({ text : card.manaCost}))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(thx_Strings.capitalizeWords(card.type)))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(thx_Strings.capitalizeWords(card.rarity)))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Comp(new mtg_client_view_CardTextView({ text : card.text}))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Comp(new mtg_client_view_CardTextView({ text : card.flavor}))])))])));
+			return doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("tr",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("img",_g46,null))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(card.name))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("span",null,doom_core__$VChildren_VChildren_$Impl_$.children([new mtg_client_view_CardTextView({ text : card.manaCost}).asChild(),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("span",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(" (" + card.cmc + ")"))])))])))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(thx_Strings.capitalizeWords(card.type)))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text(thx_Strings.capitalizeWords(card.rarity)))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Comp(new mtg_client_view_CardTextView({ text : card.text}))]))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("td",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Comp(new mtg_client_view_CardTextView({ text : card.flavor}))])))])));
 		})))),doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("tfoot",null,doom_core__$VChildren_VChildren_$Impl_$.children([])))])))]));
 	}
 	,willMount: function() {
@@ -3914,7 +3928,7 @@ mtg_client_view_CardsPageView.prototype = $extend(doom_html_Component.prototype,
 		return doom_core__$VNode_VNode_$Impl_$.el("div",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("loading..."))]));
 	}
 	,renderLoaded: function(data) {
-		return doom_core__$VNode_VNode_$Impl_$.el("div",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("h1",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Cards"))]))),doom_core_VChildImpl.Node(new mtg_client_view_CardTableView({ cards : data.cards}).render())]));
+		return doom_core__$VNode_VNode_$Impl_$.el("div",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core__$VNode_VNode_$Impl_$.el("h1",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("Cards"))]))),new mtg_client_view_CardTableView({ cards : data.cards}).asChild()]));
 	}
 	,renderFailed: function(data) {
 		return doom_core__$VNode_VNode_$Impl_$.el("h1",null,doom_core__$VChildren_VChildren_$Impl_$.children([doom_core_VChildImpl.Node(doom_core_VNodeImpl.Text("failed to load cards: " + data.message))]));

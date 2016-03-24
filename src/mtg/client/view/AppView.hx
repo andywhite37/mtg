@@ -13,7 +13,7 @@ class AppView extends doom.html.Component<{ api: AppApi, state: AppState }> {
       navMenu(),
       div(["class" => "ui main container"], [
         contentView(),
-      ]),
+      ]).asChild(),
       div(["class" => "ui inverted vertical footer segment"], [
         div(["class" => "ui center aligned container"], [
           div(["class" => "ui horizontal inverted small divided link list"], [
@@ -23,7 +23,7 @@ class AppView extends doom.html.Component<{ api: AppApi, state: AppState }> {
             a(["class" => "item", "href" => "/#/cards"], "Decks"),
           ])
         ])
-      ])
+      ]).asChild()
     ]);
   }
 
@@ -31,18 +31,18 @@ class AppView extends doom.html.Component<{ api: AppApi, state: AppState }> {
     trace('AppView.willMount');
   }
 
-  function navMenu() : VNode {
-    return new AppNavView({ state: props.state }).render();
+  function navMenu() : VChild {
+    return new AppNavView({ state: props.state });
   }
 
-  function contentView() : VNode {
+  function contentView() : VChild {
     return switch props.state.currentPage {
-      case HomePage(data) : new HomePageView({ state: data, api: props.api }).render();
-      case CardsPage(data) : new CardsPageView({ state: data, api: props.api }).render();
-      case CardPage(data) : new CardPageView({ state: data, api: props.api }).render();
-      case DecksPage(data) : new DecksPageView({ state: data, api: props.api }).render();
-      case DeckPage(data) : new DeckPageView({ state: data, api: props.api }).render();
-      case ErrorPage(data) : new ErrorPageView({ state: data, api: props.api }).render();
+      case HomePage(data) : new HomePageView({ state: data, api: props.api });
+      case CardsPage(data) : new CardsPageView({ state: data, api: props.api });
+      case CardPage(data) : new CardPageView({ state: data, api: props.api });
+      case DecksPage(data) : new DecksPageView({ state: data, api: props.api });
+      case DeckPage(data) : new DeckPageView({ state: data, api: props.api });
+      case ErrorPage(data) : new ErrorPageView({ state: data, api: props.api });
     };
   }
 }

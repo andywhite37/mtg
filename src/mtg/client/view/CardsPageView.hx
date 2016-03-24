@@ -48,8 +48,8 @@ class CardsPageView extends doom.html.Component<{ api: AppApi, state: CardsPageD
 
   function renderLoaded(data : { cards: Array<Card> }) {
     return div([
-      h1('Cards'),
-      new CardTableView({ cards: data.cards }).render(),
+      h1('Cards').asChild(),
+      new CardTableView({ cards: data.cards }).asChild(),
     ]);
   }
 
