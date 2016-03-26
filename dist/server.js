@@ -1108,10 +1108,6 @@ dataclass_DynamicObjectConverter.fromDynamic = function(cls,data,delimiter) {
 		delimiter = dataclass_Converter.delimiter;
 	}
 	var columns = haxe_rtti_Meta.getFields(cls);
-	console.log("class fields");
-	console.log(columns);
-	console.log("data fields");
-	console.log(Reflect.fields(data));
 	var output = { };
 	var _g = 0;
 	var _g1 = Reflect.fields(columns);

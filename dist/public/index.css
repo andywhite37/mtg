@@ -1,8 +1,8 @@
-body {
-  padding-top: 6em;
+.body-container {
+  margin-top: 5em;
 }
-.ui.main.container {
-  margin-bottom: 6em;
+.footer-container {
+  margin-top: 5em;
 }
 .card-text-container .symbol {
   height: 14px;

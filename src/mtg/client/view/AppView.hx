@@ -10,32 +10,23 @@ import mtg.client.view.*;
 class AppView extends doom.html.Component<{ api: AppApi, state: AppState }> {
   override function render() {
     return div([
-      navMenu(),
-      div(["class" => "ui main container"], [
-        contentView(),
-      ]).asChild(),
-      div(["class" => "ui inverted vertical footer segment"], [
-        div(["class" => "ui center aligned container"], [
-          div(["class" => "ui horizontal inverted small divided link list"], [
-            a(["class" => "item", "href" => "/#/"], "Home"),
-            a(["class" => "item", "href" => "/#/sets"], "Sets"),
-            a(["class" => "item", "href" => "/#/cards"], "Cards"),
-            a(["class" => "item", "href" => "/#/cards"], "Decks"),
-          ])
-        ])
-      ]).asChild()
+      div(["class" => "header-container"], [
+        header(),
+      ]),
+      div(["class" => "body-container"], [
+        body(),
+      ]),
+      div(["class" => "footer-container"], [
+        footer(),
+      ])
     ]);
   }
 
-  override function willMount() {
-    trace('AppView.willMount');
-  }
-
-  function navMenu() : VChild {
+  function header() {
     return new AppNavView({ state: props.state });
   }
 
-  function contentView() : VChild {
+  function body() : VNode {
     return switch props.state.currentPage {
       case HomePage(data) : new HomePageView({ state: data, api: props.api });
       case CardsPage(data) : new CardsPageView({ state: data, api: props.api });
@@ -44,5 +35,18 @@ class AppView extends doom.html.Component<{ api: AppApi, state: AppState }> {
       case DeckPage(data) : new DeckPageView({ state: data, api: props.api });
       case ErrorPage(data) : new ErrorPageView({ state: data, api: props.api });
     };
+  }
+
+  function footer() {
+    return div(["class" => "ui inverted vertical footer segment"], [
+      div(["class" => "ui center aligned container"], [
+        div(["class" => "ui horizontal inverted small divided link list"], [
+          a(["class" => "item", "href" => "/#/"], "Home"),
+          a(["class" => "item", "href" => "/#/sets"], "Sets"),
+          a(["class" => "item", "href" => "/#/cards"], "Cards"),
+          a(["class" => "item", "href" => "/#/cards"], "Decks"),
+        ])
+      ])
+    ]);
   }
 }

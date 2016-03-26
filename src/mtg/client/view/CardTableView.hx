@@ -57,7 +57,7 @@ class CardTableView extends doom.html.Component<{ cards : Array<Card> }> {
           ])
         ]),
         tbody(
-          props.cards.map(function(card) : VChild {
+          props.cards.map(function(card) {
             return tr([
               td(["class" => "image"], img(["src" => card.getImageUrl(), "alt" => card.name])),
               td(["class" => "cost"], new CardTextView({ text: card.getManaCostAndCmc() })),

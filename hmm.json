@@ -16,7 +16,7 @@
       "name": "doom",
       "type": "git",
       "dir": "",
-      "ref": "0a633a6",
+      "ref": "remove-vchild",
       "url": "git@github.com:fponticelli/doom"
     },
     {

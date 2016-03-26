@@ -8,52 +8,27 @@ import mtg.core.model.Card;
 
 class CardsPageView extends doom.html.Component<{ api: AppApi, state: CardsPageData }> {
   override function render() {
-    trace('CardsPageView.render');
-    return switch props.state {
-      case Loading(_) : renderLoading();
-      case Loaded(data) : renderLoaded(data);
-      case Failed(data) : renderFailed(data);
-    };
-  }
-
-  override function willMount() {
-    super.willMount();
-    trace('CardsPageView.willMount');
-  }
-
-  override function didMount() {
-    super.didMount();
-    trace('CardsPageView.didMount');
-  }
-
-  override function willUpdate() {
-    trace('CardsPageView.willUpdate');
-  }
-
-  override function didUpdate() {
-    trace('CardsPageView.didUpdate');
-  }
-
-  override function willUnmount() {
-    trace('CardsPageView.willUnmount');
-  }
-
-  override function didUnmount() {
-    trace('CardsPageView.didUnmount');
-  }
-
-  function renderLoading() {
-    return div('loading...');
-  }
-
-  function renderLoaded(data : { cards: Array<Card> }) {
-    return div([
-      h1('Cards').asChild(),
-      new CardTableView({ cards: data.cards }).asChild(),
+    return div(["class" => "cards-page ui container"], [
+      switch props.state {
+        case Loading(_) : loading();
+        case Loaded(data) : loaded(data);
+        case Failed(data) : failed(data);
+      }
     ]);
   }
 
-  function renderFailed(data : ErrorPageData) {
+  function loading() {
+    return div('loading...');
+  }
+
+  function loaded(data : { cards: Array<Card> }) {
+    return div([
+      h1('Cards'),
+      new CardTableView({ cards: data.cards }).asNode(),
+    ]);
+  }
+
+  function failed(data : ErrorPageData) {
     return h1('failed to load cards: ${data.message}');
   }
 }
