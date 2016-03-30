@@ -3,15 +3,20 @@ package mtg.server.data;
 import haxe.Json;
 import haxe.ds.Option;
 import js.Error as JsError;
-import mtg.core.model.*;
+import mtg.core.model.Card;
+import mtg.core.model.CardQuery;
+import mtg.core.model.Deck;
+import mtg.core.model.Set;
 import npm.PG;
 import npm.pg.*;
 import thx.promise.Promise;
 import thx.Error as ThxError;
 import thx.Nil;
+using StringTools;
 using dataclass.Converter;
 using mtg.server.data.Database;
 using thx.Arrays;
+using thx.Strings;
 
 class Database {
   var connectionString : String;
@@ -21,20 +26,52 @@ class Database {
   }
 
   public function getCards(cardQuery : CardQuery) : Promise<Array<Card>> {
-    var searchText = cardQuery.searchText;
-    var latestPrintingOnly = cardQuery.latestPrintingOnly;
-    var limit = cardQuery.pageSize;
-    var offset = (cardQuery.pageNumber - 1) * cardQuery.pageSize;
+    trace(cardQuery);
+    var textQuery = switch cardQuery.textQuery {
+      case None : { type: 0, text: '' };
+      case ExactMatch(text) : { type: 1, text: text };
+      case StartsWith(text) : { type: 1, text: '${text}%' };
+      case EndsWith(text) : { type: 1, text: '%${text}' };
+      case ContainsAll(text) : { type: 2, text: toTSQueryAll(text) };
+      case ContainsAny(text) : { type: 2, text: toTSQueryAny(text) };
+    };
+    var latestPrintingOnly : Bool = !!cardQuery.latestPrintingOnly;
+    var limit : Int = cardQuery.pageSize;
+    var offset : Int = (cardQuery.pageNumber - 1) * cardQuery.pageSize;
 
     return query(
       "select *
       from card
-      where (($3 = '') or (search_vector @@ plainto_tsquery($3)))
-      and (($4 = false) or (latest_printing = true))
-      order by ts_rank(search_vector, plainto_tsquery($3)) desc
-      offset $1
-      limit $2;",
-      [offset, limit, searchText, latestPrintingOnly],
+
+      -- text
+      where (
+        ($1 = 0) or
+        (($1 = 1) and (name ilike $2 or rules_text ilike $2 or flavor_text ilike $2)) or
+        (($1 = 2) and (search_vector @@ to_tsquery($2)))
+      )
+
+      -- name
+
+      -- rules
+
+      -- flavor
+
+      -- latest printing
+      and (($3) or (latest_printing = true))
+
+      -- order
+
+      -- paging
+      offset $4
+      limit $5
+      ;",
+      [
+        textQuery.type,
+        textQuery.text,
+        latestPrintingOnly,
+        offset,
+        limit
+      ],
       Database.rowToCard);
   }
 
@@ -302,6 +339,16 @@ class Database {
 
   function jstr(input : Dynamic) : String {
     return Json.stringify(input);
+  }
+
+  function toTSQueryAll(input : String) : String {
+    input = input.trim();
+    return ~/\s+/.replace(input, ' & ');
+  }
+
+  function toTSQueryAny(input : String) : String {
+    input = input.trim();
+    return ~/\s+/.replace(input, ' | ');
   }
 }
 

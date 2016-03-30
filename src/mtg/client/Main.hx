@@ -37,7 +37,9 @@ class Main {
         store.dispatch(ShowPage(HomePage(Loading(nil))));
       },
       "/cards" => function(descriptor : RouteDescriptor) {
+        trace(descriptor.query);
         var cardQuery = CardQuery.fromMap(descriptor.query);
+        trace(cardQuery);
         store.dispatch(ShowPage(CardsPage(Loading({ cardQuery: cardQuery }))));
       },
       "/card/:id" => function(descriptor : RouteDescriptor) {

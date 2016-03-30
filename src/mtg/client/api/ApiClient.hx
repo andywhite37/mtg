@@ -12,6 +12,7 @@ class ApiClient {
   }
 
   public function getCards(options : { cardQuery: CardQuery }) : Promise<Array<Card>> {
+    trace(options.cardQuery.toQueryString());
     return http({
       type: 'GET',
       url: '/api/cards?${options.cardQuery.toQueryString()}',

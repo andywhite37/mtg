@@ -13,12 +13,14 @@ enum TextQuery {
   EndsWith(text : String);
   ContainsAll(text : String);
   ContainsAny(text : String);
+  None;
 }
 
 enum ColorQuery {
   ExactMatch(colors : Array<Color>);
   ContainsAll(colors : Array<Color>);
   ContainsAny(colors : Array<Color>);
+  None;
 }
 
 enum NumberQuery {
@@ -28,30 +30,38 @@ enum NumberQuery {
   GreaterThanOrEqual(value : Float);
   LessThanOrEqual(value : Float);
   Between(low : Float, high : Float);
+  None;
 }
 
 @immutable
 class CardQuery implements DataClass {
-  public static var QUERY = "q";
+  public static var TEXT = "text";
+  public static var NAME = "name";
+  public static var RULES = "rules";
+  public static var FLAVOR = "flavor";
   public static var PAGE_NUMBER = "page-number";
   public static var PAGE_SIZE = "page-size";
   public static var LATEST_PRINTING_ONLY = "latest-only";
 
   public var pageNumber : Int = 1;
-
-  @validate(_ <= 100)
   public var pageSize : Int = 100;
-
-  public var searchText : String = '';
-
+  public var textQuery : TextQuery = None;
+  public var nameQuery : TextQuery = None;
+  public var rulesTextQuery : TextQuery = None;
+  public var flavorTextQuery : TextQuery = None;
   public var latestPrintingOnly : Bool = true;
+  public var powerQuery : NumberQuery = None;
+  public var toughnessQuery : NumberQuery = None;
+  public var cmcQuery : NumberQuery = None;
+  public var colorQuery : ColorQuery = None;
+  public var colorIdentityQuery : ColorQuery = None;
 
   public static function fromMap(map : Map<String, String>) : CardQuery {
     return new CardQuery({
-      searchText: map.get(QUERY),
-      pageNumber: stringToInt(map.get(PAGE_NUMBER)),
-      pageSize: stringToInt(map.get(PAGE_SIZE)),
-      latestPrintingOnly: stringToBool(map.get(LATEST_PRINTING_ONLY)),
+      textQuery: parseTextQuery(map, TEXT),
+      pageNumber: parseInt(map, PAGE_NUMBER),
+      pageSize: parseInt(map, PAGE_SIZE),
+      latestPrintingOnly: parseBool(map, LATEST_PRINTING_ONLY),
     });
   }
 
@@ -65,16 +75,39 @@ class CardQuery implements DataClass {
   }
 
   public function toQueryString() : String {
-    return '$QUERY=$searchText&$PAGE_NUMBER=$pageNumber&$PAGE_SIZE=$pageSize';
+    var text = switch textQuery {
+      case None : '';
+      case ExactMatch(text) : '$TEXT-exact=$text';
+      case StartsWith(text) : '$TEXT-starts-with=$text';
+      case EndsWith(text) : '$TEXT-ends-with=$text';
+      case ContainsAll(text) : '$TEXT-all=$text';
+      case ContainsAny(text) : '$TEXT-any=$text';
+    };
+    var pageNumber = '$PAGE_NUMBER=$pageNumber';
+    var pageSize = '$PAGE_SIZE=$pageSize';
+    return '$text&$pageNumber&$pageSize';
   }
 
-  static function stringToInt(input : String, ?defaultValue : Null<Int>) : Null<Int> {
-    if (input.isEmpty() || !input.canParse()) return defaultValue;
-    return Std.parseInt(input);
+  static function parseInt(map : Map<String, String>, key : String, ?defaultValue : Null<Int>) : Null<Int> {
+    if (!map.exists(key)) return defaultValue;
+    var value = map.get(key);
+    if (value.isEmpty() || !thx.Ints.canParse(value)) return defaultValue;
+    return Std.parseInt(value);
   }
 
-  static function stringToBool(input : String, ?defaultValue : Null<Bool>) : Null<Bool> {
-    if (input.isEmpty()) return defaultValue;
-    return input.toLowerCase() == "true";
+  static function parseBool(map : Map<String, String>, key : String, ?defaultValue : Null<Bool>) : Null<Bool> {
+    if (!map.exists(key)) return defaultValue;
+    var value = map.get(key);
+    if (value.isEmpty() || !thx.Bools.canParse(value)) return defaultValue;
+    return thx.Bools.parse(value);
+  }
+
+  static function parseTextQuery(map : Map<String, String>, key : String) : TextQuery {
+    return if (map.exists('$key-exact')) ExactMatch(map.get('$key-exact'));
+      else if (map.exists('$key-starts-with')) StartsWith(map.get('$key-starts-with'));
+      else if (map.exists('$key-ends-with')) EndsWith(map.get('$key-ends-with'));
+      else if (map.exists('$key-all')) ContainsAll(map.get('$key-all'));
+      else if (map.exists('$key-any')) ContainsAny(map.get('$key-any'));
+      else None;
   }
 }

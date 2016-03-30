@@ -38,7 +38,10 @@ create table card (
   legalities jsonb not null,
   source text null,
   latest_printing boolean not null,
-  search_vector tsvector
+  search_vector tsvector,
+  name_search_vector tsvector,
+  rules_text_search_vector tsvector,
+  flavor_text_search_vector tsvector
 );
 
 create index card_search_vector_gin on "card" using gin(search_vector);
@@ -56,6 +59,17 @@ begin
     setweight(to_tsvector('pg_catalog.english', coalesce(new.rarity, '')), 'B') ||
     setweight(to_tsvector('pg_catalog.english', coalesce(new.original_rules_text, '')), 'B') ||
     setweight(to_tsvector('pg_catalog.english', coalesce(new.original_type, '')), 'B');
+
+  new.name_search_vector :=
+    setweight(to_tsvector('pg_catalog.english', coalesce(new.name, '')), 'A');
+
+  new.rules_text_search_vector :=
+    setweight(to_tsvector('pg_catalog.english', coalesce(new.rules_text, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.english', coalesce(new.original_rules_text, '')), 'B');
+
+  new.flavor_text_search_vector :=
+    setweight(to_tsvector('pg_catalog.english', coalesce(new.flavor_text, '')), 'A');
+
   return new;
 end
 $$ language plpgsql;
