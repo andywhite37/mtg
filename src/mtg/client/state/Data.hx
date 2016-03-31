@@ -6,7 +6,7 @@ import thx.Nil;
 
 typedef HomePageData = Loader<Nil, { decks: Array<Deck> }, Error>;
 
-typedef CardsPageData = Loader<{ cardQuery : CardQuery }, { cards: Array<Card> }, Error>
+typedef CardsPageData = Loader<{ cardQuery : CardQuery }, { cardQuery: CardQuery, cards: Array<Card> }, Error>
 
 typedef CardPageData = Loader<{ cardId : String }, { card: Card }, Error>
 

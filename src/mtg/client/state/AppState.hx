@@ -18,4 +18,9 @@ class AppState {
     this.currentPage = currentPage;
     return this;
   }
+
+  public function updateCurrentPage(currentPage : Page) : AppState {
+    this.currentPage = currentPage;
+    return this;
+  }
 }

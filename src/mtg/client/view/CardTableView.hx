@@ -3,45 +3,104 @@ package mtg.client.view;
 import doom.core.*;
 import doom.html.Html.*;
 import js.jquery.JQuery;
-import mtg.core.model.*;
+import js.html.InputElement;
+import mtg.client.api.AppApi;
+import mtg.client.state.AppAction;
+import mtg.core.model.Card;
+import mtg.core.model.CardQuery;
+import mtg.core.model.CardQuery.TextQuery;
 using thx.Functions;
 using thx.Strings;
 
-class CardTableView extends doom.html.Component<{ cards : Array<Card> }> {
+class CardTableView extends doom.html.Component<{ api: AppApi, cardQuery : CardQuery, cards : Array<Card> }> {
   override function render() : VNode {
-    trace('CardTableView.render');
+    trace('CardTableView.render ${props.cardQuery.textQuery}');
     return div(["class" => "card-table-container"], [
-      form(["class" => "ui form"], [
-        label("Name"),
+      form(["class" => "ui form", "submit" => onSearch], [
+        label("Text search"),
         div(["class" => "inline fields"], [
+
           div(["class" => "eight wide field"], [
-            input(["type" => "text", "placeholder" => "Card name search"]),
+            input([
+              "type" => "text",
+              "placeholder" => "Text search",
+              "value" => props.cardQuery.textQueryText(),
+              "change" => onTextQueryChange
+            ]),
           ]),
+
           div(["class" => "field"], [
             div(["class" => "ui radio checkbox"], [
-              input(["type" => "radio", "name" => "name-query", "tabindex" => "0", "class" => "hidden"]),
+              input([
+                "type" => "radio",
+                "name" => "text-query",
+                "tabindex" => "0",
+                "class" => "hidden",
+                "checked" => props.cardQuery.textQueryIsExact(),
+                "change" => onTextQueryTypeChange.bind(ExactMatch(props.cardQuery.textQueryText())),
+              ]),
               label("Exact match")
             ]),
           ]),
+
           div(["class" => "field"], [
             div(["class" => "ui radio checkbox"], [
-              input(["type" => "radio", "name" => "name-query", "tabindex" => "0", "class" => "hidden"]),
+              input([
+                "type" => "radio",
+                "name" => "text-query",
+                "tabindex" => "0",
+                "class" => "hidden",
+                "checked" => props.cardQuery.textQueryIsStartsWith(),
+                "change" => onTextQueryTypeChange.bind(StartsWith(props.cardQuery.textQueryText())),
+              ]),
               label("Starts with")
             ]),
           ]),
+
           div(["class" => "field"], [
             div(["class" => "ui radio checkbox"], [
-              input(["type" => "radio", "name" => "name-query", "tabindex" => "0", "class" => "hidden"]),
+              input([
+                "type" => "radio",
+                "name" => "text-query",
+                "tabindex" => "0",
+                "class" => "hidden",
+                "checked" => props.cardQuery.textQueryIsEndsWith(),
+                "change" => onTextQueryTypeChange.bind(EndsWith(props.cardQuery.textQueryText())),
+              ]),
+              label("Ends with")
+            ]),
+          ]),
+
+          div(["class" => "field"], [
+            div(["class" => "ui radio checkbox"], [
+              input([
+                "type" => "radio",
+                "name" => "text-query",
+                "tabindex" => "0",
+                "class" => "hidden",
+                "checked" => props.cardQuery.textQueryIsAny(),
+                "change" => onTextQueryTypeChange.bind(ContainsAny(props.cardQuery.textQueryText())),
+              ]),
               label("Any words")
             ]),
           ]),
+
           div(["class" => "field"], [
             div(["class" => "ui radio checkbox"], [
-              input(["type" => "radio", "name" => "name-query", "tabindex" => "0", "class" => "hidden"]),
+              input([
+                "type" => "radio",
+                "name" => "text-query",
+                "tabindex" => "0",
+                "class" => "hidden",
+                "checked" => props.cardQuery.textQueryIsAll(),
+                "change" => onTextQueryTypeChange.bind(ContainsAll(props.cardQuery.textQueryText())),
+              ]),
               label("All words")
             ])
           ])
-        ])
+        ]),
+        button(["class" => "ui button", "type" => "submit"], "Submit"),
+
       ]),
       table(["class" => "ui selectable celled table card-table"], [
         thead([
@@ -76,35 +135,36 @@ class CardTableView extends doom.html.Component<{ cards : Array<Card> }> {
     ]);
   }
 
-  public override function willMount() {
-    trace('CardTableView.willMount');
-  }
-
   public override function didMount() {
-    trace('CardTableView.didMount');
     untyped new js.jquery.JQuery(element).find(".ui.radio.checkbox").checkbox();
   }
 
-  override function willUpdate() {
-    trace('CardTableView.willUpdate');
-  }
-
-  override function didUpdate() {
-    trace('CardTableView.didUpdate');
-  }
-
   override function willUnmount() {
-    trace('CardTableView.willUnmount');
   }
 
-  override function didUnmount() {
-    trace('CardTableView.didUnmount');
+  function onTextQueryChange(el : InputElement) {
+    trace('text query change');
+    /*
+    props.cardQuery.textQuery = switch props.cardQuery.textQuery {
+      case ExactMatch(_) : ExactMatch(el.value);
+      case StartsWith(_) : StartsWith(el.value);
+      case EndsWith(_) : EndsWith(el.value);
+      case ContainsAny(_) : ContainsAny(el.value);
+      case ContainsAll(_) : ContainsAll(el.value);
+      case None : None;
+    };
+    */
+    props.cardQuery.textQuery = ExactMatch(el.value);
+    props.api.dispatch(UpdateCardQuery(props.cardQuery));
   }
 
-  override function shouldRender() {
-    return true;
+  function onTextQueryTypeChange(textQuery : TextQuery) {
+    props.cardQuery.textQuery = textQuery;
+    props.api.dispatch(UpdateCardQuery(props.cardQuery));
   }
 
   function onSearch() {
+    trace('submit');
+    props.api.dispatch(SubmitCardQuery(props.cardQuery));
   }
 }

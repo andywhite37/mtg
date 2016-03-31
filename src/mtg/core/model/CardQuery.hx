@@ -33,7 +33,6 @@ enum NumberQuery {
   None;
 }
 
-@immutable
 class CardQuery implements DataClass {
   public static var TEXT = "text";
   public static var NAME = "name";
@@ -43,18 +42,64 @@ class CardQuery implements DataClass {
   public static var PAGE_SIZE = "page-size";
   public static var LATEST_PRINTING_ONLY = "latest-only";
 
-  public var pageNumber : Int = 1;
-  public var pageSize : Int = 100;
   public var textQuery : TextQuery = None;
   public var nameQuery : TextQuery = None;
   public var rulesTextQuery : TextQuery = None;
   public var flavorTextQuery : TextQuery = None;
-  public var latestPrintingOnly : Bool = true;
   public var powerQuery : NumberQuery = None;
   public var toughnessQuery : NumberQuery = None;
   public var cmcQuery : NumberQuery = None;
   public var colorQuery : ColorQuery = None;
   public var colorIdentityQuery : ColorQuery = None;
+  public var pageNumber : Int = 1;
+  public var pageSize : Int = 100;
+  public var latestPrintingOnly : Bool = true;
+
+  public function textQueryText() : String {
+    return switch textQuery {
+      case ExactMatch(text) : text;
+      case StartsWith(text) : text;
+      case EndsWith(text) : text;
+      case ContainsAll(text) : text;
+      case ContainsAny(text) : text;
+      case None : "";
+    };
+  }
+
+  public function textQueryIsExact() : Bool {
+    return switch textQuery {
+      case ExactMatch(_) : true;
+      case _ : false;
+    };
+  }
+
+  public function textQueryIsStartsWith() : Bool {
+    return switch textQuery {
+      case StartsWith(_) : true;
+      case _ : false;
+    };
+  }
+
+  public function textQueryIsEndsWith() : Bool {
+    return switch textQuery {
+      case EndsWith(_) : true;
+      case _ : false;
+    };
+  }
+
+  public function textQueryIsAny() : Bool {
+    return switch textQuery {
+      case ContainsAny(_) : true;
+      case _ : false;
+    };
+  }
+
+  public function textQueryIsAll() : Bool {
+    return switch textQuery {
+      case ContainsAll(_) : true;
+      case _ : false;
+    };
+  }
 
   public static function fromMap(map : Map<String, String>) : CardQuery {
     return new CardQuery({
@@ -75,6 +120,7 @@ class CardQuery implements DataClass {
   }
 
   public function toQueryString() : String {
+    trace(textQuery);
     var text = switch textQuery {
       case None : '';
       case ExactMatch(text) : '$TEXT-exact=$text';

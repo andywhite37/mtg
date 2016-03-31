@@ -18,9 +18,9 @@ class Main {
   public static function main() {
     var apiClient = new ApiClient();
     var appState = new AppState();
-    var appApi = new AppApi();
     var reducer = new Reducer(apiClient);
     var store : Store<AppState, AppAction> = Store.create(reducer.reduce, appState);
+    var appApi = new AppApi(store);
     var router = setupRouter(store);
     var appComponent = new AppView({ api: appApi, state: appState });
     store.subscribe(function(newState, oldState, action) {

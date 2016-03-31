@@ -5,6 +5,7 @@ import doom.html.Html.*;
 import mtg.client.api.AppApi;
 import mtg.client.state.Data;
 import mtg.core.model.Card;
+import mtg.core.model.CardQuery;
 
 class CardsPageView extends doom.html.Component<{ api: AppApi, state: CardsPageData }> {
   override function render() {
@@ -21,10 +22,10 @@ class CardsPageView extends doom.html.Component<{ api: AppApi, state: CardsPageD
     return div('loading...');
   }
 
-  function loaded(data : { cards: Array<Card> }) {
+  function loaded(data : { cardQuery: CardQuery, cards: Array<Card> }) {
     return div([
       h1('Cards'),
-      new CardTableView({ cards: data.cards }).asNode(),
+      new CardTableView({ api: props.api, cardQuery: data.cardQuery, cards: data.cards }).asNode(),
     ]);
   }
 

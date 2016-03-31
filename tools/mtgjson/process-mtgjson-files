@@ -12,6 +12,19 @@ var baseUrl = 'http://localhost:9999/api';
 var sets = JSON.parse(fs.readFileSync(path.join(__dirname, 'AllSets-x.json'), 'utf-8'));
 var setCodes = _.keys(sets);
 
+var meta = {
+  colors: [],
+  colorIdentities: [],
+  types: [],
+  superTypes: [],
+  subTypes: [],
+  rarities: [],
+  borders: [],
+  watermarks: [],
+  releaseDates: [],
+  languages: []
+};
+
 function hasSet(set) {
   return request.headAsync({
     url: baseUrl + '/sets/' + set.code,
@@ -129,6 +142,26 @@ function isHttpSuccess(response) {
 Promise.each(setCodes, function(setCode) {
   var set = sets[setCode];
   var cards = set.cards;
+
+  /*
+  meta.releaseDates.push(set.releaseDate);
+
+  _.each(cards, function(card) {
+    meta.colors = meta.colors.concat(card.colors);
+    meta.colorIdentities = meta.colorIdentities.concat(card.colors);
+    meta.types = meta.types.concat(card.types);
+    meta.superTypes = meta.superTypes.concat(card.supertypes);
+    meta.subTypes = meta.subTypes.concat(card.subtypes);
+    meta.rarities.push(card.rarity);
+    meta.borders.push(card.border);
+    meta.watermarks.push(card.watermark);
+    meta.releaseDates.push(card.releaseDate);
+    _.each(card.foreignNames, function(foreignName) {
+      meta.languages.push(foreignName.language);
+    });
+  });
+  */
+
   delete set.cards;
   return publishSet(set)
     .then(function(set) {
@@ -140,10 +173,20 @@ Promise.each(setCodes, function(setCode) {
       });
     });
 })
-.then(function(_) {
+.then(function() {
+  /*
+  _.each(_.keys(meta), function(key) {
+    var arr = meta[key];
+    arr = _.compact(arr);
+    arr = _.uniq(arr);
+    arr = _.sortBy(arr);
+    meta[key] = arr;
+  });
+  console.log(meta);
+  */
   return rankCards();
 })
-.then(function(_) {
+.then(function() {
   console.log(chalk.green('done!'));
 })
 .catch(function(err) {

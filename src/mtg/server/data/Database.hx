@@ -32,8 +32,8 @@ class Database {
       case ExactMatch(text) : { type: 1, text: text };
       case StartsWith(text) : { type: 1, text: '${text}%' };
       case EndsWith(text) : { type: 1, text: '%${text}' };
-      case ContainsAll(text) : { type: 2, text: toTSQueryAll(text) };
-      case ContainsAny(text) : { type: 2, text: toTSQueryAny(text) };
+      case ContainsAll(text) : { type: 2, text: toTSQueryAnd(text) };
+      case ContainsAny(text) : { type: 2, text: toTSQueryOr(text) };
     };
     var latestPrintingOnly : Bool = !!cardQuery.latestPrintingOnly;
     var limit : Int = cardQuery.pageSize;
@@ -60,6 +60,7 @@ class Database {
       and (($3) or (latest_printing = true))
 
       -- order
+      order by name
 
       -- paging
       offset $4
@@ -239,6 +240,102 @@ class Database {
       .nil();
   }
 
+  public function getCardBorders() : Promise<Array<String>> {
+    return query('select border from card_border', Database.getString('border'));
+  }
+
+  public function hasCardBorder(name : String) : Promise<Bool> {
+    return query('select count(1) as count from card_border where border = $1', [name], Database.rowToCountRow).exists();
+  }
+
+  public function createCardBorder(name : String) : Promise<Nil> {
+    return query('insert into card_border(border) values ($1)', [name]).nil();
+  }
+
+  public function getCardColors() : Promise<Array<String>> {
+    return query('select color from card_color', Database.getString('color'));
+  }
+
+  public function hasCardColor(color : String) : Promise<Bool> {
+    return query('select count(1) as count from card_color where color = $1', [color], Database.rowToCountRow).exists();
+  }
+
+  public function createCardColor(color : String) : Promise<Nil> {
+    return query('insert into card_color(color) values ($1)', [color]).nil();
+  }
+
+  public function getCardRarities() : Promise<Array<String>> {
+    return query('select rarity from card_rarity', Database.getString('rarity'));
+  }
+
+  public function hasCardRarity(rarity : String) : Promise<Bool> {
+    return query('select count(1) as count from card_rarity where rarity = $1', [rarity], Database.rowToCountRow).exists();
+  }
+
+  public function createCardRarity(rarity : String) : Promise<Nil> {
+    return query('insert into card_rarity(rarity) values ($1)', [rarity]).nil();
+  }
+
+  public function getCardSubTypes() : Promise<Array<String>> {
+    return query('select type from card_sub_type', Database.getString('type'));
+  }
+
+  public function hasCardSubType(type : String) : Promise<Bool> {
+    return query('select count(1) as count from card_sub_type where type = $1', [type], Database.rowToCountRow).exists();
+  }
+
+  public function createCardSubType(type : String) : Promise<Nil> {
+    return query('insert into card_sub_type(type) values ($1)', [type]).nil();
+  }
+
+  public function getCardSuperTypes() : Promise<Array<String>> {
+    return query('select type from card_super_type', Database.getString('type'));
+  }
+
+  public function hasCardSuperType(type : String) : Promise<Bool> {
+    return query('select count(1) as count from card_super_type where type = $1', [type], Database.rowToCountRow).exists();
+  }
+
+  public function createCardSuperType(type : String) : Promise<Nil> {
+    return query('insert into card_super_type(type) values ($1)', [type]).nil();
+  }
+
+  public function getCardTypes() : Promise<Array<String>> {
+    return query('select type from card_type', Database.getString('type'));
+  }
+
+  public function hasCardType(type : String) : Promise<Bool> {
+    return query('select count(1) as count from card_type where type = $1', [type], Database.rowToCountRow).exists();
+  }
+
+  public function createCardType(type : String) : Promise<Nil> {
+    return query('insert into card_type(type) values ($1)', [type]).nil();
+  }
+
+  public function getCardWatermarks() : Promise<Array<String>> {
+    return query('select watermark from card_watermark', Database.getString('watermark'));
+  }
+
+  public function hasCardWatermark(watermark : String) : Promise<Bool> {
+    return query('select count(1) as count from card_watermark where watermark = $1', [watermark], Database.rowToCountRow).exists();
+  }
+
+  public function createCardWatermark(watermark : String) : Promise<Nil> {
+    return query('insert into card_watermark(watermark) values ($1)', [watermark]).nil();
+  }
+
+  public function getLanguages() : Promise<Array<String>> {
+    return query('select language from card_language', Database.getString('language'));
+  }
+
+  public function hasLanguage(language : String) : Promise<Bool> {
+    return query('select count(1) as count from language where language = $1', [language], Database.rowToCountRow).exists();
+  }
+
+  public function createLanguage(language : String) : Promise<Nil> {
+    return query('insert into language(language) values ($1)', [language]).nil();
+  }
+
   function query<T>(sql : String, ?params: Array<Dynamic>, ?converter : Row -> T) : Promise<Array<T>> {
     if (converter == null) converter = Database.rowToAny;
     return Promise.create(function(resolve, reject) {
@@ -268,6 +365,12 @@ class Database {
         });
       });
     });
+  }
+
+  static function getString(name : String) : Row -> String {
+    return function(row : Row) : String {
+      return Reflect.field(row, name);
+    };
   }
 
   static function firstRow<T>(promise : Promise<Array<T>>) : Promise<T> {
@@ -341,12 +444,12 @@ class Database {
     return Json.stringify(input);
   }
 
-  function toTSQueryAll(input : String) : String {
+  function toTSQueryAnd(input : String) : String {
     input = input.trim();
     return ~/\s+/.replace(input, ' & ');
   }
 
-  function toTSQueryAny(input : String) : String {
+  function toTSQueryOr(input : String) : String {
     input = input.trim();
     return ~/\s+/.replace(input, ' | ');
   }

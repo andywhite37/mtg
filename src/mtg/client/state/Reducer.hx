@@ -19,8 +19,12 @@ class Reducer {
   }
 
   public function reduce(state : AppState, action : AppAction) : Result {
+    var name = action.getName();
+    trace('reduce $name');
     return switch action {
       case ShowPage(page) : showPage(state, page);
+      case UpdateCardQuery(cardQuery) : updateCardQuery(state, cardQuery);
+      case SubmitCardQuery(cardQuery) : submitCardQuery(state, cardQuery);
     };
   }
 
@@ -56,10 +60,32 @@ class Reducer {
   function showCardsPageLoading(state : AppState, data : { cardQuery : CardQuery }) : Result {
     var loadingCards = apiClient.getCards(data)
       .mapEitherFuture(function(cards) {
-        return Future.value(ShowPage(CardsPage(Loaded({ cards: cards }))));
+        return Future.value(ShowPage(CardsPage(Loaded({ cardQuery: data.cardQuery, cards: cards }))));
       }, function(error) {
         return Future.value(ShowPage(ErrorPage({ message: error.message })));
       });
     return Reduced.fromState(state).withFuture(loadingCards);
+  }
+
+  function updateCardQuery(state : AppState, cardQuery : CardQuery) : Result {
+    return switch state.currentPage {
+      case CardsPage(Loaded(data)) : state.updateCurrentPage(CardsPage(Loaded({ cardQuery: cardQuery, cards: data.cards })));
+      case _ : state;
+    };
+  }
+
+  function submitCardQuery(state : AppState, cardQuery : CardQuery) : Result {
+    /*
+    var loadingCards = apiClient.getCards({ cardQuery: cardQuery })
+      .mapEitherFuture(function(cards) {
+        return Future.value(ShowPage(CardsPage(Loaded({ cardQuery: cardQuery, cards: cards }))));
+      }, function(error) {
+        return Future.value(ShowPage(ErrorPage({ message: error.message })));
+      });
+    return Reduced.fromState(state).withFuture(loadingCards);
+    */
+    trace(js.Browser.location.hash);
+    js.Browser.location.hash = '/cards?${cardQuery.toQueryString()}';
+    return state;
   }
 }

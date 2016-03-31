@@ -134,6 +134,23 @@ class ApiRoute implements IRoute {
     database.rankCards().sendEmpty(response, next);
   }
 
+  @:get('/card-borders')
+  function getCardBorders() {
+    database.getCardBorders().sendData(response, next);
+  }
+
+  @:head('/card-borders/:border')
+  @:args(Params)
+  function hasCardBorder(border : String) {
+    database.hasCardBorder(border).sendEmpty(response, next);
+  }
+
+  @:post('/card-borders/:border')
+  @:args(Params)
+  function createCardBorder(border : String) {
+    database.createCardBorder(border).sendEmpty(response, next);
+  }
+
   static function sendData<T>(promise : Promise<T>, ?statusCode : Int = 200, response : Response, next : Next) : Void {
     promise
       .success(function(data) {
